@@ -1,41 +1,47 @@
 // @flow
 import React, { Component } from 'react';
 import Peer from 'simple-peer';
-import Home from '../components/Home';
+import Wrtc from 'wrtc';
 
 type Props = {};
 
 export default class HomePage extends Component<Props> {
   props: Props;
 
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    const p = new Peer({ initiator: true, wrtc: Wrtc });
 
-    const peer1 = new Peer({ initiator: true });
-    const peer2 = new Peer();
+    p.on('error', err => console.log('error', err));
 
-    peer1.on('signal', data => {
-      // when peer1 has signaling data, give it to peer2 somehow
-      peer2.signal(data);
+    p.on('signal', data => {
+      console.log('SIGNAL', JSON.stringify(data));
+      document.querySelector('#outgoing').textContent = JSON.stringify(data);
     });
 
-    peer2.on('signal', data => {
-      // when peer2 has signaling data, give it to peer1 somehow
-      peer1.signal(data);
+    document.querySelector('form').addEventListener('submit', ev => {
+      ev.preventDefault();
+      p.signal(JSON.parse(document.querySelector('#incoming').value));
     });
 
-    peer1.on('connect', () => {
-      // wait for 'connect' event before using the data channel
-      peer1.send('hey peer2, how is it going?');
+    p.on('connect', () => {
+      console.log('CONNECT');
+      p.send(`whatever ${Math.random()}`);
     });
 
-    peer2.on('data', data => {
-      // got a data channel message
-      console.log(`got a message from peer1: ${data}`);
+    p.on('data', data => {
+      console.log(`data: ${data}`);
     });
   }
 
   render() {
-    return <Home />;
+    return (
+      <div>
+        <form>
+          <textarea id="incoming" />
+          <button type="submit">submit</button>
+        </form>
+        <pre id="outgoing" />
+      </div>
+    );
   }
 }
