@@ -10,34 +10,51 @@ export default class HomePage extends Component<Props> {
 
   componentDidMount() {
     const id = `${Math.floor(Math.random() * 100000)}`;
+    let wsConnected = false;
+    let initiatorSignal = null;
     const ws = new WebSocket('ws://0d5b3915.ngrok.io');
     const p = new Peer({ initiator: true, trickle: false });
 
-    ws.on('open', () => {
-      console.log('Connected to connector.');
-      ws.send(id);
+    p.on('error', err => console.log('error', err));
 
-      p.on('error', err => console.log('error', err));
-
-      p.on('signal', data => {
-        console.log(`signal ${JSON.stringify(data)}`);
+    p.on('signal', data => {
+      console.log(`signal ${JSON.stringify(data)}`);
+      initiatorSignal = JSON.stringify(data);
+      if (wsConnected) {
         ws.send(
           JSON.stringify({
             type: 'request',
-            signal: JSON.stringify(data)
+            signal: initiatorSignal
           })
         );
-      });
+        initiatorSignal = null;
+      }
+    });
 
-      p.on('connect', () => {
-        const msg = Math.random();
-        console.log(`CONNECT passive ${msg}`);
-        p.send(`saas ${msg}`);
-      });
+    p.on('connect', () => {
+      const msg = Math.random();
+      console.log(`CONNECT passive ${msg}`);
+      p.send(`saas ${msg}`);
+    });
 
-      p.on('data', data => {
-        console.log(`data: ${data}`);
-      });
+    p.on('data', data => {
+      console.log(`data: ${data}`);
+    });
+
+    ws.on('open', () => {
+      wsConnected = true;
+      console.log('Connected to connector.');
+      ws.send(id);
+
+      if (initiatorSignal !== null) {
+        ws.send(
+          JSON.stringify({
+            type: 'request',
+            signal: initiatorSignal
+          })
+        );
+        initiatorSignal = null;
+      }
     });
 
     ws.on('message', data => {
