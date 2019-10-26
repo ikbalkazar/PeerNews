@@ -10,7 +10,8 @@ export default class HomePage extends Component<Props> {
 
   state = {
     id: null,
-    peers: []
+    peers: [],
+    messageCache: {}
   };
 
   componentDidMount() {
@@ -98,7 +99,10 @@ export default class HomePage extends Component<Props> {
 
     document.querySelector('form').addEventListener('submit', ev => {
       ev.preventDefault();
-      this.broadcast(document.querySelector('#incoming').value);
+      const message = this.createMessage(
+        document.querySelector('#incoming').value
+      );
+      this.broadcast(message);
     });
   }
 
@@ -117,21 +121,32 @@ export default class HomePage extends Component<Props> {
   };
 
   messageReceived = message => {
+    const { messageCache } = this.state;
     const parsed = JSON.parse(message);
     console.log(`Received message ${parsed.from} ${parsed.text}`);
-    document.querySelector('#outgoing').textContent += message;
-    document.querySelector('#outgoing').textContent += '\n';
+    if (!(parsed.messageId in messageCache)) {
+      messageCache[parsed.messageId] = message;
+      this.setState({ messageCache });
+      document.querySelector('#outgoing').textContent += message;
+      document.querySelector('#outgoing').textContent += '\n';
+      this.broadcast(message);
+    }
   };
 
-  broadcast = text => {
-    const { peers, id } = this.state;
+  createMessage = text => {
+    const { id } = this.state;
+    const messageId = `${Math.floor(Math.random() * 10000000)}`;
+    return JSON.stringify({
+      from: id,
+      messageId,
+      text
+    });
+  };
+
+  broadcast = message => {
+    const { peers } = this.state;
     for (let i = 0; i < peers.length; i += 1) {
-      peers[i].send(
-        JSON.stringify({
-          from: id,
-          text
-        })
-      );
+      peers[i].send(message);
     }
   };
 
