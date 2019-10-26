@@ -77,8 +77,8 @@ export default class HomePage extends Component<Props> {
           console.log(`CONNECT passive ${msg}`);
           p2.send(`saas ${msg}`);
         });
-        p2.on('data', () => {
-          console.log(`data: ${data}`);
+        p2.on('data', receivedData => {
+          console.log(`data: ${receivedData}`);
         });
       } else if (message.type === 'response') {
         p.signal(message.signal);
