@@ -8,14 +8,23 @@ type Props = {};
 export default class HomePage extends Component<Props> {
   props: Props;
 
+  state = {
+    id: null,
+    peers: []
+  };
+
   componentDidMount() {
     const id = `${Math.floor(Math.random() * 100000)}`;
+    this.setState({ id });
     let wsConnected = false;
     let initiatorSignal = null;
     const ws = new WebSocket('ws://0d5b3915.ngrok.io');
     const p = new Peer({ initiator: true, trickle: false });
 
-    p.on('error', err => console.log('error', err));
+    p.on('error', err => {
+      console.log(err);
+      this.removePeer(p);
+    });
 
     p.on('signal', data => {
       console.log(`signal ${JSON.stringify(data)}`);
@@ -32,13 +41,12 @@ export default class HomePage extends Component<Props> {
     });
 
     p.on('connect', () => {
-      const msg = Math.random();
-      console.log(`CONNECT initiator ${msg}`);
-      p.send(`saas ${msg}`);
+      this.addPeer(p);
+      console.log(`CONNECT initiator`);
     });
 
     p.on('data', data => {
-      console.log(`data: ${data}`);
+      this.messageReceived(data);
     });
 
     ws.on('open', () => {
@@ -73,18 +81,59 @@ export default class HomePage extends Component<Props> {
           );
         });
         p2.on('connect', () => {
-          const msg = Math.random();
-          console.log(`CONNECT passive ${msg}`);
-          p2.send(`saas ${msg}`);
+          this.addPeer(p2);
+          console.log(`CONNECT passive`);
         });
         p2.on('data', receivedData => {
-          console.log(`data: ${receivedData}`);
+          this.messageReceived(receivedData);
+        });
+        p2.on('error', err => {
+          console.log(err);
+          this.removePeer(p2);
         });
       } else if (message.type === 'response') {
         p.signal(message.signal);
       }
     });
+
+    document.querySelector('form').addEventListener('submit', ev => {
+      ev.preventDefault();
+      this.broadcast(document.querySelector('#incoming').value);
+    });
   }
+
+  addPeer = peer => {
+    const { peers } = this.state;
+    this.setState({
+      peers: [...peers, peer]
+    });
+  };
+
+  removePeer = peer => {
+    const { peers } = this.state;
+    this.setState({
+      peers: peers.filter(p => p !== peer)
+    });
+  };
+
+  messageReceived = message => {
+    const parsed = JSON.parse(message);
+    console.log(`Received message ${parsed.from} ${parsed.text}`);
+    document.querySelector('#outgoing').textContent += message;
+    document.querySelector('#outgoing').textContent += '\n';
+  };
+
+  broadcast = text => {
+    const { peers, id } = this.state;
+    for (let i = 0; i < peers.length; i += 1) {
+      peers[i].send(
+        JSON.stringify({
+          from: id,
+          text
+        })
+      );
+    }
+  };
 
   render() {
     return (
