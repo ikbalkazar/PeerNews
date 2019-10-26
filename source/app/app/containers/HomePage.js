@@ -11,56 +11,21 @@ export default class HomePage extends Component<Props> {
   state = {
     id: null,
     peers: [],
-    messageCache: {}
+    messageCache: {},
+    wsConnected: false,
+    initiatorSignal: null,
+    root: null
   };
 
   componentDidMount() {
     const id = `${Math.floor(Math.random() * 100000)}`;
     this.setState({ id });
-    let wsConnected = false;
-    let initiatorSignal = null;
     const ws = new WebSocket('ws://0d5b3915.ngrok.io');
-    const p = new Peer({ initiator: true, trickle: false });
-
-    p.on('error', err => {
-      console.log(err);
-      if (wsConnected) {
-        console.log('Reconnecting...');
-        ws.send(
-          JSON.stringify({
-            type: 'request',
-            signal: initiatorSignal
-          })
-        );
-      }
-      // TODO: delayed retry.
-    });
-
-    p.on('signal', data => {
-      console.log(`signal ${JSON.stringify(data)}`);
-      initiatorSignal = JSON.stringify(data);
-      if (wsConnected) {
-        ws.send(
-          JSON.stringify({
-            type: 'request',
-            signal: initiatorSignal
-          })
-        );
-        initiatorSignal = null;
-      }
-    });
-
-    p.on('connect', () => {
-      this.addPeer(p);
-      console.log(`CONNECT initiator`);
-    });
-
-    p.on('data', data => {
-      this.messageReceived(data);
-    });
+    this.createPeer(ws);
 
     ws.on('open', () => {
-      wsConnected = true;
+      const { initiatorSignal } = this.state;
+      this.setState({ wsConnected: true });
       console.log('Connected to connector.');
       ws.send(id);
 
@@ -71,7 +36,9 @@ export default class HomePage extends Component<Props> {
             signal: initiatorSignal
           })
         );
-        initiatorSignal = null;
+        this.setState({
+          initiatorSignal: null
+        });
       }
     });
 
@@ -102,7 +69,9 @@ export default class HomePage extends Component<Props> {
           this.removePeer(p2);
         });
       } else if (message.type === 'response') {
-        p.signal(message.signal);
+        const { root } = this.state;
+        console.log(`Response ${root}`);
+        root.signal(message.signal);
       }
     });
 
@@ -114,6 +83,49 @@ export default class HomePage extends Component<Props> {
       this.broadcast(message);
     });
   }
+
+  createPeer = ws => {
+    const p = new Peer({ initiator: true, trickle: false });
+    this.setState({ root: p });
+
+    p.on('error', err => {
+      const { wsConnected } = this.state;
+      console.log(err);
+      if (wsConnected) {
+        p.destroy();
+        this.removePeer(p);
+        console.log('Reconnecting...');
+        this.createPeer(ws);
+      }
+    });
+
+    p.on('signal', data => {
+      const { wsConnected } = this.state;
+      console.log(`signal ${JSON.stringify(data)}`);
+      const initiatorSignal = JSON.stringify(data);
+      this.setState({ initiatorSignal });
+      if (wsConnected && initiatorSignal) {
+        ws.send(
+          JSON.stringify({
+            type: 'request',
+            signal: initiatorSignal
+          })
+        );
+        this.setState({
+          initiatorSignal: null
+        });
+      }
+    });
+
+    p.on('connect', () => {
+      this.addPeer(p);
+      console.log(`CONNECT initiator`);
+    });
+
+    p.on('data', data => {
+      this.messageReceived(data);
+    });
+  };
 
   addPeer = peer => {
     const { peers } = this.state;
