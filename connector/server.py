@@ -60,6 +60,7 @@ async def hello(websocket, path):
     try:
         id = await websocket.recv()
         add_client(id, websocket)
+        print("Connected {}".format(id))
         while True:
             message = await websocket.recv()
             message = json.loads(message)
@@ -74,9 +75,10 @@ async def hello(websocket, path):
                 print("Unrecognized message from {}".format(id))
     finally:
         remove_client(id)
+        print("Disconnected {}".format(id))
 
 
-start_server = websockets.serve(hello, "localhost", 8080)
+start_server = websockets.serve(hello, "localhost", 4059)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
