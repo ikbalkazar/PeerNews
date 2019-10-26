@@ -33,7 +33,7 @@ export default class HomePage extends Component<Props> {
 
     p.on('connect', () => {
       const msg = Math.random();
-      console.log(`CONNECT passive ${msg}`);
+      console.log(`CONNECT initiator ${msg}`);
       p.send(`saas ${msg}`);
     });
 
