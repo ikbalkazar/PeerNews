@@ -58,6 +58,7 @@ export default class HomePage extends Component<Props> {
     });
 
     ws.on('message', data => {
+      console.log(data);
       const message = JSON.parse(data);
       if (message.type === 'request') {
         const p2 = new Peer({ trickle: false });
