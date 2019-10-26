@@ -24,7 +24,16 @@ export default class HomePage extends Component<Props> {
 
     p.on('error', err => {
       console.log(err);
-      this.removePeer(p);
+      if (wsConnected) {
+        console.log('Reconnecting...');
+        ws.send(
+          JSON.stringify({
+            type: 'request',
+            signal: initiatorSignal
+          })
+        );
+      }
+      // TODO: delayed retry.
     });
 
     p.on('signal', data => {
