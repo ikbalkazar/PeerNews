@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import Peer from 'simple-peer';
-import Wrtc from 'wrtc';
 
 type Props = {};
 
@@ -9,7 +8,7 @@ export default class HomePage extends Component<Props> {
   props: Props;
 
   componentDidMount() {
-    const p = new Peer({ initiator: true, wrtc: Wrtc });
+    const p = new Peer({ initiator: true, trickle: false });
 
     p.on('error', err => console.log('error', err));
 
@@ -20,6 +19,7 @@ export default class HomePage extends Component<Props> {
 
     document.querySelector('form').addEventListener('submit', ev => {
       ev.preventDefault();
+      console.log('Submitted');
       p.signal(JSON.parse(document.querySelector('#incoming').value));
     });
 
