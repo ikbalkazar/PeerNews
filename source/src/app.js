@@ -1,8 +1,19 @@
 import React from 'react';
 import Peer from 'simple-peer';
 import WebSocket from 'ws';
-import Button from 'react-bootstrap/Button';
 
+import Login from './login';
+import NavigationBar from './NavigationBar';
+
+const ROUTES = {
+  login: "1",
+  test: "2",
+};
+
+const ROUTE_NAME = {
+  "1": 'Login',
+  "2": 'Test',
+};
 
 export default class App extends React.Component {
   state = {
@@ -11,7 +22,8 @@ export default class App extends React.Component {
     messageCache: {},
     wsConnected: false,
     initiatorSignal: null,
-    root: null
+    root: null,
+    route: ROUTES.test,
   };
 
   componentDidMount() {
@@ -169,7 +181,7 @@ export default class App extends React.Component {
     }
   };
 
-  render() {
+  renderTest = () => {
     return (
       <div>
         <h1>Title</h1>
@@ -178,7 +190,38 @@ export default class App extends React.Component {
           <button type="submit">submit</button>
         </form>
         <pre id="outgoing" />
-        <Button variant="primary">Primary</Button>
+      </div>
+    );
+  };
+
+  handleClickPage = (pageId) => {
+    this.setState({ route: pageId });
+  };
+
+  renderPage = () => {
+    const { route } = this.state;
+    switch (route) {
+      case ROUTES.login:
+        return <Login/>;
+      case ROUTES.test:
+        return this.renderTest();
+      default:
+        return null;
+    }
+  };
+
+  render() {
+    const page = this.renderPage();
+    const pageIds = Object.keys(ROUTE_NAME);
+    const pages = pageIds.map(id => ({id, name: ROUTE_NAME[id]}));
+    return (
+      <div>
+        <NavigationBar
+          pages={pages}
+          onClickPage={this.handleClickPage}
+        />
+        {page}
+        whatever
       </div>
     );
   }
