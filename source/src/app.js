@@ -1,6 +1,8 @@
 import React from 'react';
 import Peer from 'simple-peer';
 import WebSocket from 'ws';
+import Button from 'react-bootstrap/Button';
+
 
 export default class App extends React.Component {
   state = {
@@ -176,6 +178,7 @@ export default class App extends React.Component {
           <button type="submit">submit</button>
         </form>
         <pre id="outgoing" />
+        <Button variant="primary">Primary</Button>
       </div>
     );
   }
