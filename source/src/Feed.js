@@ -5,6 +5,7 @@ export default class Feed extends React.Component {
   render () {
     const { messages } = this.props;
     const messageContents = Object.values(messages);
+    messageContents.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     return (
       <div>
         {messageContents.map(message =>

@@ -5,24 +5,26 @@ import WebSocket from 'ws';
 import Login from './login';
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
+import Compose from './Compose';
+import { generateId, createMessage } from './util';
 
 const ROUTES = {
   login: "1",
-  test: "2",
   feed: "3",
+  compose: "4",
 };
 
 const ROUTE_NAME = {
   "1": 'Login',
-  "2": 'Test',
   "3": 'Feed',
+  "4": 'Compose',
 };
 
 const TEST_MESSAGES = {
-  "1": {from: 'Jon', text: "Hello!", messageId: "1"},
-  "2": {from: 'Satre', text: "Every existing thing is born without reason, prolongs itself out of weakness, and dies by chance.", messageId: "2"},
-  "3": {from: 'Albert', text: "You will never be happy if you continue to search for what happiness consists of. You will never live if you are looking for the meaning of life.", messageId: "3"},
-  "4": {from: 'Jon', text: "Huh, what kind of an existential hole did I find myself in here?", messageId: "4"},
+  "1": {from: 'Jon', text: "Hello!", messageId: "1", timestamp: 0},
+  "2": {from: 'Sartre', text: "Every existing thing is born without reason, prolongs itself out of weakness, and dies by chance.", messageId: "2", timestamp: 1},
+  "3": {from: 'Albert', text: "You will never be happy if you continue to search for what happiness consists of. You will never live if you are looking for the meaning of life.", messageId: "3", timestamp: 2},
+  "4": {from: 'Jon', text: "Huh, what kind of an existential hole did I find myself in here?", messageId: "4", timestamp: 3},
 };
 
 export default class App extends React.Component {
@@ -37,13 +39,13 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    alert('loaded');
-    const id = `${Math.floor(Math.random() * 100000)}`;
+    const id = generateId(100000);
     this.setState({ id });
-    const ws = new WebSocket('ws://0d5b3915.ngrok.io');
+    const ws = new WebSocket('ws://localhost:4059');
     this.createPeer(ws);
 
     ws.on('open', () => {
+      alert('ws connected');
       const { initiatorSignal } = this.state;
       this.setState({ wsConnected: true });
       console.log('Connected to connector.');
@@ -93,14 +95,6 @@ export default class App extends React.Component {
         console.log(`Response ${root}`);
         root.signal(message.signal);
       }
-    });
-
-    document.querySelector('form').addEventListener('submit', ev => {
-      ev.preventDefault();
-      const message = this.createMessage(
-        document.querySelector('#incoming').value
-      );
-      this.broadcast(message);
     });
   }
 
@@ -166,22 +160,10 @@ export default class App extends React.Component {
     const parsed = JSON.parse(message);
     console.log(`Received message ${parsed.from} ${parsed.text}`);
     if (!(parsed.messageId in messageCache)) {
-      messageCache[parsed.messageId] = message;
+      messageCache[parsed.messageId] = parsed;
       this.setState({ messageCache });
-      document.querySelector('#outgoing').textContent += message;
-      document.querySelector('#outgoing').textContent += '\n';
       this.broadcast(message);
     }
-  };
-
-  createMessage = text => {
-    const { id } = this.state;
-    const messageId = `${Math.floor(Math.random() * 10000000)}`;
-    return JSON.stringify({
-      from: id,
-      messageId,
-      text
-    });
   };
 
   broadcast = message => {
@@ -191,25 +173,13 @@ export default class App extends React.Component {
     }
   };
 
-  renderTest = () => {
-    return (
-      <div>
-        <h1>Title</h1>
-        <form>
-          <textarea id="incoming" />
-          <button type="submit">submit</button>
-        </form>
-        <pre id="outgoing" />
-      </div>
-    );
-  };
-
   handleClickPage = (pageId) => {
     this.setState({ route: pageId });
   };
 
   postMessage = (text) => {
-    this.broadcast(this.createMessage(text));
+    const { id } = this.state;
+    this.broadcast(createMessage(id, text));
   };
 
   renderPage = () => {
@@ -217,14 +187,10 @@ export default class App extends React.Component {
     switch (route) {
       case ROUTES.login:
         return <Login/>;
-      case ROUTES.test:
-        return this.renderTest();
       case ROUTES.feed:
-        return (
-          <Feed
-            messages={messageCache}
-          />
-        );
+        return <Feed messages={messageCache}/>;
+      case ROUTES.compose:
+        return <Compose postMessage={this.postMessage}/>;
       default:
         return null;
     }
