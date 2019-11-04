@@ -4,22 +4,32 @@ import WebSocket from 'ws';
 
 import Login from './login';
 import NavigationBar from './NavigationBar';
+import Feed from './Feed';
 
 const ROUTES = {
   login: "1",
   test: "2",
+  feed: "3",
 };
 
 const ROUTE_NAME = {
   "1": 'Login',
   "2": 'Test',
+  "3": 'Feed',
+};
+
+const TEST_MESSAGES = {
+  "1": {from: 'Jon', text: "Hello!", messageId: "1"},
+  "2": {from: 'Satre', text: "Every existing thing is born without reason, prolongs itself out of weakness, and dies by chance.", messageId: "2"},
+  "3": {from: 'Albert', text: "You will never be happy if you continue to search for what happiness consists of. You will never live if you are looking for the meaning of life.", messageId: "3"},
+  "4": {from: 'Jon', text: "Huh, what kind of an existential hole did I find myself in here?", messageId: "4"},
 };
 
 export default class App extends React.Component {
   state = {
     id: null,
     peers: [],
-    messageCache: {},
+    messageCache: TEST_MESSAGES,
     wsConnected: false,
     initiatorSignal: null,
     root: null,
@@ -198,13 +208,23 @@ export default class App extends React.Component {
     this.setState({ route: pageId });
   };
 
+  postMessage = (text) => {
+    this.broadcast(this.createMessage(text));
+  };
+
   renderPage = () => {
-    const { route } = this.state;
+    const { route, messageCache } = this.state;
     switch (route) {
       case ROUTES.login:
         return <Login/>;
       case ROUTES.test:
         return this.renderTest();
+      case ROUTES.feed:
+        return (
+          <Feed
+            messages={messageCache}
+          />
+        );
       default:
         return null;
     }
@@ -221,7 +241,6 @@ export default class App extends React.Component {
           onClickPage={this.handleClickPage}
         />
         {page}
-        whatever
       </div>
     );
   }
