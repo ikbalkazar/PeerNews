@@ -46,7 +46,6 @@ export default class App extends React.Component {
     this.createPeer(ws);
 
     ws.on('open', () => {
-      alert('ws connected');
       const { initiatorSignal } = this.state;
       this.setState({ wsConnected: true });
       console.log('Connected to connector.');
@@ -185,7 +184,7 @@ export default class App extends React.Component {
   };
 
   rebroadcast = () => {
-    console.log('rebroadcasting')
+    console.log('rebroadcasting');
     const { messageCache } = this.state;
     for (const message of Object.values(messageCache)) {
       this.broadcast(message);
@@ -206,7 +205,7 @@ export default class App extends React.Component {
 
   postMessage = (text) => {
     const { id } = this.state;
-    this.broadcast(Message.createText(id, text));
+    this.messageReceived(JSON.stringify(Message.createText(id, text)));
   };
 
   renderPage = () => {
