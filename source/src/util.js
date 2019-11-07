@@ -36,6 +36,14 @@ export const attachProofOfWork = (message) => {
   }
 };
 
+export const toList = (iter) => {
+  const res = [];
+  for (const item of iter) {
+    res.push(item);
+  }
+  return res;
+};
+
 export const ROUTES = {
   login: "1",
   feed: "3",

@@ -6,18 +6,17 @@ export default class Feed extends React.Component {
 
   handleClick = (message) => {
     const { navigate } = this.props;
-    navigate(ROUTES.focus, { message });
+    navigate(ROUTES.focus, { messageId: message.messageId });
   };
 
   render () {
     const { messages } = this.props;
-    const messageContents = Object.values(messages);
-    messageContents.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
+    messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     return (
       <div>
-        {messageContents.map(message =>
+        {messages.map(message =>
           <Card
-            style={{ width: '18rem', margin: '0 auto' }}
+            style={{ width: '18rem', margin: '0 auto', cursor: 'pointer' }}
             key={message.messageId}
             onClick={() => this.handleClick(message)}
           >

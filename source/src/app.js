@@ -7,21 +7,21 @@ import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Compose from './Compose';
 import Focus from './Focus';
-import { generateId, verifyProofOfWork, ROUTES, ROUTE_NAME } from './util';
+import { generateId, verifyProofOfWork, ROUTES, ROUTE_NAME, toList } from './util';
 import * as Message from './message';
 
-const TEST_MESSAGES = {
-  "1": {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0},
-  "2": {senderId: 'Sartre', type: "text", text: "Every existing thing is born without reason, prolongs itself out of weakness, and dies by chance.", messageId: "2", timestamp: 1},
-  "3": {senderId: 'Albert', type: "text", text: "You will never be happy if you continue to search for what happiness consists of. You will never live if you are looking for the meaning of life.", messageId: "3", timestamp: 2},
-  "4": {senderId: 'Jon', type: "text", text: "Huh, what kind of an existential hole did I find myself in here?", messageId: "4", timestamp: 3},
-};
+const TEST_MESSAGES = new Map([
+  ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
+  ["2", {senderId: 'Sartre', type: "text", text: "Every existing thing is born without reason, prolongs itself out of weakness, and dies by chance.", messageId: "2", timestamp: 1}],
+  ["3", {senderId: 'Albert', type: "text", text: "You will never be happy if you continue to search for what happiness consists of. You will never live if you are looking for the meaning of life.", messageId: "3", timestamp: 2}],
+  ["4", {senderId: 'Jon', type: "text", text: "Huh, what kind of an existential hole did I find myself in here?", messageId: "4", timestamp: 3}],
+]);
 
 export default class App extends React.Component {
   state = {
     id: null,
     peers: [],
-    messageCache: TEST_MESSAGES,
+    messages: TEST_MESSAGES,
     wsConnected: false,
     initiatorSignal: null,
     root: null,
@@ -150,7 +150,7 @@ export default class App extends React.Component {
   };
 
   messageReceived = message => {
-    const { messageCache } = this.state;
+    const { messages } = this.state;
     const parsed = JSON.parse(message);
     if (!verifyProofOfWork(parsed)) {
       console.log(`Could not verify proof of work, ignoring: ${message}`);
@@ -159,9 +159,10 @@ export default class App extends React.Component {
     console.log(`Receved and accepted message ${message}`);
     switch (parsed.type) {
       case Message.type.TEXT:
-        if (!(parsed.messageId in messageCache)) {
-          messageCache[parsed.messageId] = parsed;
-          this.setState({ messageCache });
+      case Message.type.COMMENT:
+        if (!messages.has(parsed.messageId)) {
+          messages.set(parsed.messageId, parsed);
+          this.setState({ messages: new Map(messages) });
           this.broadcast(parsed);
         }
         break;
@@ -175,8 +176,8 @@ export default class App extends React.Component {
 
   rebroadcast = () => {
     console.log('rebroadcasting');
-    const { messageCache } = this.state;
-    for (const message of Object.values(messageCache)) {
+    const { messages } = this.state;
+    for (const message of messages.values()) {
       this.broadcast(message);
     }
   };
@@ -198,21 +199,49 @@ export default class App extends React.Component {
     this.messageReceived(JSON.stringify(Message.createText(id, text)));
   };
 
+  postComment = (messageId, text) => {
+    const { id } = this.state;
+    this.messageReceived(JSON.stringify(Message.createComment(id, messageId, text)));
+  };
+
   navigate = (route, routeParams) => {
     this.setState({ route, routeParams });
   };
 
+  getFeedMessages = (messages) => {
+    const feedMessages = toList(messages.values()).filter(message => message.type === Message.type.TEXT);
+    const comments = toList(messages.values()).filter(message => message.type === Message.type.COMMENT);
+    const messageComments = new Map();
+    for (const comment of comments) {
+      const current = messageComments.get(comment.reMessageId) || [];
+      messageComments.set(comment.reMessageId, [...current, comment]);
+    }
+    return feedMessages.map(message => ({
+      ...message,
+      comments: messageComments.get(message.messageId) || [],
+    }));
+  };
+
   renderPage = () => {
-    const { route, routeParams, messageCache } = this.state;
+    const { route, routeParams, messages } = this.state;
+    const feedMessages = this.getFeedMessages(messages);
     switch (route) {
       case ROUTES.login:
         return <Login/>;
       case ROUTES.feed:
-        return <Feed messages={messageCache} navigate={this.navigate}/>;
+        return <Feed messages={feedMessages} navigate={this.navigate}/>;
       case ROUTES.compose:
         return <Compose postMessage={this.postMessage}/>;
       case ROUTES.focus:
-        return <Focus message={routeParams.message} navigate={this.navigate}/>;
+        const focusMessage = feedMessages.filter(message =>
+          message.messageId === routeParams.messageId)[0];
+        return (
+          <Focus
+            message={focusMessage}
+            navigate={this.navigate}
+            postComment={this.postComment}
+          />
+        );
       default:
         return null;
     }

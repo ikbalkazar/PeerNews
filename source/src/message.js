@@ -3,6 +3,7 @@ import { attachProofOfWork, generateId } from './util';
 export const type = {
   TEXT: "text",
   REBROADCAST: "rebroadcast",
+  COMMENT: "comment",
 };
 
 const MESSAGE_ID_RANGE = 10000000;
@@ -31,5 +32,15 @@ export const createRebroadcast = (senderId) => {
   return attachProofOfWork({
     ...message,
     type: type.REBROADCAST,
+  });
+};
+
+export const createComment = (senderId, reMessageId, text) => {
+  const message = create(senderId);
+  return attachProofOfWork({
+    ...message,
+    type: type.COMMENT,
+    reMessageId,
+    text,
   });
 };
