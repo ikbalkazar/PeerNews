@@ -6,7 +6,7 @@ import Login from './login';
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Compose from './Compose';
-import { generateId } from './util';
+import { generateId, verifyProofOfWork } from './util';
 import * as Message from './message';
 
 const ROUTES = {
@@ -163,7 +163,11 @@ export default class App extends React.Component {
   messageReceived = message => {
     const { messageCache } = this.state;
     const parsed = JSON.parse(message);
-    console.log(`Received message ${parsed.senderId} ${parsed.text}`);
+    if (!verifyProofOfWork(parsed)) {
+      console.log(`Could not verify proof of work, ignoring: ${message}`);
+      return;
+    }
+    console.log(`Receved and accepted message ${message}`);
     switch (parsed.type) {
       case Message.type.TEXT:
         if (!(parsed.messageId in messageCache)) {

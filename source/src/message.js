@@ -1,4 +1,4 @@
-import { generateId } from './util';
+import { attachProofOfWork, generateId } from './util';
 
 export const type = {
   TEXT: "text",
@@ -19,17 +19,17 @@ const create = (senderId) => {
 
 export const createText = (senderId, text) => {
   const message = create(senderId);
-  return {
+  return attachProofOfWork({
     ...message,
     type: type.TEXT,
     text
-  }
+  });
 };
 
 export const createRebroadcast = (senderId) => {
   const message = create(senderId);
-  return {
+  return attachProofOfWork({
     ...message,
     type: type.REBROADCAST,
-  };
+  });
 };
