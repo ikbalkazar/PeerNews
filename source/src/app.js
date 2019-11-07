@@ -6,20 +6,9 @@ import Login from './login';
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Compose from './Compose';
-import { generateId, verifyProofOfWork } from './util';
+import Focus from './Focus';
+import { generateId, verifyProofOfWork, ROUTES, ROUTE_NAME } from './util';
 import * as Message from './message';
-
-const ROUTES = {
-  login: "1",
-  feed: "3",
-  compose: "4",
-};
-
-const ROUTE_NAME = {
-  "1": 'Login',
-  "3": 'Feed',
-  "4": 'Compose',
-};
 
 const TEST_MESSAGES = {
   "1": {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0},
@@ -37,6 +26,7 @@ export default class App extends React.Component {
     initiatorSignal: null,
     root: null,
     route: ROUTES.test,
+    routeParams: null,
   };
 
   componentDidMount() {
@@ -208,15 +198,21 @@ export default class App extends React.Component {
     this.messageReceived(JSON.stringify(Message.createText(id, text)));
   };
 
+  navigate = (route, routeParams) => {
+    this.setState({ route, routeParams });
+  };
+
   renderPage = () => {
-    const { route, messageCache } = this.state;
+    const { route, routeParams, messageCache } = this.state;
     switch (route) {
       case ROUTES.login:
         return <Login/>;
       case ROUTES.feed:
-        return <Feed messages={messageCache}/>;
+        return <Feed messages={messageCache} navigate={this.navigate}/>;
       case ROUTES.compose:
         return <Compose postMessage={this.postMessage}/>;
+      case ROUTES.focus:
+        return <Focus message={routeParams.message} navigate={this.navigate}/>;
       default:
         return null;
     }
