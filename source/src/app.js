@@ -9,6 +9,7 @@ import { verifyProofOfWork, ROUTES, ROUTE_NAME, toList, verifySignatureAndDecode
 import * as Message from './message';
 import { createSender } from './message';
 import PeerManager from './PeerManager';
+import MessageManager from './MessageManager';
 
 const TEST_MESSAGES = new Map([
   ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
@@ -41,59 +42,25 @@ export default class App extends React.Component {
         this.setState({ numPeers: numPeers - 1 });
       },
     });
+    this.messageManager = new MessageManager({
+      sender,
+      peerManager: this.peerManager,
+      onChange: (messages) => {
+        this.setState({ messages: new Map(messages) });
+      },
+    });
   }
 
-  messageReceived = message => {
-    const { messages } = this.state;
-    console.log(`Got ${message}`);
-    const parsed = verifySignatureAndDecode(JSON.parse(message));
-    if (!parsed) {
-      console.log(`Could not verify signature, ignoring: ${message}`);
+  messageReceived = (message) => {
+    if (!this.messageManager) {
+      console.log('no message manager found');
       return;
     }
-    if (!verifyProofOfWork(parsed)) {
-      console.log(`Could not verify proof of work, ignoring: ${message}`);
-      return;
-    }
-    console.log(`Receved and accepted message ${message}`);
-    switch (parsed.type) {
-      case Message.type.TEXT:
-      case Message.type.COMMENT:
-        if (!messages.has(parsed.messageId)) {
-          messages.set(parsed.messageId, {parsed, message});
-          this.setState({ messages: new Map(messages) });
-          this.peerManager.broadcast(message);
-        }
-        break;
-      case Message.type.REBROADCAST:
-        this.rebroadcast();
-        break;
-      default:
-        console.log(`unrecognized message type ${parsed.type}`);
-    }
-  };
-
-  rebroadcast = () => {
-    console.log('rebroadcasting');
-    const { messages } = this.state;
-    for (const item of messages.values()) {
-      const { message } = item;
-      this.peerManager.broadcast(message);
-    }
+    this.messageManager.messageReceived(message);
   };
 
   handleClickPage = (pageId) => {
     this.setState({ route: pageId });
-  };
-
-  postMessage = (text) => {
-    const { sender } = this.state;
-    this.messageReceived(JSON.stringify(Message.createText(sender, text)));
-  };
-
-  postComment = (messageId, text) => {
-    const { sender } = this.state;
-    this.messageReceived(JSON.stringify(Message.createComment(sender, messageId, text)));
   };
 
   navigate = (route, routeParams) => {
@@ -127,7 +94,7 @@ export default class App extends React.Component {
       case ROUTES.feed:
         return <Feed messages={feedMessages} navigate={this.navigate}/>;
       case ROUTES.compose:
-        return <Compose postMessage={this.postMessage}/>;
+        return <Compose postMessage={this.messageManager.postMessage}/>;
       case ROUTES.focus:
         const focusMessage = feedMessages.filter(message =>
           message.messageId === routeParams.messageId)[0];
@@ -135,7 +102,7 @@ export default class App extends React.Component {
           <Focus
             message={focusMessage}
             navigate={this.navigate}
-            postComment={this.postComment}
+            postComment={this.messageManager.postComment}
           />
         );
       default:
