@@ -73,14 +73,12 @@ export const toList = (iter) => {
 };
 
 export const ROUTES = {
-  login: "1",
   feed: "3",
   compose: "4",
   focus: "5"
 };
 
 export const ROUTE_NAME = {
-  "1": 'Login',
   "3": 'Feed',
   "4": 'Compose',
 };

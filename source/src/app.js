@@ -1,12 +1,10 @@
 import React from 'react';
 
-import Login from './login';
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Compose from './Compose';
 import Focus from './Focus';
 import { ROUTES, ROUTE_NAME } from './util';
-import { createSender } from './message';
 import PeerManager from './PeerManager';
 import MessageManager from './MessageManager';
 
@@ -20,14 +18,13 @@ const TEST_MESSAGES = new Map([
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    const sender = createSender('Adam');
     this.state = {
-      sender: sender,
       numPeers: 0,
       messages: new Map(),
       route: ROUTES.test,
       routeParams: null,
     };
+    const { sender } = props;
     this.peerManager = new PeerManager({
       sender,
       onMessage: this.messageReceived,
@@ -69,8 +66,6 @@ export default class App extends React.Component {
     const { route, routeParams } = this.state;
     const feedMessages = this.messageManager.getFeedMessages();
     switch (route) {
-      case ROUTES.login:
-        return <Login/>;
       case ROUTES.feed:
         return <Feed messages={feedMessages} navigate={this.navigate}/>;
       case ROUTES.compose:

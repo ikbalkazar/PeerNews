@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './app.js';
+import Boot from './Boot.js';
 
 window.onload = () => {
-    ReactDOM.render(<App />, document.getElementById('app'));
+  ReactDOM.render(<Boot/>, document.getElementById('app'));
 };
