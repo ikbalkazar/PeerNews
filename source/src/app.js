@@ -7,8 +7,9 @@ import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Compose from './Compose';
 import Focus from './Focus';
-import { generateId, verifyProofOfWork, ROUTES, ROUTE_NAME, toList } from './util';
+import { verifyProofOfWork, ROUTES, ROUTE_NAME, toList, verifySignatureAndDecode } from './util';
 import * as Message from './message';
+import { createSender } from './message';
 
 const TEST_MESSAGES = new Map([
   ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
@@ -19,9 +20,9 @@ const TEST_MESSAGES = new Map([
 
 export default class App extends React.Component {
   state = {
-    id: null,
+    sender: null,
     peers: [],
-    messages: TEST_MESSAGES,
+    messages: new Map(),
     wsConnected: false,
     initiatorSignal: null,
     root: null,
@@ -30,8 +31,8 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    const id = generateId(100000);
-    this.setState({ id });
+    const sender = createSender();
+    this.setState({ sender });
     const ws = new WebSocket('ws://localhost:4059');
     this.createPeer(ws);
 
@@ -39,7 +40,7 @@ export default class App extends React.Component {
       const { initiatorSignal } = this.state;
       this.setState({ wsConnected: true });
       console.log('Connected to connector.');
-      ws.send(id);
+      ws.send(sender.id);
 
       if (initiatorSignal !== null) {
         ws.send(
@@ -132,13 +133,13 @@ export default class App extends React.Component {
   };
 
   addPeer = peer => {
-    const { id, peers } = this.state;
+    const { sender, peers } = this.state;
     this.setState({
       peers: [...peers, peer]
     });
     // Ask for old messages from the first connected peer
     if (peers.length === 1) {
-      this.broadcast(Message.createRebroadcast(id));
+      //this.broadcast(JSON.stringify(Message.createRebroadcast(sender)));
     }
   };
 
@@ -151,7 +152,12 @@ export default class App extends React.Component {
 
   messageReceived = message => {
     const { messages } = this.state;
-    const parsed = JSON.parse(message);
+    console.log(`Got ${message}`);
+    const parsed = verifySignatureAndDecode(JSON.parse(message));
+    if (!parsed) {
+      console.log(`Could not verify signature, ignoring: ${message}`);
+      return;
+    }
     if (!verifyProofOfWork(parsed)) {
       console.log(`Could not verify proof of work, ignoring: ${message}`);
       return;
@@ -161,9 +167,9 @@ export default class App extends React.Component {
       case Message.type.TEXT:
       case Message.type.COMMENT:
         if (!messages.has(parsed.messageId)) {
-          messages.set(parsed.messageId, parsed);
+          messages.set(parsed.messageId, {parsed, message});
           this.setState({ messages: new Map(messages) });
-          this.broadcast(parsed);
+          this.broadcast(message);
         }
         break;
       case Message.type.REBROADCAST:
@@ -177,16 +183,17 @@ export default class App extends React.Component {
   rebroadcast = () => {
     console.log('rebroadcasting');
     const { messages } = this.state;
-    for (const message of messages.values()) {
+    for (const item of messages.values()) {
+      const { message } = item;
       this.broadcast(message);
     }
   };
 
   broadcast = message => {
-    console.log(`broadcasting ${message.text} ${message.messageId} type:${message.type}`);
+    console.log(`broadcasting ${message}`);
     const { peers } = this.state;
     for (let i = 0; i < peers.length; i += 1) {
-      peers[i].send(JSON.stringify(message));
+      peers[i].send(message);
     }
   };
 
@@ -195,13 +202,13 @@ export default class App extends React.Component {
   };
 
   postMessage = (text) => {
-    const { id } = this.state;
-    this.messageReceived(JSON.stringify(Message.createText(id, text)));
+    const { sender } = this.state;
+    this.messageReceived(JSON.stringify(Message.createText(sender, text)));
   };
 
   postComment = (messageId, text) => {
-    const { id } = this.state;
-    this.messageReceived(JSON.stringify(Message.createComment(id, messageId, text)));
+    const { sender } = this.state;
+    this.messageReceived(JSON.stringify(Message.createComment(sender, messageId, text)));
   };
 
   navigate = (route, routeParams) => {
@@ -209,8 +216,12 @@ export default class App extends React.Component {
   };
 
   getFeedMessages = (messages) => {
-    const feedMessages = toList(messages.values()).filter(message => message.type === Message.type.TEXT);
-    const comments = toList(messages.values()).filter(message => message.type === Message.type.COMMENT);
+    const feedMessages = toList(messages.values())
+      .map(({parsed}) => parsed)
+      .filter(message => message.type === Message.type.TEXT);
+    const comments = toList(messages.values())
+      .map(({parsed}) => parsed)
+      .filter(message => message.type === Message.type.COMMENT);
     const messageComments = new Map();
     for (const comment of comments) {
       const current = messageComments.get(comment.reMessageId) || [];

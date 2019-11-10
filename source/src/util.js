@@ -1,5 +1,12 @@
 import sha256 from 'crypto-js/sha256';
 import Hex from 'crypto-js/enc-hex';
+import { sign } from 'tweetnacl';
+import {
+  encodeUTF8,
+  decodeUTF8,
+  encodeBase64,
+  decodeBase64
+} from 'tweetnacl-util';
 
 export const generateId = upperBound =>
   `${Math.floor(Math.random() * upperBound)}`;
@@ -34,6 +41,27 @@ export const attachProofOfWork = (message) => {
       return candidate;
     }
   }
+};
+
+const objectToBytes = x => decodeUTF8(JSON.stringify(x));
+const bytesToObject = x => JSON.parse(encodeUTF8(x));
+
+export const attachSignature = (message, publicKey, privateKey) => {
+  const signedMessage = encodeBase64(sign(objectToBytes(message), privateKey));
+  return {
+    senderPublicKey: encodeBase64(publicKey),
+    signedMessage,
+  };
+};
+
+export const verifySignatureAndDecode = (message) => {
+  console.log(`${JSON.stringify(message)}`);
+  const { senderPublicKey, signedMessage } = message;
+  const originalMessage = sign.open(decodeBase64(signedMessage), decodeBase64(senderPublicKey));
+  if (!originalMessage) {
+    return null;
+  }
+  return bytesToObject(originalMessage);
 };
 
 export const toList = (iter) => {
