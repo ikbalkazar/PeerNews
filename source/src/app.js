@@ -5,8 +5,7 @@ import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Compose from './Compose';
 import Focus from './Focus';
-import { verifyProofOfWork, ROUTES, ROUTE_NAME, toList, verifySignatureAndDecode } from './util';
-import * as Message from './message';
+import { ROUTES, ROUTE_NAME } from './util';
 import { createSender } from './message';
 import PeerManager from './PeerManager';
 import MessageManager from './MessageManager';
@@ -19,17 +18,16 @@ const TEST_MESSAGES = new Map([
 ]);
 
 export default class App extends React.Component {
-  state = {
-    sender: null,
-    numPeers: 0,
-    messages: new Map(),
-    route: ROUTES.test,
-    routeParams: null,
-  };
-
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     const sender = createSender('Adam');
-    this.setState({ sender });
+    this.state = {
+      sender: sender,
+      numPeers: 0,
+      messages: new Map(),
+      route: ROUTES.test,
+      routeParams: null,
+    };
     this.peerManager = new PeerManager({
       sender,
       onMessage: this.messageReceived,
@@ -67,27 +65,9 @@ export default class App extends React.Component {
     this.setState({ route, routeParams });
   };
 
-  getFeedMessages = (messages) => {
-    const feedMessages = toList(messages.values())
-      .map(({parsed}) => parsed)
-      .filter(message => message.type === Message.type.TEXT);
-    const comments = toList(messages.values())
-      .map(({parsed}) => parsed)
-      .filter(message => message.type === Message.type.COMMENT);
-    const messageComments = new Map();
-    for (const comment of comments) {
-      const current = messageComments.get(comment.reMessageId) || [];
-      messageComments.set(comment.reMessageId, [...current, comment]);
-    }
-    return feedMessages.map(message => ({
-      ...message,
-      comments: messageComments.get(message.messageId) || [],
-    }));
-  };
-
   renderPage = () => {
-    const { route, routeParams, messages } = this.state;
-    const feedMessages = this.getFeedMessages(messages);
+    const { route, routeParams } = this.state;
+    const feedMessages = this.messageManager.getFeedMessages();
     switch (route) {
       case ROUTES.login:
         return <Login/>;

@@ -1,4 +1,4 @@
-import { verifyProofOfWork, verifySignatureAndDecode } from './util';
+import { verifyProofOfWork, verifySignatureAndDecode, toList } from './util';
 import * as Message from './message';
 
 const log = (message) => {
@@ -57,4 +57,24 @@ export default class MessageManager {
       this.peerManager.broadcast(message);
     }
   };
+
+  getFeedMessages = () => {
+    const messages = this.messages;
+    const feedMessages = toList(messages.values())
+      .map(({parsed}) => parsed)
+      .filter(message => message.type === Message.type.TEXT);
+    const comments = toList(messages.values())
+      .map(({parsed}) => parsed)
+      .filter(message => message.type === Message.type.COMMENT);
+    const messageComments = new Map();
+    for (const comment of comments) {
+      const current = messageComments.get(comment.reMessageId) || [];
+      messageComments.set(comment.reMessageId, [...current, comment]);
+    }
+    return feedMessages.map(message => ({
+      ...message,
+      comments: messageComments.get(message.messageId) || [],
+    }));
+  };
+
 }
