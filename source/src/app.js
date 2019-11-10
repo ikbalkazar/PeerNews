@@ -1,6 +1,4 @@
 import React from 'react';
-import Peer from 'simple-peer';
-import WebSocket from 'ws';
 
 import Login from './login';
 import NavigationBar from './NavigationBar';
@@ -10,6 +8,7 @@ import Focus from './Focus';
 import { verifyProofOfWork, ROUTES, ROUTE_NAME, toList, verifySignatureAndDecode } from './util';
 import * as Message from './message';
 import { createSender } from './message';
+import PeerManager from './PeerManager';
 
 const TEST_MESSAGES = new Map([
   ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
@@ -21,11 +20,8 @@ const TEST_MESSAGES = new Map([
 export default class App extends React.Component {
   state = {
     sender: null,
-    peers: [],
+    numPeers: 0,
     messages: new Map(),
-    wsConnected: false,
-    initiatorSignal: null,
-    root: null,
     route: ROUTES.test,
     routeParams: null,
   };
@@ -33,122 +29,19 @@ export default class App extends React.Component {
   componentDidMount() {
     const sender = createSender('Adam');
     this.setState({ sender });
-    const ws = new WebSocket('ws://localhost:4059');
-    this.createPeer(ws);
-
-    ws.on('open', () => {
-      const { initiatorSignal } = this.state;
-      this.setState({ wsConnected: true });
-      console.log('Connected to connector.');
-      ws.send(sender.id);
-
-      if (initiatorSignal !== null) {
-        ws.send(
-          JSON.stringify({
-            type: 'request',
-            signal: initiatorSignal
-          })
-        );
-        this.setState({
-          initiatorSignal: null
-        });
-      }
-    });
-
-    ws.on('message', data => {
-      console.log(data);
-      const message = JSON.parse(data);
-      if (message.type === 'request') {
-        const p2 = new Peer({ trickle: false });
-        p2.signal(message.signal);
-        p2.on('signal', signal => {
-          ws.send(
-            JSON.stringify({
-              type: 'response',
-              signal: JSON.stringify(signal),
-              destination: message.destination
-            })
-          );
-        });
-        p2.on('connect', () => {
-          this.addPeer(p2);
-          console.log(`CONNECT passive`);
-        });
-        p2.on('data', receivedData => {
-          this.messageReceived(receivedData);
-        });
-        p2.on('error', err => {
-          console.log(err);
-          this.removePeer(p2);
-        });
-      } else if (message.type === 'response') {
-        const { root } = this.state;
-        console.log(`Response ${root}`);
-        root.signal(message.signal);
-      }
+    this.peerManager = new PeerManager({
+      sender,
+      onMessage: this.messageReceived,
+      onPeerConnected: (_) => {
+        const { numPeers } = this.state;
+        this.setState({ numPeers: numPeers + 1 });
+      },
+      onPeerDisconnected: (_) => {
+        const { numPeers } = this.state;
+        this.setState({ numPeers: numPeers - 1 });
+      },
     });
   }
-
-  createPeer = ws => {
-    const p = new Peer({ initiator: true, trickle: false });
-    this.setState({ root: p });
-
-    p.on('error', err => {
-      const { wsConnected } = this.state;
-      console.log(err);
-      if (wsConnected) {
-        p.destroy();
-        this.removePeer(p);
-        console.log('Reconnecting...');
-        this.createPeer(ws);
-      }
-    });
-
-    p.on('signal', data => {
-      const { wsConnected } = this.state;
-      console.log(`signal ${JSON.stringify(data)}`);
-      const initiatorSignal = JSON.stringify(data);
-      this.setState({ initiatorSignal });
-      if (wsConnected && initiatorSignal) {
-        ws.send(
-          JSON.stringify({
-            type: 'request',
-            signal: initiatorSignal
-          })
-        );
-        this.setState({
-          initiatorSignal: null
-        });
-      }
-    });
-
-    p.on('connect', () => {
-      this.addPeer(p);
-      console.log(`CONNECT initiator`);
-    });
-
-    p.on('data', data => {
-      this.messageReceived(data);
-    });
-  };
-
-  addPeer = peer => {
-    const { sender, peers } = this.state;
-    this.setState({
-      peers: [...peers, peer]
-    });
-    // Ask for old messages from the first connected peer
-    if (peers.length === 1) {
-      this.broadcast(JSON.stringify(Message.createRebroadcast(sender)));
-    }
-  };
-
-  removePeer = peer => {
-    const { peers } = this.state;
-    this.setState({
-      peers: peers.filter(p => p !== peer)
-    });
-  };
 
   messageReceived = message => {
     const { messages } = this.state;
@@ -169,7 +62,7 @@ export default class App extends React.Component {
         if (!messages.has(parsed.messageId)) {
           messages.set(parsed.messageId, {parsed, message});
           this.setState({ messages: new Map(messages) });
-          this.broadcast(message);
+          this.peerManager.broadcast(message);
         }
         break;
       case Message.type.REBROADCAST:
@@ -185,15 +78,7 @@ export default class App extends React.Component {
     const { messages } = this.state;
     for (const item of messages.values()) {
       const { message } = item;
-      this.broadcast(message);
-    }
-  };
-
-  broadcast = message => {
-    console.log(`broadcasting ${message}`);
-    const { peers } = this.state;
-    for (let i = 0; i < peers.length; i += 1) {
-      peers[i].send(message);
+      this.peerManager.broadcast(message);
     }
   };
 
@@ -259,13 +144,13 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { peers } = this.state;
+    const { numPeers } = this.state;
     const page = this.renderPage();
     const pageIds = Object.keys(ROUTE_NAME);
     const pages = pageIds.map(id => ({id, name: ROUTE_NAME[id]}));
     return (
       <div>
-        {`Peers #: ${peers.length}`}
+        {`Peers #: ${numPeers}`}
         <NavigationBar
           pages={pages}
           onClickPage={this.handleClickPage}
