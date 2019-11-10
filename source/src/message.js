@@ -8,7 +8,7 @@ export const type = {
   COMMENT: "comment",
 };
 
-export const createSender = () => {
+export const createSender = (name) => {
   const { publicKey, secretKey } = sign.keyPair();
   console.log(publicKey);
   console.log(secretKey);
@@ -17,17 +17,19 @@ export const createSender = () => {
     keyPair: {
       privateKey: secretKey,
       publicKey,
-    }
+    },
+    name,
   };
 };
 
 const MESSAGE_ID_RANGE = 10000000;
 
-const create = (senderId) => {
+const create = (sender) => {
   const messageId = generateId(MESSAGE_ID_RANGE);
   const timestamp = Date.now();
   return {
-    senderId,
+    senderId: sender.id,
+    senderName: sender.name,
     messageId,
     timestamp
   };
@@ -39,7 +41,7 @@ const readyEnvelope = (message, keyPair) => {
 };
 
 export const createText = (sender, text) => {
-  const message = create(sender.id);
+  const message = create(sender);
   return readyEnvelope({
       ...message,
       type: type.TEXT,
@@ -50,7 +52,7 @@ export const createText = (sender, text) => {
 };
 
 export const createRebroadcast = (sender) => {
-  const message = create(sender.id);
+  const message = create(sender);
   return readyEnvelope({
       ...message,
       type: type.REBROADCAST,
@@ -60,8 +62,8 @@ export const createRebroadcast = (sender) => {
 };
 
 export const createComment = (sender, reMessageId, text) => {
-  const message = create(sender.id);
-  return attachProofOfWork({
+  const message = create(sender);
+  return readyEnvelope({
       ...message,
       type: type.COMMENT,
       reMessageId,

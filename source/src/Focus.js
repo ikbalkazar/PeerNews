@@ -55,15 +55,20 @@ export default class Focus extends React.Component {
     postComment(message.messageId, comment);
   };
 
-  renderCard = (contents) => {
+  renderCard = (message) => {
     return (
-      <Card style={{ width: '18rem', margin: '0 auto' }} key={contents.messageId}>
+      <Card
+        style={{ width: '18rem', margin: '0 auto', cursor: 'pointer' }}
+        key={message.messageId}
+        onClick={() => this.handleClick(message)}
+      >
         <Card.Body>
           {/*<Card.Title>{message.from}</Card.Title>*/}
-          <Card.Subtitle className="mb-2 text-muted">{contents.senderId}</Card.Subtitle>
+          <Card.Subtitle className="mb-2 text-muted">{message.senderName}</Card.Subtitle>
           <Card.Text>
-            {contents.text}
+            {message.text}
           </Card.Text>
+          <Card.Subtitle style={{fontSize: 8}}>by {message.senderId}</Card.Subtitle>
         </Card.Body>
       </Card>
     );

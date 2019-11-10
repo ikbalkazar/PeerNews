@@ -31,7 +31,7 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    const sender = createSender();
+    const sender = createSender('Adam');
     this.setState({ sender });
     const ws = new WebSocket('ws://localhost:4059');
     this.createPeer(ws);
@@ -139,7 +139,7 @@ export default class App extends React.Component {
     });
     // Ask for old messages from the first connected peer
     if (peers.length === 1) {
-      //this.broadcast(JSON.stringify(Message.createRebroadcast(sender)));
+      this.broadcast(JSON.stringify(Message.createRebroadcast(sender)));
     }
   };
 

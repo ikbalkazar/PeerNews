@@ -22,10 +22,11 @@ export default class Feed extends React.Component {
           >
             <Card.Body>
               {/*<Card.Title>{message.from}</Card.Title>*/}
-              <Card.Subtitle className="mb-2 text-muted">{message.senderId}</Card.Subtitle>
+              <Card.Subtitle className="mb-2 text-muted">{message.senderName}</Card.Subtitle>
               <Card.Text>
                 {message.text}
               </Card.Text>
+              <Card.Subtitle style={{fontSize: 8}}>by {message.senderId}</Card.Subtitle>
             </Card.Body>
           </Card>
         )}
