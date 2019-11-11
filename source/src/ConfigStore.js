@@ -1,29 +1,20 @@
-import electron from 'electron';
-import path from 'path';
-import fs from 'fs';
+import { readFile, writeFile } from './fsutils';
 
-const log = (message) => {
-  console.log(`[FileStore] ${message}`);
-};
-
-const parseDataFile = (filePath, defaults) => {
-  try {
-    return JSON.parse(fs.readFileSync(filePath));
-  } catch(error) {
-    log(error);
-    return defaults;
-  }
-};
+const FILENAME = 'config.json';
 
 export default class ConfigStore {
   constructor() {
-    const userDataPath = (electron.app || electron.remote.app).getPath('userData');
-    this.path = path.join(userDataPath, 'config.json');
-    this.data = parseDataFile(this.path, {
+    this.data = {
       sender: null,
       name: null,
-    });
+    };
+    this.loadFile();
   }
+
+  loadFile = async () => {
+    const data = await readFile(FILENAME);
+    this.data = JSON.parse(data);
+  };
 
   get = (key) => {
     return this.data[key];
@@ -31,6 +22,6 @@ export default class ConfigStore {
 
   set = (key, val) => {
     this.data[key] = val;
-    fs.writeFileSync(this.path, JSON.stringify(this.data));
+    writeFile(FILENAME, JSON.stringify(this.data));
   }
 }

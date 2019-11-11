@@ -1,9 +1,10 @@
-import { verifyProofOfWork, verifySignatureAndDecode, toList } from './util';
+import { verifyProofOfWork, verifySignatureAndDecode, toList, createLogger } from './util';
 import * as Message from './message';
+import MessageStore from './MessageStore';
 
-const log = (message) => {
-  console.log(`[MessageManager] ${message}`);
-};
+const log = createLogger('MessageManager');
+
+const DISK_WRITE_INTERVAL = 5000;
 
 export default class MessageManager {
   constructor({sender, peerManager, onChange}) {
@@ -11,9 +12,25 @@ export default class MessageManager {
     this.peerManager = peerManager;
     this.messages = new Map();
     this.onChange = onChange;
+    this.messageStore = new MessageStore(sender);
+    this.loadMessagesOnDisk();
+    this.scheduleDiskWrite();
   }
 
-  messageReceived = (message) => {
+  loadMessagesOnDisk = async () => {
+    const messagesOnDisk = await this.messageStore.read();
+    for (const message of messagesOnDisk) {
+      this.messageReceived(message, false);
+    }
+  };
+
+  scheduleDiskWrite = () => {
+    setInterval(() => {
+      this.messageStore.write(this.getRawMessages());
+    }, DISK_WRITE_INTERVAL);
+  };
+
+  messageReceived = (message, doBroadcast = true) => {
     log(`Got ${message}`);
     const parsed = verifySignatureAndDecode(JSON.parse(message));
     if (!parsed) {
@@ -31,7 +48,9 @@ export default class MessageManager {
         if (!this.messages.has(parsed.messageId)) {
           this.messages.set(parsed.messageId, {parsed, message});
           this.onChange(this.messages);
-          this.peerManager.broadcast(message);
+          if (doBroadcast) {
+            this.peerManager.broadcast(message);
+          }
         }
         break;
       case Message.type.REBROADCAST:
@@ -56,6 +75,10 @@ export default class MessageManager {
       const { message } = item;
       this.peerManager.broadcast(message);
     }
+  };
+
+  getRawMessages = () => {
+    return toList(this.messages.values()).map(({message}) => message);
   };
 
   getFeedMessages = () => {

@@ -1,6 +1,7 @@
 import Peer from 'simple-peer';
 import WebSocket from 'ws';
 import * as Message from './message';
+import { encodeUTF8, decodeUTF8 } from 'tweetnacl-util';
 
 const log = (message) => {
   console.log(`[PeerManager] ${message}`);
@@ -60,7 +61,7 @@ export default class PeerManager {
           log(`CONNECT passive`);
         });
         p2.on('data', receivedData => {
-          this.onMessage(receivedData);
+          this.onMessage(encodeUTF8(receivedData));
         });
         p2.on('error', err => {
           log(err);
@@ -107,7 +108,7 @@ export default class PeerManager {
     });
 
     p.on('data', data => {
-      this.onMessage(data);
+      this.onMessage(encodeUTF8(data));
     });
   };
 
@@ -128,7 +129,7 @@ export default class PeerManager {
   broadcast = message => {
     log(`broadcasting ${message}`);
     for (let i = 0; i < this.peers.length; i += 1) {
-      this.peers[i].send(message);
+      this.peers[i].send(decodeUTF8(message));
     }
   };
 }

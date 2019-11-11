@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {
   encodeBase64,
-  decodeBase64
 } from 'tweetnacl-util';
 
 

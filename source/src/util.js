@@ -82,3 +82,5 @@ export const ROUTE_NAME = {
   "3": 'Feed',
   "4": 'Compose',
 };
+
+export const createLogger = (prefix) => (message) => console.log(`[${prefix}] ${message}`);
