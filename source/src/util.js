@@ -76,7 +76,7 @@ export const ROUTES = {
   feed: "3",
   compose: "4",
   focus: "5",
-  PostMessage: "6"
+  postMessage: "6"
 };
 
 export const ROUTE_NAME = {

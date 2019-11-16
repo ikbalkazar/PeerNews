@@ -81,7 +81,7 @@ export default class App extends React.Component {
             postComment={this.messageManager.postComment}
           />
         );
-      case ROUTES.postmessage:
+      case ROUTES.postMessage:
         return <PostMessage/>;
       default:
         return null;
