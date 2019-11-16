@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import MessageCard from './MessageCard';
 import { ROUTES } from './util';
 
 class ComposeComment extends React.Component {
@@ -75,7 +76,7 @@ export default class Focus extends React.Component {
   };
 
   render () {
-    const { message } = this.props;
+    const { message, upvote, downvote } = this.props;
     return (
       <Container fluid>
         <Row>
@@ -84,7 +85,15 @@ export default class Focus extends React.Component {
           </Button>
         </Row>
         <Row><Col>
-        {this.renderCard(message)}
+        <MessageCard message={message}/>
+        <Row><Col>
+          <Button variant="primary" onClick={() => upvote(message.messageId)}>
+            {'Upvote'}
+          </Button>
+          <Button variant="primary" onClick={() => downvote(message.messageId)}>
+            {'Downvote'}
+          </Button>
+        </Col></Row>
         </Col></Row>
         <Row><Col>
           <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>

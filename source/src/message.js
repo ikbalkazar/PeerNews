@@ -6,6 +6,7 @@ export const type = {
   TEXT: "text",
   REBROADCAST: "rebroadcast",
   COMMENT: "comment",
+  VOTE: "vote",
 };
 
 export const createSender = (name) => {
@@ -40,11 +41,12 @@ const readyEnvelope = (message, keyPair) => {
   return attachSignature(attachProofOfWork(message), publicKey, privateKey);
 };
 
-export const createText = (sender, text, topics) => {
+export const createText = (sender, title, text, topics) => {
   const message = create(sender);
   return readyEnvelope({
       ...message,
       type: type.TEXT,
+      title,
       text,
       topics,
     },
@@ -71,5 +73,17 @@ export const createComment = (sender, reMessageId, text) => {
       text,
     },
     sender.keyPair,
+  );
+};
+
+export const createVote = (sender, reMessageId, delta) => {
+  const message = create(sender);
+  return readyEnvelope({
+      ...message,
+      type: type.VOTE,
+      reMessageId,
+      delta,
+    },
+    sender.keyPair
   );
 };

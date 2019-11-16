@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from 'react-bootstrap/Card';
 import { ROUTES } from './util';
+import MessageCard from './MessageCard';
 
 export default class Feed extends React.Component {
 
@@ -15,23 +15,11 @@ export default class Feed extends React.Component {
     return (
       <div>
         {messages.map(message =>
-          <Card
-            style={{ width: '18rem', margin: '0 auto', cursor: 'pointer' }}
+          <MessageCard
             key={message.messageId}
+            message={message}
             onClick={() => this.handleClick(message)}
-          >
-            <Card.Body>
-              {/*<Card.Title>{message.from}</Card.Title>*/}
-              <Card.Subtitle className="mb-2 text-muted">{message.senderName}</Card.Subtitle>
-              <Card.Text>
-                {message.text}
-              </Card.Text>
-              <Card.Text>
-                {`Topics: ${JSON.stringify(message.topics)}`}
-              </Card.Text>
-              <Card.Subtitle style={{fontSize: 8}}>by {message.senderId}</Card.Subtitle>
-            </Card.Body>
-          </Card>
+          />
         )}
       </div>
     );

@@ -79,6 +79,8 @@ export default class App extends React.Component {
             message={focusMessage}
             navigate={this.navigate}
             postComment={this.messageManager.postComment}
+            upvote={this.messageManager.upvote}
+            downvote={this.messageManager.downvote}
           />
         );
       case ROUTES.postMessage:

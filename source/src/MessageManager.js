@@ -45,6 +45,7 @@ export default class MessageManager {
     switch (parsed.type) {
       case Message.type.TEXT:
       case Message.type.COMMENT:
+      case Message.type.VOTE:
         if (!this.messages.has(parsed.messageId)) {
           this.messages.set(parsed.messageId, {parsed, message});
           this.onChange(this.messages);
@@ -61,12 +62,20 @@ export default class MessageManager {
     }
   };
 
-  postMessage = (text, topics) => {
-    this.messageReceived(JSON.stringify(Message.createText(this.sender, text, topics)));
+  postMessage = (title, text, topics) => {
+    this.messageReceived(JSON.stringify(Message.createText(this.sender, title, text, topics)));
   };
 
   postComment = (messageId, text) => {
     this.messageReceived(JSON.stringify(Message.createComment(this.sender, messageId, text)));
+  };
+
+  upvote = (messageId) => {
+    this.messageReceived(JSON.stringify(Message.createVote(this.sender, messageId, 1)));
+  };
+
+  downvote = (messageId) => {
+    this.messageReceived(JSON.stringify(Message.createVote(this.sender, messageId, -1)));
   };
 
   rebroadcast = () => {
@@ -83,20 +92,22 @@ export default class MessageManager {
 
   getFeedMessages = () => {
     const messages = this.messages;
-    const feedMessages = toList(messages.values())
-      .map(({parsed}) => parsed)
-      .filter(message => message.type === Message.type.TEXT);
-    const comments = toList(messages.values())
-      .map(({parsed}) => parsed)
-      .filter(message => message.type === Message.type.COMMENT);
-    const messageComments = new Map();
-    for (const comment of comments) {
-      const current = messageComments.get(comment.reMessageId) || [];
-      messageComments.set(comment.reMessageId, [...current, comment]);
-    }
+    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const groupByReMessageId = (subMessages) => {
+      const result = new Map();
+      for (const subMessage of subMessages) {
+        const current = result.get(subMessage.reMessageId) || [];
+        result.set(subMessage.reMessageId, [...current, subMessage]);
+      }
+      return result;
+    };
+    const feedMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+    const comments = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.COMMENT));
+    const votes = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.VOTE));
     return feedMessages.map(message => ({
       ...message,
-      comments: messageComments.get(message.messageId) || [],
+      comments: comments.get(message.messageId) || [],
+      votes: votes.get(message.messageId) || [],
     }));
   };
 
