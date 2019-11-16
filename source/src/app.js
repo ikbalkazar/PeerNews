@@ -7,6 +7,7 @@ import Focus from './Focus';
 import { ROUTES, ROUTE_NAME } from './util';
 import PeerManager from './PeerManager';
 import MessageManager from './MessageManager';
+import PostMessage from './PostMessage';
 
 const TEST_MESSAGES = new Map([
   ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
@@ -80,6 +81,8 @@ export default class App extends React.Component {
             postComment={this.messageManager.postComment}
           />
         );
+      case ROUTES.postmessage:
+        return <PostMessage/>;
       default:
         return null;
     }
