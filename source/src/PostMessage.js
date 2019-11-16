@@ -78,73 +78,72 @@ const styles = {
 
 
 export default class PostMessage extends React.Component {
-
 	constructor(props) {
     	super(props);
-    
-    	this.state = { text:"", title:"", image:"", video:"", selectedOptions: [] };
+    	this.state = { text:"", title:"", image:"", video:"", selectedOptions: [], loading: false };
 	}
 
 	handleText = event => {
-    	event.preventDefault();
-    	this.setState({ text: event.target.value });
-  	};
+		event.preventDefault();
+		this.setState({ text: event.target.value });
+	};
 
 	handleVideo = event => {
-    	event.preventDefault();
-    	this.setState({ video: event.target.value });
-  	};
+		event.preventDefault();
+		this.setState({ video: event.target.value });
+	};
 
-  	handleImage = event => {
-    	event.preventDefault();
-    	this.setState({ image: event.target.value });
-  	};
+	handleImage = event => {
+		event.preventDefault();
+		this.setState({ image: event.target.value });
+	};
 
-  	handleTitle = event =>{
-  		event.preventDefault();
-  		this.setState({ title: event.target.value });
-  	};
+	handleTitle = event =>{
+		event.preventDefault();
+		this.setState({ title: event.target.value });
+	};
 
-	onSubmit = (event) => {
-    	event.preventDefault();
-    	const { text, video, image, title, selectedOptions } = this.state;
-    	const { postMessage } = this.props;
-    	const topics = selectedOptions.map( x => x.label );
-    	if (text.length > 0 && topics.length > 0 ) {
-      		postMessage(title, video, image, text, topics);
-      		this.setState({ message: '', title:'', image:'', video:'', selectedOptions: [] });
-    	}
-  	};
+	onSubmit = async (event) => {
+		event.preventDefault();
+		const { text, video, image, title, selectedOptions } = this.state;
+		const { postMessage } = this.props;
+		const topics = selectedOptions.map( x => x.label );
+		if (title.length > 0 && topics.length > 0) {
+				this.setState({ loading: true });
+				setTimeout(() => {
+          postMessage(title, video, image, text, topics);
+          this.setState({ text: '', title:'', image:'', video:'', selectedOptions: [], loading: false });
+        }, 0);
+		}
+	};
 
-  	onChange = (event) =>{
-  		console.log(JSON.stringify(event));
-  		this.setState( { selectedOptions: event }  );
-  	};
+	onChange = (event) =>{
+		console.log(JSON.stringify(event));
+		this.setState( { selectedOptions: event }  );
+	};
 
 
+	render () {
+		const {image, video, text, title, loading} = this.state;
 
-  	render () {
-    const {image, video, text, title} = this.state;
-
-    return (
-
-    	<div style={ styles.div } >
-        <Form>
- 			<div className="form-group">
-    			<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
-    			<input type="text" className="form-control" id="title" placeholder="Video Url Here.." style={styles.contentStyle} value={video} onChange={this.handleVideo} ></input>
-    			<input type="text" className="form-control" id="title" placeholder="Image Url Here.." style={styles.contentStyle} value={image} onChange={this.handleImage} ></input>
-  			</div>
-  			<div className="form-group">
-    			<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={text} onChange={this.handleText}>
-    			</textarea>
-  			</div>
-
-	        <Select value={this.state.selectedOptions} placeholder="Select topics from below" isMulti options={topics} style={styles.selectArea} onChange={this.onChange}></Select>
-
-  			<Button variant="success" size="lg" type="submit" style={styles.buttonStyle} onClick={this.onSubmit}>Submit</Button>
-		</Form>
-		</div>
-    );
+		return (
+			<div style={ styles.div } >
+				<Form>
+				<div className="form-group">
+					<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
+					<input type="text" className="form-control" id="title" placeholder="Video Url Here.." style={styles.contentStyle} value={video} onChange={this.handleVideo} ></input>
+					<input type="text" className="form-control" id="title" placeholder="Image Url Here.." style={styles.contentStyle} value={image} onChange={this.handleImage} ></input>
+				</div>
+				<div className="form-group">
+					<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={text} onChange={this.handleText}>
+					</textarea>
+				</div>
+				<Select value={this.state.selectedOptions} placeholder="Select topics from below" isMulti options={topics} style={styles.selectArea} onChange={this.onChange}></Select>
+				<Button variant="success" size="lg" type="submit" style={styles.buttonStyle} onClick={this.onSubmit} disabled={loading}>
+					{loading ? 'Submitting...' : 'Submit'}
+				</Button>
+			</Form>
+			</div>
+		);
   }
 }
