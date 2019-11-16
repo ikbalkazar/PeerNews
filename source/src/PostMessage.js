@@ -27,6 +27,11 @@ const styles = {
     	fontWeight: 'bold',
     	color: 'blue',
   	},
+
+  	contentStyle:{
+    	fontSize: 14,
+    	color: 'black',
+  	},
   		
   	textArea:{
   		width: '700px', 
@@ -77,12 +82,22 @@ export default class PostMessage extends React.Component {
 	constructor(props) {
     	super(props);
     
-    	this.state = { text:"", title:"", selectedOptions: [] };
+    	this.state = { text:"", title:"", image:"", video:"", selectedOptions: [] };
 	}
 
 	handleText = event => {
     	event.preventDefault();
     	this.setState({ text: event.target.value });
+  	};
+
+	handleVideo = event => {
+    	event.preventDefault();
+    	this.setState({ video: event.target.value });
+  	};
+
+  	handleImage = event => {
+    	event.preventDefault();
+    	this.setState({ image: event.target.value });
   	};
 
   	handleTitle = event =>{
@@ -96,8 +111,8 @@ export default class PostMessage extends React.Component {
     	const { postMessage } = this.props;
     	const topics = selectedOptions.map( x => x.label );
     	if (text.length > 0 && topics.length > 0 ) {
-      		postMessage(title, text, topics);
-      		this.setState({ message: '', title:'', selectedOptions: [] });
+      		postMessage(title, video, image, text, topics);
+      		this.setState({ message: '', title:'', image:'', video:'', selectedOptions: [] });
     	}
   	};
 
@@ -109,17 +124,19 @@ export default class PostMessage extends React.Component {
 
 
   	render () {
-    const {text, title} = this.state;
+    const {image, video, text, title} = this.state;
 
     return (
 
     	<div style={ styles.div } >
         <Form>
  			<div className="form-group">
-    			<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={text} onChange={this.handleText} ></input>
+    			<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
+    			<input type="text" className="form-control" id="title" placeholder="Video Url Here.." style={styles.contentStyle} value={video} onChange={this.handleVideo} ></input>
+    			<input type="text" className="form-control" id="title" placeholder="Image Url Here.." style={styles.contentStyle} value={image} onChange={this.handleImage} ></input>
   			</div>
   			<div className="form-group">
-    			<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={title} onChange={this.handleTitle}>
+    			<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={text} onChange={this.handleText}>
     			</textarea>
   			</div>
 

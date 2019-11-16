@@ -41,12 +41,14 @@ const readyEnvelope = (message, keyPair) => {
   return attachSignature(attachProofOfWork(message), publicKey, privateKey);
 };
 
-export const createText = (sender, title, text, topics) => {
+export const createPost = (sender, title, video, image, text, topics) => {
   const message = create(sender);
   return readyEnvelope({
       ...message,
       type: type.TEXT,
       title,
+      video,
+      image,
       text,
       topics,
     },
