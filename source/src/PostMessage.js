@@ -107,7 +107,7 @@ export default class PostMessage extends React.Component {
 
 	onSubmit = (event) => {
     	event.preventDefault();
-    	const { text } = this.state;
+    	const { text, selectedOptions } = this.state;
     	const { postMessage } = this.props;
     	const topics = selectedOptions.map( x => x.label );
     	if (text.length > 0 && topics.length > 0 ) {
