@@ -19,6 +19,7 @@ export default class Feed extends React.Component {
             key={message.messageId}
             message={message}
             onClick={() => this.handleClick(message)}
+            isPreview={true}
           />
         )}
       </div>

@@ -1,7 +1,14 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 
-export default ({message, onClick}) => {
+const shorten = (s) => {
+  if (s.length < 100) {
+    return s;
+  }
+  return s.substring(0, 100) + '...';
+};
+
+export default ({message, onClick, isPreview}) => {
   let aggregateVotes = 0;
   for (const vote of message.votes) {
     aggregateVotes += parseInt(vote.delta);
@@ -19,7 +26,7 @@ export default ({message, onClick}) => {
           {message.title}
         </Card.Text>
         <Card.Text>
-          {message.text}
+          {isPreview ? shorten(message.text) : message.text}
         </Card.Text>
         <Card.Text>
           {`Topics: ${JSON.stringify(message.topics)}`}
