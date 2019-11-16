@@ -77,21 +77,27 @@ export default class PostMessage extends React.Component {
 	constructor(props) {
     	super(props);
     
-    	this.state = { selectedOptions: [] };
+    	this.state = { text:"", title:"", selectedOptions: [] };
 	}
 
-	handleMessage = event => {
+	handleText = event => {
     	event.preventDefault();
-    	this.setState({ message: event.target.value });
+    	this.setState({ text: event.target.value });
+  	};
+
+  	handleTitle = event =>{
+  		event.preventDefault();
+  		this.setState({ title: event.target.value });
   	};
 
 	onSubmit = (event) => {
     	event.preventDefault();
-    	const { message } = this.state;
+    	const { text } = this.state;
     	const { postMessage } = this.props;
-    	if (message.length > 0) {
-      		postMessage(message);
-      		this.setState({ message: '' });
+    	const topics = selectedOptions.map( x => x.label );
+    	if (text.length > 0 && topics.length > 0 ) {
+      		postMessage(title, text, topics);
+      		this.setState({ message: '', title:'', selectedOptions: [] });
     	}
   	};
 
@@ -103,16 +109,17 @@ export default class PostMessage extends React.Component {
 
 
   	render () {
+    const {text, title} = this.state;
 
     return (
 
     	<div style={ styles.div } >
         <Form>
  			<div className="form-group">
-    			<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} ></input>
+    			<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={text} onChange={this.handleText} ></input>
   			</div>
   			<div className="form-group">
-    			<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea}>
+    			<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={title} onChange={this.handleTitle}>
     			</textarea>
   			</div>
 
