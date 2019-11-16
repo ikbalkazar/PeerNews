@@ -40,12 +40,13 @@ const readyEnvelope = (message, keyPair) => {
   return attachSignature(attachProofOfWork(message), publicKey, privateKey);
 };
 
-export const createText = (sender, text) => {
+export const createText = (sender, text, topics) => {
   const message = create(sender);
   return readyEnvelope({
       ...message,
       type: type.TEXT,
-      text
+      text,
+      topics,
     },
     sender.keyPair,
   );

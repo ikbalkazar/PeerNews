@@ -26,6 +26,9 @@ export default class Feed extends React.Component {
               <Card.Text>
                 {message.text}
               </Card.Text>
+              <Card.Text>
+                {`Topics: ${JSON.stringify(message.topics)}`}
+              </Card.Text>
               <Card.Subtitle style={{fontSize: 8}}>by {message.senderId}</Card.Subtitle>
             </Card.Body>
           </Card>

@@ -61,8 +61,8 @@ export default class MessageManager {
     }
   };
 
-  postMessage = (text) => {
-    this.messageReceived(JSON.stringify(Message.createText(this.sender, text)));
+  postMessage = (text, topics) => {
+    this.messageReceived(JSON.stringify(Message.createText(this.sender, text, topics)));
   };
 
   postComment = (messageId, text) => {
