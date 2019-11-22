@@ -2,6 +2,8 @@ import React from 'react';
 import { ROUTES } from './util';
 import MessageCard from './MessageCard';
 import Card from "react-bootstrap/Card";
+import Image from 'react-image-resizer';
+import Scroll from 'react-scroll';
 
 const styles = {
 
@@ -31,6 +33,11 @@ const styles = {
 
 export default class Feed extends React.Component {
 
+  constructor(props) {
+      super(props);
+      this.state = { height:"", width:""  };
+  }
+
   handleClick = (message) => {
     const { navigate } = this.props;
     navigate(ROUTES.focus, { messageId: message.messageId });
@@ -38,6 +45,7 @@ export default class Feed extends React.Component {
 
   render () {
     const { messages } = this.props;
+    const { height, width } = this.state;
     messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     return (
       <div style={styles.div} >
@@ -90,7 +98,8 @@ export default class Feed extends React.Component {
             style={styles.messageCard}
           >
             <Card.Header style={{textAlign:'center'}}>{message.title}</Card.Header>
-            <Card.Img variant="top" style={{ width:'40%' }} src="/home/enes/Desktop/naruto.jpg" />
+            <Card.Img onLoad={this.onImgLoad} variant="top" src="/home/enes/Desktop/itachi.jpg" />
+            <Card.Img onLoad={this.onImgLoad} variant="top" src="/home/enes/Desktop/image.jpg" />
             <Card.Body>
               <Card.Text>
                 { message.text.length < 100 ? message.text : message.text.substring(0,100)+'...' }
