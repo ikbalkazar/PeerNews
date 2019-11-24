@@ -56,68 +56,12 @@ export default class Feed extends React.Component {
     return (
       <div style={styles.div} >
         {messages.map(message =>
-          
-          message.video === '' && message.image === '' ?
-          <Card
+          <MessageCard
             key={message.messageId}
             message={message}
             onClick={() => this.handleClick(message)}
-            style={styles.messageCard}
-          >
-            <Card.Header style={{textAlign:'center'}}>{message.title}</Card.Header>
-            <Card.Body>
-              <Card.Text>
-                {message.text}
-              </Card.Text>
-              <blockquote className="blockquote mb-0">
-                <footer className="blockquote-footer">
-                  <cite title="Source Title">{message.senderName} @{message.senderId.substring(0,10)+'...'}</cite>
-                </footer>
-              </blockquote>
-            </Card.Body>
-          </Card>
-        
-          : message.video !== ''?
-
-          <Card
-            key={message.messageId}
-            message={message}
-            onClick={() => this.handleClick(message)}
-            style={styles.messageCard}
-          >
-            <Card.Header style={{textAlign:'center'}}>{message.title}</Card.Header>
-            <ReactPlayer url={message.video} playing={false} loop={true} volume={0} controls={true} playIcon width="477.59" />
-            <Card.Body>
-              <blockquote className="blockquote mb-0">
-                <footer className="blockquote-footer">
-                  <cite title="Source Title">{message.senderName} @{message.senderId.substring(0,10)+'...'}</cite>
-                </footer>
-              </blockquote>
-            </Card.Body>
-          </Card>
-
-          :  
-
-          <Card
-            key={message.messageId}
-            message={message}
-            onClick={() => this.handleClick(message)}
-            style={styles.messageCard}
-          >
-            <Card.Header style={{textAlign:'center'}}>{message.title}</Card.Header>
-            <Card.Img variant="top" src={message.image} />
-            <Card.Body>
-              <Card.Text>
-                { message.text.length < 100 ? message.text : message.text.substring(0,100)+'...' }
-              </Card.Text>
-              <blockquote className="blockquote mb-0">
-                <footer className="blockquote-footer">
-                  <cite title="Source Title">{message.senderName} @{message.senderId.substring(0,10)+'...'}</cite>
-                </footer>
-              </blockquote>
-            </Card.Body>
-          </Card>
-
+            isPreview={true}
+          />
         )}
 
       </div>

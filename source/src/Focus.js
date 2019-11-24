@@ -1,16 +1,70 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import MessageCard from './MessageCard';
 import { ROUTES } from './util';
+import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
+import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
+
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
+const styles = {
+
+  messageCard: {
+        width: '40%',
+        left: '30%',
+        height: 'auto',
+        cursor: 'pointer',
+  },
+
+  messageCardFocus: {
+        width: '60%',
+        left: '20%',
+        height: 'auto',
+        cursor: 'pointer',
+  },
+
+  goThumbsupFocus: {
+      marginLeft:"300px",
+      marginBot:"0px",
+  },
+
+  goThumbsdownFocus: {
+      marginLeft:"10px",
+      marginBot:"0px",
+  },
+
+  commentNumber: {
+      marginLeft:"10px",
+      marginBot:"0px",
+  }
+}
+
+const popover = (
+  <Popover id="popover-basic">
+    <Popover.Title as="h3">Poster's public id</Popover.Title>
+    <Popover.Content>
+    //TO DO
+    </Popover.Content>
+  </Popover>
+);
 
 class ComposeComment extends React.Component {
+
   state = {
     comment: '',
+    name: '',
+    open : false,
   };
 
   handleChange = event => {
@@ -20,6 +74,7 @@ class ComposeComment extends React.Component {
 
   onSubmit = (event) => {
     event.preventDefault();
+    this.setState({open:false});
     const { comment } = this.state;
     const { postComment } = this.props;
     if (comment.length > 0) {
@@ -28,18 +83,38 @@ class ComposeComment extends React.Component {
     }
   };
 
+  handleOpen = () => {
+    this.setState({open:true});
+  };
+
+  handleClose = () => {
+    event.preventDefault();
+    this.setState({open:false});
+  };
+
   render() {
-    const { comment } = this.state;
+    const { comment, open } = this.state;
     return (
-      <Form style={{padding: 20, maxWidth: 600}}>
-        <Form.Group>
-          <Form.Label>Comment</Form.Label>
-          <Form.Control type="text" placeholder="Enter comment" value={comment} onChange={this.handleChange} />
-        </Form.Group>
-        <Button variant="primary" type="submit" onClick={this.onSubmit}>
-          Submit
-        </Button>
-      </Form>
+      <div>
+      <Dialog open={open} onClose={this.handleClose} maxWidth="md" fullWidth="true" aria-labelledby="max-width-dialog-title">
+        <DialogContent>
+          <DialogContentText style={{textAlign:"center"}}>
+           <b>Add new comment to post:</b>
+          </DialogContentText>
+          <Form style={{padding: 20, width: 900}}>
+            <Form.Group>
+              <Form.Control type="text" placeholder="Enter new comment" value={comment} onChange={this.handleChange} />
+            </Form.Group>
+            <Button variant="danger" style={{marginLeft:"10px"}} type="submit" onClick={this.handleClose}>
+              Close
+            </Button>
+            <Button variant="success" style={{marginLeft:"705px"}} type="submit" onClick={this.onSubmit}>
+              Submit
+            </Button>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      </div>
     );
   }
 }
@@ -59,49 +134,49 @@ export default class Focus extends React.Component {
   renderCard = (message) => {
     return (
       <Card
-        style={{ width: '18rem', margin: '0 auto', cursor: 'pointer' }}
         key={message.messageId}
-        onClick={() => this.handleClick(message)}
-      >
+        message={message}
+        style={ styles.messageCard }
+      > 
         <Card.Body>
-          {/*<Card.Title>{message.from}</Card.Title>*/}
-          <Card.Subtitle className="mb-2 text-muted">{message.senderName}</Card.Subtitle>
           <Card.Text>
             {message.text}
           </Card.Text>
-          <Card.Subtitle style={{fontSize: 8}}>by {message.senderId}</Card.Subtitle>
+          <blockquote className="blockquote mb-0">
+            <footer className="blockquote-footer">
+              <OverlayTrigger
+                trigger="click" placement="bottom" overlay={popover}
+              >
+                <cite title="Source Title">{message.senderName} @{ message.senderId.substring(0,10)+'...' }</cite>
+              </OverlayTrigger>
+              <GoThumbsup size={30} style={styles.goThumbsupFocus} />
+              <b style={styles.commentNumber}> //todo </b>
+              <GoThumbsdown size={30} style={styles.goThumbsdownFocus} />
+            </footer>
+          </blockquote>
         </Card.Body>
       </Card>
     );
   };
 
   render () {
-    const { message, upvote, downvote } = this.props;
+    const { message } = this.props;
     return (
       <Container fluid>
-        <Row>
-          <Button variant="primary" onClick={this.handleClickBack}>
-            {'< Back'}
-          </Button>
-        </Row>
+        <Button variant="primary" onClick={this.handleClickBack}>
+          {'< Back'}
+        </Button>
         <Row><Col>
-        <MessageCard message={message}/>
-        <Row><Col>
-          <Button variant="primary" onClick={() => upvote(message.messageId)}>
-            {'Upvote'}
-          </Button>
-          <Button variant="primary" onClick={() => downvote(message.messageId)}>
-            {'Downvote'}
-          </Button>
-        </Col></Row>
-        </Col></Row>
-        <Row><Col>
-          <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
-          {message.comments.map(comment => this.renderCard(comment))}
+          <MessageCard message={message} commentHandler={() => this.handleOpen() } upVote={() => this.upvote(message.messageId)} downvote={() => this.downvote(message.messageId)} />
         </Col></Row>
         <Row className="justify-content-md-center">
           <ComposeComment postComment={this.postComment}/>
         </Row>
+        <Row><Col>
+          <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
+          {message.comments.map(comment => this.renderCard(comment))}
+        </Col></Row>
+        
       </Container>
     );
   }

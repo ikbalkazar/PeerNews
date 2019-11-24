@@ -9,7 +9,7 @@ export default class NavigationBar extends React.Component {
   render () {
     const { pages, onClickPage } = this.props;
     return (
-      <div>
+      <div style={{height:'30px'}}>
         <Navbar bg="dark" variant="dark" fixed="top" >
           <Navbar.Brand href="#home">Peer News</Navbar.Brand>
           <Nav className="mr-auto">
