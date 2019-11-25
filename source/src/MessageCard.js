@@ -100,205 +100,61 @@ export default ({message, onClick, isPreview, commentHandler, upVote, downVote})
   for (const vote of message.votes) {
     aggregateVotes += parseInt(vote.delta);
   }
+  const handleClick = isPreview ? onClick : () => {};
+  const messageText = isPreview ? shorten(message.text) : message.text;
+  const senderId = message.senderId.substring(0, 10) + '...';
   return (
     <div>
-      {message.video === '' && message.image === '' ?
-          <Card
-            key={message.messageId}
-            message={message}
-            style={ isPreview ? styles.messageCard : styles.messageCardFocus }
-          >
-            {isPreview ? 
-              <Card.Header onClick={onClick} style={{textAlign:'center'}}>{message.title}</Card.Header>
-              :
-              <Card.Header  style={{textAlign:'center'}}>{message.title}</Card.Header>
-            }
-            
-            <Card.Body>
-              {
-                isPreview ?
-                <Card.Text onClick={onClick}>
-                  {isPreview ? shorten(message.text) : message.text}
-                </Card.Text>
-                :
-                <Card.Text>
-                  {isPreview ? shorten(message.text) : message.text}
-                </Card.Text>
-              }
-              <blockquote className="blockquote mb-0">
-              {
-                isPreview ?
-                  <footer className="blockquote-footer">
-                    <OverlayTrigger
-                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
-                    >
-                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
-                    </OverlayTrigger>
-                    <GoThumbsup size={30} style={styles.goThumbsup} />
-                    <b style={styles.commentNumber}> TODO </b>
-                    <GoThumbsdown size={30} style={styles.goThumbsdown} />
-                  </footer>
-                :
-                  <footer className="blockquote-footer">
-                    <OverlayTrigger
-                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
-                    >
-                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
-                    </OverlayTrigger>
-                    <GoThumbsup size={30} style={styles.goThumbsupFocus} onClick={upVote} />
-                    <b style={styles.commentNumber}> TODO </b>
-                    <GoThumbsdown size={30} style={styles.goThumbsdownFocus} onClick={downVote} />
-                    {
-                      isPreview ?
-                      ""
-                      :
-                      <Button variant="outline-success" style={styles.commentButton} color="primary" onClick={commentHandler}>
-                        Make a comment
-                      </Button>
-                    }
-                  </footer>
-              }
-              </blockquote>
-              <ButtonToolbar>
-                {message.topics.map( topic => 
-                  <Button key="topic" style={{marginLeft:"5px", marginTop:"5px"}} variant="outline-success">{topic}</Button>
-                )}
-              </ButtonToolbar>
-            </Card.Body>
-          </Card>
-        
-          : message.video !== ''?
-
-          <Card
-            key={message.messageId}
-            message={message}
-            style={ isPreview ? styles.messageCard : styles.messageCardFocus }
-          >
-            {isPreview ? 
-              <Card.Header onClick={onClick} style={{textAlign:'center'}}>{message.title}</Card.Header>
-              :
-              <Card.Header  style={{textAlign:'center'}}>{message.title}</Card.Header>
-            }
-            <ReactPlayer url={message.video} playing={false} loop={true} volume={0} controls={true} width="477.59" />
-            <Card.Body>
-              {
-                isPreview ?
-                <Card.Text onClick={onClick}>
-                  {isPreview ? shorten(message.text) : message.text}
-                </Card.Text>
-                :
-                <Card.Text>
-                  {isPreview ? shorten(message.text) : message.text}
-                </Card.Text>
-              }    
-              <blockquote className="blockquote mb-0">
-              {
-                isPreview ?
-                  <footer className="blockquote-footer">
-                    <OverlayTrigger
-                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
-                    >
-                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
-                    </OverlayTrigger>
-                    <GoThumbsup size={30} style={styles.goThumbsup} />
-                    <b style={styles.commentNumber}> TODO </b>
-                    <GoThumbsdown size={30} style={styles.goThumbsdown} />
-                  </footer>
-                :
-                  <footer className="blockquote-footer">
-                    <OverlayTrigger
-                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
-                    >
-                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
-                    </OverlayTrigger>
-                    <GoThumbsup size={30} style={styles.goThumbsupFocus} onClick={upVote} />
-                    <b style={styles.commentNumber}> TODO </b>
-                    <GoThumbsdown size={30} style={styles.goThumbsdownFocus} onClick={downVote} />
-                    {
-                      isPreview ?
-                      ""
-                      :
-                      <Button variant="outline-success" style={styles.commentButton} color="primary" onClick={commentHandler}>
-                        Make a comment
-                      </Button>
-                    }
-                  </footer>
-              }
-              </blockquote>
-              <ButtonToolbar>
-                {message.topics.map( topic => 
-                  <Button key="topic" style={{marginLeft:"5px", marginTop:"5px"}} variant="outline-success">{topic}</Button>
-                )}
-              </ButtonToolbar>
-            </Card.Body>
-          </Card>
-
-          :  
-
-          <Card
-            key={message.messageId}
-            message={message}
-            style={ isPreview ? styles.messageCard : styles.messageCardFocus }
-          >
-            {isPreview ? 
-              <Card.Header onClick={onClick} style={{textAlign:'center'}}>{message.title}</Card.Header>
-              :
-              <Card.Header  style={{textAlign:'center'}}>{message.title}</Card.Header>
-            }
-            <Card.Img variant="top" src={message.image} />
-            <Card.Body>
-              {
-                isPreview ?
-                <Card.Text onClick={onClick}>
-                  {isPreview ? shorten(message.text) : message.text}
-                </Card.Text>
-                :
-                <Card.Text>
-                  {isPreview ? shorten(message.text) : message.text}
-                </Card.Text>
-              }
-              <blockquote className="blockquote mb-0">
-              {
-                isPreview ?
-                  <footer className="blockquote-footer">
-                    <OverlayTrigger
-                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
-                    >
-                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
-                    </OverlayTrigger>
-                    <GoThumbsup size={30} style={styles.goThumbsup} />
-                    <b style={styles.commentNumber}> TODO </b>
-                    <GoThumbsdown size={30} style={styles.goThumbsdown} />
-                  </footer>
-                :
-                  <footer className="blockquote-footer">
-                    <OverlayTrigger
-                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
-                    >
-                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
-                    </OverlayTrigger>
-                    <GoThumbsup size={30} style={styles.goThumbsupFocus} onClick={upVote} />
-                    <b style={styles.commentNumber}> TODO </b>
-                    <GoThumbsdown size={30} style={styles.goThumbsdownFocus} onClick={downVote} />
-                    {
-                      isPreview ?
-                      ""
-                      :
-                      <Button variant="outline-success" style={styles.commentButton} color="primary" onClick={commentHandler}>
-                        Make a comment
-                      </Button>
-                    }
-                  </footer>
-              }
-              </blockquote>
-              <ButtonToolbar>
-                {message.topics.map( topic => 
-                  <Button key="topic" style={{marginLeft:"5px", marginTop:"5px"}} variant="outline-success">{topic}</Button>
-                )}
-              </ButtonToolbar>
-            </Card.Body>
-          </Card>
+      <Card
+        key={message.messageId}
+        message={message}
+        style={ isPreview ? styles.messageCard : styles.messageCardFocus }
+      >
+        <Card.Header
+          onClick={handleClick}
+          style={{textAlign:'center'}}
+        >
+          {message.title}
+        </Card.Header>
+        {message.video.length > 0 &&
+          <ReactPlayer url={message.video} playing={false} loop={true} volume={0} controls={true} width="477.59" />
         }
-      </div>
+        {message.image.length > 0 && message.video.length === 0 &&
+          <Card.Img variant="top" src={message.image} />
+        }
+        <Card.Body>
+          <Card.Text onClick={handleClick}>{messageText}</Card.Text>
+          <blockquote className="blockquote mb-0">
+            <footer className="blockquote-footer">
+              <OverlayTrigger
+                placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
+              >
+              <cite>{message.senderName} @{senderId}</cite>
+              </OverlayTrigger>
+              <GoThumbsup size={30} style={styles.goThumbsup} />
+              <b style={styles.commentNumber}> TODO </b>
+              <GoThumbsdown size={30} style={styles.goThumbsdown} />
+              {!isPreview &&
+                <Button variant="outline-success" style={styles.commentButton} color="primary" onClick={commentHandler}>
+                  Make a comment
+                </Button>
+              }
+            </footer>
+          </blockquote>
+          <ButtonToolbar>
+            {message.topics.map( topic =>
+              <Button
+                key="topic"
+                style={{marginLeft:"5px", marginTop:"5px"}}
+                variant="outline-success"
+                disabled
+              >
+                {topic}
+              </Button>
+            )}
+          </ButtonToolbar>
+        </Card.Body>
+      </Card>
+    </div>
   );
 };
