@@ -40,12 +40,12 @@ const styles = {
   },
 
   goThumbsup: {
-      marginLeft:"340px",
+      marginLeft:"500px",
       marginBot:"0px",
   },
 
   goThumbsupFocus: {
-      marginLeft:"530px",
+      marginLeft:"550px",
       marginBot:"0px",
   },
 
@@ -128,9 +128,9 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote}) =>
               >
               <cite>{message.senderName} @{senderId}</cite>
               </OverlayTrigger>
-              <GoThumbsup size={30} style={styles.goThumbsup} />
-              <b style={styles.commentNumber}> TODO </b>
-              <GoThumbsdown size={30} style={styles.goThumbsdown} />
+              <GoThumbsup size={30} style={styles.goThumbsupFocus} onClick={() => upVote(message.messageId)} />
+                <b style={styles.commentNumber}> {aggregateVotes} </b>
+              <GoThumbsdown size={30} style={styles.goThumbsdownFocus} onClick={() => downVote(message.messageId)} />
               {!isPreview &&
                 <ComposeComment postComment={postComment}/>
               }

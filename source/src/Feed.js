@@ -50,7 +50,7 @@ export default class Feed extends React.Component {
   };
 
   render () {
-    const { messages } = this.props;
+    const { messages, upvote, downvote } = this.props;
     const { height, width } = this.state;
     messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     return (
@@ -61,6 +61,8 @@ export default class Feed extends React.Component {
             message={message}
             onClick={() => this.handleClick(message)}
             isPreview={true}
+            upVote={upvote} 
+            downVote={downvote}
           />
         )}
 

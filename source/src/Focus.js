@@ -94,14 +94,14 @@ export default class Focus extends React.Component {
   };
 
   render () {
-    const { message } = this.props;
+    const { message, upvote, downvote } = this.props;
     return (
       <Container fluid>
         <Button variant="primary" onClick={this.handleClickBack}>
           {'< Back'}
         </Button>
         <Row><Col>
-          <MessageCard message={message} postComment={this.postComment}/>
+          <MessageCard message={message} commentHandler={() => this.handleOpen()} upVote={upvote} downVote={downvote} />
         </Col></Row>
         <Row><Col>
           <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>

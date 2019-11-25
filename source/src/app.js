@@ -68,7 +68,14 @@ export default class App extends React.Component {
     const feedMessages = this.messageManager.getFeedMessages();
     switch (route) {
       case ROUTES.feed:
-        return <Feed messages={feedMessages} navigate={this.navigate}/>;
+        return (
+          <Feed 
+            messages={feedMessages} 
+            navigate={this.navigate}
+            upvote={this.messageManager.upvote}
+            downvote={this.messageManager.downvote}
+          />
+        );
       case ROUTES.compose:
         return <Compose postMessage={this.messageManager.postMessage}/>;
       case ROUTES.focus:
