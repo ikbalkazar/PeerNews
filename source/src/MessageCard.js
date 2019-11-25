@@ -39,12 +39,12 @@ const styles = {
   },
 
   goThumbsup: {
-      marginLeft:"360px",
+      marginLeft:"340px",
       marginBot:"0px",
   },
 
   goThumbsupFocus: {
-      marginLeft:"590px",
+      marginLeft:"530px",
       marginBot:"0px",
   },
 
@@ -77,14 +77,16 @@ const styles = {
 
 }
 
-const popover = (
-  <Popover id="popover-basic">
-    <Popover.Title as="h3">Poster's public id</Popover.Title>
-    <Popover.Content>
-    //TO DO
-    </Popover.Content>
-  </Popover>
-);
+const PopOverPublicID = (userID) => {
+    return (
+      <Popover id="popover-basic" onClick={() => {navigator.clipboard.writeText(userID)}} style={{cursor:'pointer'}} >
+        <Popover.Title as="h3">Click to copy</Popover.Title>
+        <Popover.Content>
+          <b> {userID} </b>
+        </Popover.Content>
+      </Popover>
+    )
+}
 
 const shorten = (s) => {
   if (s.length < 100) {
@@ -128,23 +130,23 @@ export default ({message, onClick, isPreview, commentHandler, upVote, downVote})
                 isPreview ?
                   <footer className="blockquote-footer">
                     <OverlayTrigger
-                      trigger="click" placement="bottom" overlay={popover}
+                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
                     >
-                    <cite title="Source Title">{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
+                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
                     </OverlayTrigger>
                     <GoThumbsup size={30} style={styles.goThumbsup} />
-                    <b style={styles.commentNumber}> {aggregateVotes} </b>
+                    <b style={styles.commentNumber}> TODO </b>
                     <GoThumbsdown size={30} style={styles.goThumbsdown} />
                   </footer>
                 :
                   <footer className="blockquote-footer">
                     <OverlayTrigger
-                      trigger="click" placement="bottom" overlay={popover}
+                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
                     >
-                    <cite title="Source Title">{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
+                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
                     </OverlayTrigger>
                     <GoThumbsup size={30} style={styles.goThumbsupFocus} onClick={upVote} />
-                    <b style={styles.commentNumber}> {aggregateVotes} </b>
+                    <b style={styles.commentNumber}> TODO </b>
                     <GoThumbsdown size={30} style={styles.goThumbsdownFocus} onClick={downVote} />
                     {
                       isPreview ?
@@ -194,23 +196,23 @@ export default ({message, onClick, isPreview, commentHandler, upVote, downVote})
                 isPreview ?
                   <footer className="blockquote-footer">
                     <OverlayTrigger
-                      trigger="click" placement="bottom" overlay={popover}
+                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
                     >
-                    <cite title="Source Title">{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
+                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
                     </OverlayTrigger>
                     <GoThumbsup size={30} style={styles.goThumbsup} />
-                    <b style={styles.commentNumber}> {aggregateVotes} </b>
+                    <b style={styles.commentNumber}> TODO </b>
                     <GoThumbsdown size={30} style={styles.goThumbsdown} />
                   </footer>
                 :
                   <footer className="blockquote-footer">
                     <OverlayTrigger
-                      trigger="click" placement="bottom" overlay={popover}
+                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
                     >
-                    <cite title="Source Title">{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
+                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
                     </OverlayTrigger>
                     <GoThumbsup size={30} style={styles.goThumbsupFocus} onClick={upVote} />
-                    <b style={styles.commentNumber}> {aggregateVotes} </b>
+                    <b style={styles.commentNumber}> TODO </b>
                     <GoThumbsdown size={30} style={styles.goThumbsdownFocus} onClick={downVote} />
                     {
                       isPreview ?
@@ -260,23 +262,23 @@ export default ({message, onClick, isPreview, commentHandler, upVote, downVote})
                 isPreview ?
                   <footer className="blockquote-footer">
                     <OverlayTrigger
-                      trigger="click" placement="bottom" overlay={popover}
+                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
                     >
-                    <OverlayTrigger
-                      trigger="click" placement="bottom" overlay={popover}
-                    >
-                    <cite title="Source Title">{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
-                    </OverlayTrigger>
+                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
                     </OverlayTrigger>
                     <GoThumbsup size={30} style={styles.goThumbsup} />
-                    <b style={styles.commentNumber}> {aggregateVotes} </b>
+                    <b style={styles.commentNumber}> TODO </b>
                     <GoThumbsdown size={30} style={styles.goThumbsdown} />
                   </footer>
                 :
                   <footer className="blockquote-footer">
-                    <cite title="Source Title">{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
+                    <OverlayTrigger
+                      placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
+                    >
+                    <cite>{message.senderName} @{isPreview ? message.senderId.substring(0,10)+'...' : message.senderId.substring(0,10)+'...' }</cite>
+                    </OverlayTrigger>
                     <GoThumbsup size={30} style={styles.goThumbsupFocus} onClick={upVote} />
-                    <b style={styles.commentNumber}> {aggregateVotes} </b>
+                    <b style={styles.commentNumber}> TODO </b>
                     <GoThumbsdown size={30} style={styles.goThumbsdownFocus} onClick={downVote} />
                     {
                       isPreview ?
