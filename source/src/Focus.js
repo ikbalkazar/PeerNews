@@ -1,7 +1,6 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,13 +8,6 @@ import MessageCard from './MessageCard';
 import { ROUTES } from './util';
 import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
 import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
-
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 const styles = {
@@ -59,66 +51,6 @@ const PopOverPublicID = (userID) => {
         </Popover.Content>
       </Popover>
     )
-}
-
-class ComposeComment extends React.Component {
-
-  state = {
-    comment: '',
-    name: '',
-    open : false,
-  };
-
-  handleChange = event => {
-    event.preventDefault();
-    this.setState({ comment: event.target.value });
-  };
-
-  onSubmit = (event) => {
-    event.preventDefault();
-    this.setState({open:false});
-    const { comment } = this.state;
-    const { postComment } = this.props;
-    if (comment.length > 0) {
-      postComment(comment);
-      this.setState({ comment: '' });
-    }
-  };
-
-  handleOpen = () => {
-    this.setState({open:true});
-  };
-
-  handleClose = () => {
-    event.preventDefault();
-    this.setState({open:false});
-  };
-
-  render() {
-    const { comment, open } = this.state;
-    return (
-      <div>
-      <Dialog open={open} onClose={this.handleClose} maxWidth="md" fullWidth="true" aria-labelledby="max-width-dialog-title">
-        <DialogContent>
-          <DialogContentText style={{textAlign:"center"}}>
-           <b>Add new comment to post:</b>
-          </DialogContentText>
-          <Form style={{padding: 20, width: 900}}>
-            <Form.Group>
-              <Form.Control type="text" placeholder="Enter new comment" value={comment} onChange={this.handleChange} />
-            </Form.Group>
-            <Button variant="danger" style={{marginLeft:"10px"}} type="submit" onClick={this.handleClose}>
-              Close
-            </Button>
-            <Button variant="success" style={{marginLeft:"705px"}} type="submit" onClick={this.onSubmit}>
-              Submit
-            </Button>
-          </Form>
-        </DialogContent>
-      </Dialog>
-      </div>
-    );
-  }
 }
 
 export default class Focus extends React.Component {
@@ -169,11 +101,8 @@ export default class Focus extends React.Component {
           {'< Back'}
         </Button>
         <Row><Col>
-          <MessageCard message={message} commentHandler={() => this.handleOpen() }/>
+          <MessageCard message={message} postComment={this.postComment}/>
         </Col></Row>
-        <Row className="justify-content-md-center">
-          <ComposeComment postComment={this.postComment}/>
-        </Row>
         <Row><Col>
           <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
           {message.comments.map(comment => this.renderCard(comment))}

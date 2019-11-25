@@ -2,6 +2,7 @@ import React from 'react';
 import Card from 'react-bootstrap/Card';
 import ReactPlayer from 'react-player'
 import Button from 'react-bootstrap/Button';
+import ComposeComment from './ComposeComment';
 import {ButtonToolbar} from 'react-bootstrap';
 import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
 import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
@@ -71,10 +72,6 @@ const styles = {
         width: '60%',
   },
 
-  commentButton: {
-      marginLeft: "10px",
-  }
-
 }
 
 const PopOverPublicID = (userID) => {
@@ -95,7 +92,7 @@ const shorten = (s) => {
   return s.substring(0, 100) + '...';
 };
 
-export default ({message, onClick, isPreview, commentHandler, upVote, downVote}) => {
+export default ({message, onClick, isPreview, postComment, upVote, downVote}) => {
   let aggregateVotes = 0;
   for (const vote of message.votes) {
     aggregateVotes += parseInt(vote.delta);
@@ -135,9 +132,7 @@ export default ({message, onClick, isPreview, commentHandler, upVote, downVote})
               <b style={styles.commentNumber}> TODO </b>
               <GoThumbsdown size={30} style={styles.goThumbsdown} />
               {!isPreview &&
-                <Button variant="outline-success" style={styles.commentButton} color="primary" onClick={commentHandler}>
-                  Make a comment
-                </Button>
+                <ComposeComment postComment={postComment}/>
               }
             </footer>
           </blockquote>
