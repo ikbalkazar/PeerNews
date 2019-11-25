@@ -54,6 +54,41 @@ const styles = {
    		maxMenuHeight: 5,
 	},
 
+
+	fileInput: {
+		borderRadius: '5px',
+		border: '1px solid lightgray',
+		padding: '10px',
+		//margin: '15px',
+		cursor: 'pointer',
+	},
+
+	imgPreview: {
+		borderRadius: '5px',
+		border: '1px solid lightgray',
+		height: '200px',
+		width: '350px',
+		//margin: '5px 15px',
+		img: {
+			width: '100%',
+			height: '100%',
+		},
+	},
+
+	previewText: {
+		width: '100%',
+		margin: '20px',
+	},
+
+	imageSubmitButton: {
+		borderRadius: '3px',
+		padding: '12px',
+		margin: '10px',
+		background: 'white',
+		border: '1px solid lightgray',
+		cursor: 'pointer',
+	},
+
 	div: {
        	position: 'absolute', 
        	left: '50%', 
@@ -80,7 +115,7 @@ const styles = {
 export default class PostMessage extends React.Component {
 	constructor(props) {
     	super(props);
-    	this.state = { text:"", title:"", image:"", video:"", selectedOptions: [], loading: false };
+    	this.state = { text:"", title:"", image:"", video:"", selectedOptions: [], loading: false, file: "", imagePreviewUrl: "" };
 	}
 
 	handleText = event => {
@@ -93,9 +128,25 @@ export default class PostMessage extends React.Component {
 		this.setState({ video: event.target.value });
 	};
 
-	handleImage = event => {
+	handleImageChange = event => {
 		event.preventDefault();
+		let reader = new FileReader();
+		let file = event.target.files[0];
+		reader.onloadend = () => {
+			this.setState({
+				file: file,
+				imagePreviewUrl: reader.result
+			});
+		}
+
+		reader.readAsDataURL(file);
 		this.setState({ image: event.target.value });
+	};
+
+	handleImageSubmit = event => {
+		event.preventDefault();
+		// TODO: do something with -> this.state.file
+		console.log('handle uploading-', this.state.file);
 	};
 
 	handleTitle = event =>{
@@ -126,12 +177,36 @@ export default class PostMessage extends React.Component {
 	render () {
 		const {image, video, text, title, loading} = this.state;
 
+		let {imagePreviewUrl} = this.state;
+		let $imagePreview = null;
+
+		if ( imagePreviewUrl ){
+			$imagePreview = (<div style={styles.imgPreview}>
+				<img style={styles.imgPreview.img} src={imagePreviewUrl} />
+			</div>);
+		}
+		else{
+			$imagePreview = null;
+		}
+
 		return (
 			<div style={ styles.div } >
-				<Form>
 				<div className="form-group">
 					<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
 					<input type="text" className="form-control" id="title" placeholder="Video Url Here.." style={styles.contentStyle} value={video} onChange={this.handleVideo} ></input>
+
+					<div className="previewComponent">
+						<form onSubmit={(e)=>this.handleImageSubmit(e)}>
+							<input style={styles.fileInput}
+								   type="file"
+								   onChange={(e)=>this.handleImageChange(e)} />
+							<button style={styles.imageSubmitButton}
+									type="submit"
+									onClick={(e)=>this.handleImageSubmit(e)}>Upload Image</button>
+						</form>
+						{$imagePreview}
+					</div>
+
 					<input type="text" className="form-control" id="title" placeholder="Image Url Here.." style={styles.contentStyle} value={image} onChange={this.handleImage} ></input>
 				</div>
 				<div className="form-group">
@@ -142,7 +217,6 @@ export default class PostMessage extends React.Component {
 				<Button variant="success" size="lg" type="submit" style={styles.buttonStyle} onClick={this.onSubmit} disabled={loading}>
 					{loading ? 'Submitting...' : 'Submit'}
 				</Button>
-			</Form>
 			</div>
 		);
   }
