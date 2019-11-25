@@ -101,7 +101,7 @@ export default class Focus extends React.Component {
           {'< Back'}
         </Button>
         <Row><Col>
-          <MessageCard message={message} commentHandler={() => this.handleOpen()} upVote={upvote} downVote={downvote} />
+          <MessageCard message={message} postComment={this.postComment} upVote={upvote} downVote={downvote} />
         </Col></Row>
         <Row><Col>
           <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
