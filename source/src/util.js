@@ -74,14 +74,12 @@ export const toList = (iter) => {
 
 export const ROUTES = {
   feed: "3",
-  compose: "4",
   focus: "5",
   postMessage: "6"
 };
 
 export const ROUTE_NAME = {
   "3": 'Feed',
-  "4": 'Compose',
   "6": 'PostMessage',
 };
 

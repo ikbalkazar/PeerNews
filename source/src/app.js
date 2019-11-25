@@ -22,7 +22,7 @@ export default class App extends React.Component {
     this.state = {
       numPeers: 0,
       messages: new Map(),
-      route: ROUTES.test,
+      route: ROUTES.feed,
       routeParams: null,
     };
     const { sender } = props;
@@ -76,8 +76,6 @@ export default class App extends React.Component {
             downvote={this.messageManager.downvote}
           />
         );
-      case ROUTES.compose:
-        return <Compose postMessage={this.messageManager.postMessage}/>;
       case ROUTES.focus:
         const focusMessage = feedMessages.filter(message =>
           message.messageId === routeParams.messageId)[0];
