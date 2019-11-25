@@ -27,7 +27,7 @@ const styles = {
   },
 
   goThumbsupFocus: {
-      marginLeft:"300px",
+      marginLeft:"340px",
       marginBot:"0px",
   },
 
@@ -83,9 +83,9 @@ export default class Focus extends React.Component {
               >
                 <cite>{message.senderName} @{ message.senderId.substring(0,10)+'...' }</cite>
               </OverlayTrigger>
-              <GoThumbsup size={30} style={styles.goThumbsupFocus} />
+              <GoThumbsup size={20} style={styles.goThumbsupFocus} />
               <b style={styles.commentNumber}> TODO </b>
-              <GoThumbsdown size={30} style={styles.goThumbsdownFocus} />
+              <GoThumbsdown size={20} style={styles.goThumbsdownFocus} />
             </footer>
           </blockquote>
         </Card.Body>
