@@ -88,3 +88,11 @@ export const ROUTE_NAME = {
 };
 
 export const createLogger = (prefix) => (message) => console.log(`[${prefix}] ${message}`);
+
+export const isTorrent = (source) => {
+  return source.startsWith('magnet:');
+};
+
+export const isHttpUrl = (source) => {
+  return source.startsWith('http');
+};

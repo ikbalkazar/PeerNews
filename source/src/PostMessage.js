@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import MediaUploader from './MediaUploader';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
+import { isHttpUrl } from './util';
 
 const topics = [
 	{label: "football", value: "football"},
@@ -142,15 +143,26 @@ export default class PostMessage extends React.Component {
 	onSubmit = async (event) => {
 		event.preventDefault();
 		const { text, media, title, selectedOptions } = this.state;
-		const { postMessage } = this.props;
+		const { seedAsTorrent } = this.props;
 		const topics = selectedOptions.map( x => x.label );
 		if (title.length > 0 && topics.length > 0) {
 				this.setState({ loading: true });
-				setTimeout(() => {
-          postMessage(title, media, text, topics);
-          this.setState({ text: '', title:'', media:'', selectedOptions: [], loading: false });
-        }, 0);
+				if (isHttpUrl(media)) {
+					this.postPreparedMessage(title, media, text, topics);
+				} else {
+					seedAsTorrent(media, (magnetURI) => {
+						this.postPreparedMessage(title, magnetURI, text, topics);
+					});
+				}
 		}
+	};
+
+	postPreparedMessage = (title, media, text, topics) => {
+    const { postMessage } = this.props;
+    setTimeout(() => {
+      postMessage(title, media, text, topics);
+      this.setState({ text: '', title:'', media:'', selectedOptions: [], loading: false });
+    }, 0);
 	};
 
 	onChange = (event) =>{

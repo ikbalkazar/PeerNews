@@ -1,4 +1,4 @@
-import { verifyProofOfWork, verifySignatureAndDecode, toList, createLogger } from './util';
+import { verifyProofOfWork, verifySignatureAndDecode, toList, createLogger, isTorrent } from './util';
 import * as Message from './message';
 import MessageStore from './MessageStore';
 
@@ -7,10 +7,12 @@ const log = createLogger('MessageManager');
 const DISK_WRITE_INTERVAL = 5000;
 
 export default class MessageManager {
-  constructor({sender, peerManager, onChange}) {
+  constructor({sender, peerManager, torrentManager, onChange}) {
     this.sender = sender;
     this.peerManager = peerManager;
+    this.torrentManager = torrentManager;
     this.messages = new Map();
+    this.torrentMedia = new Map();
     this.onChange = onChange;
     this.messageStore = new MessageStore(sender);
     this.loadMessagesOnDisk();
@@ -28,6 +30,18 @@ export default class MessageManager {
     setInterval(() => {
       this.messageStore.write(this.getRawMessages());
     }, DISK_WRITE_INTERVAL);
+  };
+
+  processTorrentIfNeeded = (message) => {
+    if (!message.media) {
+      return;
+    }
+    if (isTorrent(message.media)) {
+      this.torrentManager.download(message.media, (mediaURL) => {
+        this.torrentMedia.set(message.messageId, mediaURL);
+        this.onChange(this.messages);
+      });
+    }
   };
 
   messageReceived = (message, doBroadcast = true) => {
@@ -48,6 +62,7 @@ export default class MessageManager {
       case Message.type.VOTE:
         if (!this.messages.has(parsed.messageId)) {
           this.messages.set(parsed.messageId, {parsed, message});
+          this.processTorrentIfNeeded(parsed);
           this.onChange(this.messages);
           if (doBroadcast) {
             this.peerManager.broadcast(message);
@@ -90,6 +105,16 @@ export default class MessageManager {
     return toList(this.messages.values()).map(({message}) => message);
   };
 
+  getMessageMedia = (messageId, media) => {
+    if (!media) {
+      return null;
+    }
+    if (!isTorrent(media)) {
+      return media;
+    }
+    return this.torrentMedia.get(messageId);
+  };
+
   getFeedMessages = () => {
     const messages = this.messages;
     const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
@@ -108,6 +133,7 @@ export default class MessageManager {
       ...message,
       comments: comments.get(message.messageId) || [],
       votes: votes.get(message.messageId) || [],
+      media: this.getMessageMedia(message.messageId, message.media),
     }));
   };
 

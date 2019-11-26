@@ -43,16 +43,6 @@ export default class MediaUploader extends React.Component {
 
   handleClose = () => this.setState({ open: false });
 
-  loadFile = async () => {
-    const { chosenPath } = this.state;
-    if (!chosenPath) {
-      return;
-    }
-    const contents = await readFile(chosenPath);
-    const fileName = stableMediaFilename(contents);
-    await writeAppFile(fileName, contents);
-  };
-
   onSubmit = (event) => {
     event.preventDefault();
     this.setState({
