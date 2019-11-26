@@ -2,12 +2,12 @@ import React from 'react';
 
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
+import Compose from './Compose';
 import Focus from './Focus';
 import { ROUTES, ROUTE_NAME } from './util';
 import PeerManager from './PeerManager';
 import MessageManager from './MessageManager';
 import PostMessage from './PostMessage';
-import TorrentManager from './TorrentManager';
 
 const TEST_MESSAGES = new Map([
   ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
@@ -26,7 +26,6 @@ export default class App extends React.Component {
       routeParams: null,
     };
     const { sender } = props;
-    this.torrentManager = new TorrentManager();
     this.peerManager = new PeerManager({
       sender,
       onMessage: this.messageReceived,
@@ -42,7 +41,6 @@ export default class App extends React.Component {
     this.messageManager = new MessageManager({
       sender,
       peerManager: this.peerManager,
-      torrentManager: this.torrentManager,
       onChange: (messages) => {
         this.setState({ messages: new Map(messages) });
       },
@@ -92,10 +90,7 @@ export default class App extends React.Component {
         );
       case ROUTES.postMessage:
         return (
-          <PostMessage
-            postMessage={this.messageManager.postMessage}
-            seedAsTorrent={this.torrentManager.seed}
-          />
+          <PostMessage postMessage={this.messageManager.postMessage}/>
         );
       default:
         return null;

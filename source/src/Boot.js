@@ -4,14 +4,54 @@ import { createSender } from './message';
 import App from './app';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import MediaUploader from './MediaUploader';
 import {
   encodeBase64,
 } from 'tweetnacl-util';
 
+const styles = {
+  divMiddle: {
+        position: 'fixed',
+        width: '100%',
+        height: '100%',
+        backgroundImage: 'url(../assets/login2.jpg)',
+        backgroundSize: 'cover',
+        float: 'left',
+        borderRadius: '9px',
+        borderRadiusInputTopLeft: '9px',
+        borderRadiusInputTopRight: '9px',
+        borderRadiusInputBottomLeft: '9px',
+        borderRadiusInputBottomRight: '9px',
+        topLeftMode: 'true',
+        topRightMode: 'true',
+        bottomLeftMode: 'true',
+        bottomRightMode: 'true',
+        shadowOffset: {widht:2, height: 2},
+        shadowRadius: '20px',
+        shadowColor: '#330033',
+        //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
+  }
+}
 
 class Username extends React.Component {
   state = {
     username: '',
+    privateKey: '',
+    open: false,
+    media: null,
+  };
+
+  handleMediaFilePath = (media) => {
+    this.setState({ media });
+    const { onImportFile } = this.props;
   };
 
   handleChange = event => {
@@ -28,19 +68,47 @@ class Username extends React.Component {
     }
   };
 
+  onExistingSubmit = (event) => {
+    event.preventDefault();
+  };
+
+  handleOpen = () => {
+    this.setState({open:true});
+  };
+  handleClose = () => {
+    event.preventDefault();
+    this.setState({open:false});
+  };
+
   render() {
-    const { username } = this.state;
+    const { username, open, existingOpen, media } = this.state;
     return (
-      <Form style={{padding: 20, textAlign: 'center'}}>
-        <h4 style={{marginBottom: 100}}>Welcome to PeerNews</h4>
-        <Form.Group>
-          <Form.Label>Username</Form.Label>
-          <Form.Control type="text" placeholder="Enter username" value={username} onChange={this.handleChange} />
-        </Form.Group>
-        <Button variant="primary" type="submit" onClick={this.onSubmit}>
-          Create Account
-        </Button>
-      </Form>
+        <div style={styles.divMiddle}>
+          <div style={{fontSize:"120px", fontFamily:"Times New Roman", fontStyle:"italic", paddingTop: 50, textAlign:"center", color:"white"}}>PeerNews</div>
+          <div style={{paddingTop: 50, width:"45%", float:"left", color:"transparent"}}> </div>
+          <div style={{paddingTop: 50, width:"10%", float:"left", color:"white"}}>
+          <h2 style={{textAlign:"center", color:"white", cursor:"pointer", border: '1px solid white' }} onClick={this.handleOpen}>Join Now</h2>
+          </div>
+          <div style={{paddingTop: 50,width:"45%", float:"right", color:"white"}}> </div>
+          <Dialog open={open} onClose={this.handleClose} maxWidth="md" fullWidth="true" aria-labelledby="max-width-dialog-title">
+            <DialogContent>
+              <DialogContentText style={{textAlign:"center"}}>
+                <b>Just username is enough to join our society !!!!</b>
+              </DialogContentText>
+              <Form style={{padding: 0, width: 900}}>
+                <Form.Group>
+                  <Form.Control type="text" placeholder="Username" value={username} onChange={this.handleChange} />
+                </Form.Group>
+                <MediaUploader media={media} onChange={this.handleMediaFilePath}>
+                  Have an existing account?
+                </MediaUploader>
+                <Button variant="success" style={{marginTop:"-7%", marginLeft:"48%"}} type="submit" onClick={this.onSubmit}>
+                  Join
+                </Button>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        </div>
     );
   }
 }
@@ -72,7 +140,6 @@ export default class Boot extends React.Component {
   constructor(props) {
     super(props);
     this.configStore = new ConfigStore();
-    const sender = this.configStore.get('sender');
     this.state = {
       sender: null, // TODO: set to sender and add logout functionality
       tempSender: null,
@@ -92,13 +159,20 @@ export default class Boot extends React.Component {
     this.setState({ sender: tempSender });
   };
 
+  onImportFile = (path) => {
+    this.configStore.importFile( path );
+    const sender = this.configStore.get('sender');
+    this.setState({ tempSender: sender });
+    this.onFinish();
+  };
+
   render() {
     const { sender, tempSender, username } = this.state;
     if (sender !== null) {
       return <App sender={sender}/>;
     } else {
       if (!username) {
-        return <Username onSubmit={this.onSubmitUsername}/>;
+        return <Username onSubmit={this.onSubmitUsername} onImportFile={this.onImportFile}/>;
       } else {
         return <DisplayKeys keyPair={tempSender.keyPair} onNext={this.onFinish}/>;
       }
