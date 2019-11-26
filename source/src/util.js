@@ -15,12 +15,16 @@ const WORK_REQUIRED = 4; // 16 bits should be 0 in hex, ~2^16 iterations
 const SALT_BOUND = 1000000000;
 
 
+export const hashDigest = (s) => {
+  return Hex.stringify(sha256(s));
+};
+
 export const verifyProofOfWork = (message) => {
   if (!message.proofOfWork) {
     return false;
   }
   const provenMessage = JSON.stringify(message);
-  const hash = Hex.stringify(sha256(provenMessage));
+  const hash = hashDigest(provenMessage);
   for (let i = 63; i >= 63 - WORK_REQUIRED + 1; i--) {
     if (hash[i] !== '0') {
       return false;

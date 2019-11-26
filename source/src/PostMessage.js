@@ -4,6 +4,7 @@ import Select from 'react-select'
 import FormControl from 'react-bootstrap/FormControl';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import MediaUploader from './MediaUploader';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
 
@@ -36,12 +37,6 @@ const styles = {
   	textArea:{
   		width: '700px', 
   		height: '300px',
-  	},
-
-  	buttonStyle:{
-  		position: 'absolute',
-  		left: '45%',
-  		top: '102%',
   	},
 
   	selectArea: {
@@ -90,19 +85,15 @@ const styles = {
 	},
 
 	div: {
-       	position: 'absolute', 
-       	left: '50%', 
-       	top: '50%',
-       	transform: 'translate(-50%, -50%)',
+    	width: 700,
+		  marginTop: 50,
+			marginLeft: 'auto',
+		  marginRight: 'auto',
    		borderRadius: '9px',
    		borderRadiusInputTopLeft: '9px',
       	borderRadiusInputTopRight: '9px',
       	borderRadiusInputBottomLeft: '9px',
      	borderRadiusInputBottomRight: '9px',
-     	topLeftMode: 'true',
-      	topRightMode: 'true',
-      	bottomLeftMode: 'true',
-	    bottomRightMode: 'true',
    		shadowOffset: {widht:2, height: 2},
    		shadowRadius: '20px',
    		shadowColor: '#330033',
@@ -115,7 +106,10 @@ const styles = {
 export default class PostMessage extends React.Component {
 	constructor(props) {
     	super(props);
-    	this.state = { text:"", title:"", image:"", video:"", selectedOptions: [], loading: false, file: "", imagePreviewUrl: "" };
+    	this.state = {
+    		text:"", title:"", image:"", video:"", selectedOptions: [],
+				loading: false, file: "", imagePreviewUrl: "", media: null,
+    	};
 	}
 
 	handleText = event => {
@@ -130,16 +124,7 @@ export default class PostMessage extends React.Component {
 
 	handleImageChange = event => {
 		event.preventDefault();
-		let reader = new FileReader();
-		let file = event.target.files[0];
-		reader.onloadend = () => {
-			this.setState({
-				file: file,
-				imagePreviewUrl: reader.result
-			});
-		}
-
-		reader.readAsDataURL(file);
+		console.log(event.target.value);
 		this.setState({ image: event.target.value });
 	};
 
@@ -156,14 +141,14 @@ export default class PostMessage extends React.Component {
 
 	onSubmit = async (event) => {
 		event.preventDefault();
-		const { text, video, image, title, selectedOptions } = this.state;
+		const { text, media, title, selectedOptions } = this.state;
 		const { postMessage } = this.props;
 		const topics = selectedOptions.map( x => x.label );
 		if (title.length > 0 && topics.length > 0) {
 				this.setState({ loading: true });
 				setTimeout(() => {
-          postMessage(title, video, image, text, topics);
-          this.setState({ text: '', title:'', image:'', video:'', selectedOptions: [], loading: false });
+          postMessage(title, media, text, topics);
+          this.setState({ text: '', title:'', media:'', selectedOptions: [], loading: false });
         }, 0);
 		}
 	};
@@ -173,50 +158,29 @@ export default class PostMessage extends React.Component {
 		this.setState( { selectedOptions: event }  );
 	};
 
+	handleMediaFilePath = (media) => {
+		this.setState({ media });
+	};
 
 	render () {
-		const {image, video, text, title, loading} = this.state;
-
-		let {imagePreviewUrl} = this.state;
-		let $imagePreview = null;
-
-		if ( imagePreviewUrl ){
-			$imagePreview = (<div style={styles.imgPreview}>
-				<img style={styles.imgPreview.img} src={imagePreviewUrl} />
-			</div>);
-		}
-		else{
-			$imagePreview = null;
-		}
+		const {text, title, loading, media} = this.state;
 
 		return (
 			<div style={ styles.div } >
 				<div className="form-group">
 					<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
-					<input type="text" className="form-control" id="title" placeholder="Video Url Here.." style={styles.contentStyle} value={video} onChange={this.handleVideo} ></input>
-
-					<div className="previewComponent">
-						<form onSubmit={(e)=>this.handleImageSubmit(e)}>
-							<input style={styles.fileInput}
-								   type="file"
-								   onChange={(e)=>this.handleImageChange(e)} />
-							<button style={styles.imageSubmitButton}
-									type="submit"
-									onClick={(e)=>this.handleImageSubmit(e)}>Upload Image</button>
-						</form>
-						{$imagePreview}
-					</div>
-
-					<input type="text" className="form-control" id="title" placeholder="Image Url Here.." style={styles.contentStyle} value={image} onChange={this.handleImage} ></input>
+					<MediaUploader media={media} onChange={this.handleMediaFilePath}/>
 				</div>
 				<div className="form-group">
 					<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={text} onChange={this.handleText}>
 					</textarea>
 				</div>
 				<Select value={this.state.selectedOptions} placeholder="Select topics from below" isMulti options={topics} style={styles.selectArea} onChange={this.onChange}></Select>
-				<Button variant="success" size="lg" type="submit" style={styles.buttonStyle} onClick={this.onSubmit} disabled={loading}>
-					{loading ? 'Submitting...' : 'Submit'}
-				</Button>
+				<div style={{textAlign: 'center', marginTop: 100}}>
+					<Button variant="success" size="lg" type="submit" onClick={this.onSubmit} disabled={loading}>
+						{loading ? 'Submitting...' : 'Submit'}
+					</Button>
+				</div>
 			</div>
 		);
   }

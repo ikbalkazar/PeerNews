@@ -1,4 +1,4 @@
-import { readFile, writeFile } from './fsutils';
+import { readAppFile, writeAppFile } from './fsutils';
 
 const FILENAME = 'config.json';
 
@@ -12,7 +12,7 @@ export default class ConfigStore {
   }
 
   loadFile = async () => {
-    const data = await readFile(FILENAME);
+    const data = await readAppFile(FILENAME);
     this.data = JSON.parse(data);
   };
 
@@ -22,6 +22,6 @@ export default class ConfigStore {
 
   set = (key, val) => {
     this.data[key] = val;
-    writeFile(FILENAME, JSON.stringify(this.data));
+    writeAppFile(FILENAME, JSON.stringify(this.data));
   }
 }

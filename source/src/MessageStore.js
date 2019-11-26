@@ -1,4 +1,4 @@
-import { readFile, writeFile } from './fsutils';
+import { readAppFile, writeAppFile } from './fsutils';
 import { createLogger } from './util';
 
 const FILENAME = 'messages.json';
@@ -12,13 +12,13 @@ export default class MessageStore {
 
   read = async () => {
     log(`reading ${this.filename}`);
-    const data = await readFile(this.filename);
+    const data = await readAppFile(this.filename);
     log(`read ${data}`);
     return JSON.parse(data).messages;
   };
 
   write = async (messages) => {
     log(`writing ${messages}`);
-    return writeFile(this.filename, JSON.stringify({messages}));
+    return writeAppFile(this.filename, JSON.stringify({messages}));
   };
 }

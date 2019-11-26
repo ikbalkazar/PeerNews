@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import ReactPlayer from 'react-player'
+import MediaViewer from './MediaViewer';
 import Button from 'react-bootstrap/Button';
 import ComposeComment from './ComposeComment';
 import {ButtonToolbar} from 'react-bootstrap';
@@ -105,6 +105,7 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote}) =>
   const thumbUpStyle = isPreview ? styles.goThumbsup : styles.goThumbsupFocus;
   const thumbDownStyle = isPreview ? styles.goThumbsdown : styles.goThumbsdownFocus;
   const commentNumberStyle = isPreview ? styles.commentNumber : styles.commentNumberFocus;
+  const mediaURL = message.media || message.video || message.image;
   return (
     <div>
       <Card
@@ -118,11 +119,8 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote}) =>
         >
           {message.title}
         </Card.Header>
-        {message.video.length > 0 &&
-          <ReactPlayer url={message.video} playing={false} loop={true} volume={0} controls={true} width="477.59" />
-        }
-        {message.image.length > 0 && message.video.length === 0 &&
-          <Card.Img variant="top" src={message.image} />
+        {mediaURL &&
+          <MediaViewer mediaURL={mediaURL}/>
         }
         <Card.Body>
           <Card.Text onClick={handleClick}>{messageText}</Card.Text>
