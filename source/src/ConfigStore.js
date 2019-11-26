@@ -1,4 +1,4 @@
-import { readAppFile, writeAppFile } from './fsutils';
+import { readAppFile, writeAppFile, readFile, writeFile } from './fsutils';
 
 export default class ConfigStore {
   constructor() {
@@ -10,18 +10,22 @@ export default class ConfigStore {
       followedUsers: [],
     };
     this.state = {
-      importedFile: 'config.json',
+      importedFile: '/home/enes/.config/electrate/config.json',
     };
-    this.loadFile();
+  }
+
+  setImportedfile = (val) =>{
+    this.state['importedFile'] = val;
   }
 
   loadFile = async () => {
-    const data = await readAppFile(this.state.importedFile);
+    const data = await readFile(this.state['importedFile']);
     this.data = JSON.parse(data);
+    console.log(data);
   };
 
   importFile = (path) => {
-    this.setState({importedFile:path});
+    this.setImportedfile(path);
     this.loadFile();
   };
 
@@ -31,6 +35,6 @@ export default class ConfigStore {
 
   set = (key, val) => {
     this.data[key] = val;
-    writeAppFile(this.state.importedFile, JSON.stringify(this.data));
+    writeFile(this.state['importedFile'], JSON.stringify(this.data));
   }
 }

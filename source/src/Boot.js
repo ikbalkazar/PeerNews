@@ -46,12 +46,15 @@ class Username extends React.Component {
     username: '',
     privateKey: '',
     open: false,
-    media: null,
+    media: '',
   };
 
   handleMediaFilePath = (media) => {
     this.setState({ media });
-    const { onImportFile } = this.props;
+  };
+
+  handleMediaImport = () => {
+    this.props.onImportFile(this.state.media);
   };
 
   handleChange = event => {
@@ -99,7 +102,7 @@ class Username extends React.Component {
                 <Form.Group>
                   <Form.Control type="text" placeholder="Username" value={username} onChange={this.handleChange} />
                 </Form.Group>
-                <MediaUploader media={media} onChange={this.handleMediaFilePath}>
+                <MediaUploader media={media} importFile={this.handleMediaImport} onChange={this.handleMediaFilePath}>
                   Have an existing account?
                 </MediaUploader>
                 <Button variant="success" style={{marginTop:"-7%", marginLeft:"48%"}} type="submit" onClick={this.onSubmit}>

@@ -48,6 +48,7 @@ export default class MediaUploader extends React.Component {
     this.setState({
       open: false,
     });
+    this.props.importFile();
   };
 
   onOpen = () => {
