@@ -1,31 +1,45 @@
 import WebTorrent from 'webtorrent';
 import { createLogger } from './util';
-import { readFile } from './fsutils';
-import ConfigStore from './ConfigStore';
+import { readAppFile, writeAppFile, readFile } from './fsutils';
 
 const log = createLogger('TorrentManager');
 
+const CACHE_PATH = 'torrents.json';
 
 export default class TorrentManager {
   constructor() {
-    this.configStore = new ConfigStore();
-    this.torrents = this.configStore.get('torrent');
+    this.torrents = null;
+    this.loadCache();
     this.client = new WebTorrent();
     log(`torrents ${this.client.torrents.length}`);
+    log(JSON.stringify(this.torrents));
     /*setInterval(() => {
       log(`upload speed ${this.client.uploadSpeed}, download speed ${this.client.downloadSpeed}`);
       log(`progress ${this.client.progress}, ratio ${this.client.ratio}`);
     }, 3000);*/
   }
 
-  addCompleteTorrent = (magnetURI, mediaURL) => {
-    log(`adding to cache: ${mediaURL}`);
-    this.torrents[magnetURI] = mediaURL;
-    this.configStore.set('torrent', this.torrents);
+  loadCache = async () => {
+    try {
+      const contents = await readAppFile(CACHE_PATH);
+      this.torrents = JSON.parse(contents);
+    } catch (err) {
+      log(err);
+      this.torrents = {};
+    }
   };
 
-  download = (magnetURI, onMediaURL) => {
+  addCompleteTorrent = async (magnetURI, mediaURL) => {
+    log(`adding to cache: ${mediaURL}`);
+    this.torrents[magnetURI] = mediaURL;
+    await writeAppFile(CACHE_PATH, JSON.stringify(this.torrents));
+  };
+
+  download = async (magnetURI, onMediaURL) => {
     log(`downloading ${magnetURI}`);
+    if (this.torrents === null) {
+      await this.loadCache();
+    }
     if (this.torrents.hasOwnProperty(magnetURI)) {
       log(`already found in cache`);
       const mediaURL = this.torrents[magnetURI];
@@ -55,6 +69,9 @@ export default class TorrentManager {
 
   seed = async (filePath, onMagnetURI) => {
     log(`seeding ${filePath}`);
+    if (this.torrents === null) {
+      await this.loadCache();
+    }
     const contents = await readFile(filePath);
     const buf = new Buffer(contents);
     const pathParts = filePath.split('/');
