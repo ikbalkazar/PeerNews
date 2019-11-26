@@ -7,6 +7,7 @@ export default class ConfigStore {
     this.data = {
       sender: null,
       name: null,
+      torrent: {},
     };
     this.loadFile();
   }
