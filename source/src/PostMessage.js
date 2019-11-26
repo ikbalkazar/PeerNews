@@ -109,7 +109,7 @@ export default class PostMessage extends React.Component {
     	super(props);
     	this.state = {
     		text:"", title:"", image:"", video:"", selectedOptions: [],
-				loading: false, file: "", imagePreviewUrl: "", media: null,
+				loading: false, file: "", imagePreviewUrl: "", media: "",
     	};
 	}
 
@@ -147,7 +147,10 @@ export default class PostMessage extends React.Component {
 		const topics = selectedOptions.map( x => x.label );
 		if (title.length > 0 && topics.length > 0) {
 				this.setState({ loading: true });
-				if (isHttpUrl(media)) {
+				if ( media === "" || media === null ){
+					this.postPreparedMessage(title, "", text, topics);
+				}
+				else if (isHttpUrl(media)) {
 					this.postPreparedMessage(title, media, text, topics);
 				} else {
 					seedAsTorrent(media, (magnetURI) => {
