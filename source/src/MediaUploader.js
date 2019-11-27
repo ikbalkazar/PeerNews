@@ -48,6 +48,9 @@ export default class MediaUploader extends React.Component {
     this.setState({
       open: false,
     });
+    if (this.props.onSubmit) {
+      this.props.onSubmit();
+    }
   };
 
   onOpen = () => {
@@ -56,13 +59,13 @@ export default class MediaUploader extends React.Component {
 
   render() {
     const { open } = this.state;
-    const { media } = this.props;
+    const { media, showPreview, buttonTitle, header } = this.props;
     return (
       <div>
         <Button variant="outline-success" style={styles.attach} color="primary" onClick={this.onOpen}>
-          Attach Media
+          {buttonTitle}
         </Button>
-        {media &&
+        {media && showPreview &&
           <div style={styles.buttonPreview}>
             <MediaViewer mediaURL={media}/>
           </div>
@@ -70,17 +73,19 @@ export default class MediaUploader extends React.Component {
         <Dialog open={open} onClose={this.handleClose} maxWidth="md" fullWidth="true" aria-labelledby="max-width-dialog-title">
           <DialogContent>
             <DialogContentText style={{textAlign:"center"}}>
-              <b>Upload a file or enter a video/image link</b>
+              <b>{header}</b>
             </DialogContentText>
-            <DialogContentText style={{textAlign:"center"}}>
-              <MediaViewer mediaURL={media}/>
-            </DialogContentText>
+            {showPreview &&
+              <DialogContentText style={{textAlign:"center"}}>
+                <MediaViewer mediaURL={media}/>
+              </DialogContentText>
+            }
             <Form style={{padding: 20, width: 900}}>
               <Form.Group>
                 <div style={styles.wrapper}>
-                  <Form.Control type="text" placeholder="Enter media link" value={media} onChange={this.handleChange} />
+                  <Form.Control type="text" placeholder="Enter link" value={media} onChange={this.handleChange} />
                   <Button variant="success" style={{marginLeft:"50px", width: '200px'}} type="submit" onClick={this.startChooseFile}>
-                    Upload File
+                    Choose File
                   </Button>
                 </div>
               </Form.Group>

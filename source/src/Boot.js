@@ -1,6 +1,6 @@
 import React from 'react';
 import ConfigStore from './ConfigStore';
-import { createSender } from './message';
+import { createSender, deserializeSender, serializeSender } from './message';
 import App from './app';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -102,9 +102,13 @@ class Username extends React.Component {
                 <Form.Group>
                   <Form.Control type="text" placeholder="Username" value={username} onChange={this.handleChange} />
                 </Form.Group>
-                <MediaUploader media={media} importFile={this.handleMediaImport} onChange={this.handleMediaFilePath}>
-                  Have an existing account?
-                </MediaUploader>
+                <MediaUploader
+                  media={media}
+                  onSubmit={this.handleMediaImport}
+                  onChange={this.handleMediaFilePath}
+                  buttonTitle="Have an existing account?"
+                  header="Import config file"
+                />
                 <Button variant="success" style={{marginTop:"-7%", marginLeft:"48%"}} type="submit" onClick={this.onSubmit}>
                   Join
                 </Button>
@@ -147,13 +151,23 @@ export default class Boot extends React.Component {
       sender: null, // TODO: set to sender and add logout functionality
       tempSender: null,
       username: null,
+      storeLoading: true,
     };
+    this.loadConfigStore();
   }
+
+  loadConfigStore = async () => {
+    await this.configStore.load();
+    this.setState({
+      storeLoading: false,
+      sender: deserializeSender(this.configStore.get('sender')),
+    });
+  };
 
   onSubmitUsername = (username) => {
     this.setState({ username });
     const sender = createSender(username);
-    this.configStore.set('sender', sender);
+    this.configStore.set('sender', serializeSender(sender));
     this.setState({ tempSender: sender });
   };
 
@@ -162,17 +176,20 @@ export default class Boot extends React.Component {
     this.setState({ sender: tempSender });
   };
 
-  onImportFile = (path) => {
-    this.configStore.importFile( path );
-    const sender = this.configStore.get('sender');
+  onImportFile = async (path) => {
+    await this.configStore.importFile( path );
+    const sender = deserializeSender(this.configStore.get('sender'));
     this.setState({ tempSender: sender });
     this.onFinish();
   };
 
   render() {
-    const { sender, tempSender, username } = this.state;
+    const { sender, tempSender, username, storeLoading } = this.state;
+    if (storeLoading) {
+      return null;
+    }
     if (sender !== null) {
-      return <App sender={sender}/>;
+      return <App sender={sender} configStore={this.configStore}/>;
     } else {
       if (!username) {
         return <Username onSubmit={this.onSubmitUsername} onImportFile={this.onImportFile}/>;

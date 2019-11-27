@@ -184,7 +184,13 @@ export default class PostMessage extends React.Component {
 			<div style={ styles.div } >
 				<div className="form-group">
 					<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
-					<MediaUploader media={media} onChange={this.handleMediaFilePath}/>
+					<MediaUploader
+						media={media}
+						onChange={this.handleMediaFilePath}
+						buttonTitle="Attach Media"
+						header="Upload a file or enter a video/image link"
+						showPreview
+					/>
 				</div>
 				<div className="form-group">
 					<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={text} onChange={this.handleText}>

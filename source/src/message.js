@@ -1,6 +1,6 @@
 import { attachProofOfWork, attachSignature, generateId } from './util';
 import { sign } from 'tweetnacl';
-import { encodeBase64 } from 'tweetnacl-util';
+import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
 export const type = {
   TEXT: "text",
@@ -20,6 +20,34 @@ export const createSender = (name) => {
       publicKey,
     },
     name,
+  };
+};
+
+export const serializeSender = (sender) => {
+  if (!sender) {
+    return null;
+  }
+  return {
+    id: sender.id,
+    keyPair: {
+      privateKey: encodeBase64(sender.keyPair.privateKey),
+      publicKey: encodeBase64(sender.keyPair.publicKey),
+    },
+    name: sender.name,
+  };
+};
+
+export const deserializeSender = (sender) => {
+  if (!sender) {
+    return null;
+  }
+  return {
+    id: sender.id,
+    keyPair: {
+      privateKey: decodeBase64(sender.keyPair.privateKey),
+      publicKey: decodeBase64(sender.keyPair.publicKey),
+    },
+    name: sender.name,
   };
 };
 

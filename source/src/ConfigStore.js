@@ -4,29 +4,30 @@ export default class ConfigStore {
   constructor() {
     this.data = {
       sender: null,
-      name: null,
       torrent: {},
       followedTopics: [],
       followedUsers: [],
     };
-    this.state = {
-      importedFile: '/home/enes/.config/electrate/config.json',
-    };
   }
 
-  setImportedfile = (val) =>{
-    this.state['importedFile'] = val;
-  }
-
-  loadFile = async () => {
-    const data = await readFile(this.state['importedFile']);
-    this.data = JSON.parse(data);
-    console.log(data);
+  load = async () => {
+    try {
+      const data = await readAppFile('config.json');
+      this.data = JSON.parse(data);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  importFile = (path) => {
-    this.setImportedfile(path);
-    this.loadFile();
+  save = async () => {
+    writeAppFile('config.json', JSON.stringify(this.data));
+  };
+
+  importFile = async (path) => {
+    const data = await readFile(path);
+    this.data = JSON.parse(data);
+    await this.save();
   };
 
   get = (key) => {
@@ -35,6 +36,6 @@ export default class ConfigStore {
 
   set = (key, val) => {
     this.data[key] = val;
-    writeFile(this.state['importedFile'], JSON.stringify(this.data));
+    this.save();
   }
 }
