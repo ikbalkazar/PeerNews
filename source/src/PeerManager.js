@@ -22,7 +22,7 @@ export default class PeerManager {
   }
 
   connect = () => {
-    const ws = new WebSocket('ws://46.101.68.25:5000');
+    const ws = new WebSocket('ws://localhost:4059');
     this.createPeer(ws);
 
     ws.on('open', () => {
