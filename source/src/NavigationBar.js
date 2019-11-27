@@ -6,6 +6,11 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 
 export default class NavigationBar extends React.Component {
+  handleLogout = (event) => {
+    event.preventDefault();
+    this.props.onLogout();
+  };
+
   render () {
     const { pages, onClickPage } = this.props;
     return (
@@ -25,6 +30,7 @@ export default class NavigationBar extends React.Component {
           <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
             <Button variant="outline-info">Search</Button>
+            <Button variant="danger" className="mr-sm-2" onClick={this.handleLogout}>Logout</Button>
           </Form>
         </Navbar>
       </div>

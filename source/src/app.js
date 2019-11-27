@@ -114,6 +114,7 @@ export default class App extends React.Component {
         <NavigationBar
           pages={pages}
           onClickPage={this.handleClickPage}
+          onLogout={this.props.onLogout}
         />
         {page}
       </div>

@@ -183,13 +183,18 @@ export default class Boot extends React.Component {
     this.onFinish();
   };
 
+  onLogout = () => {
+    this.configStore.set('sender', null);
+    this.setState({ sender: null, tempSender: null, username: null });
+  };
+
   render() {
     const { sender, tempSender, username, storeLoading } = this.state;
     if (storeLoading) {
       return null;
     }
     if (sender !== null) {
-      return <App sender={sender} configStore={this.configStore}/>;
+      return <App sender={sender} configStore={this.configStore} onLogout={this.onLogout}/>;
     } else {
       if (!username) {
         return <Username onSubmit={this.onSubmitUsername} onImportFile={this.onImportFile}/>;
