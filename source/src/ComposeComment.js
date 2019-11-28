@@ -54,7 +54,22 @@ export default class ComposeComment extends React.Component {
           Make a comment
         </Button>
         <Dialog open={open} onClose={this.handleClose} maxWidth="md" fullWidth="true" aria-labelledby="max-width-dialog-title">
-          
+          <DialogContent>
+            <DialogContentText style={{textAlign:"center"}}>
+              <b>Add new comment to post:</b>
+            </DialogContentText>
+            <Form style={{padding: 20, width: 900}}>
+              <Form.Group>
+                <Form.Control type="text" placeholder="Enter new comment" value={comment} onChange={this.handleChange} />
+              </Form.Group>
+              <Button variant="danger" style={{marginLeft:"10px"}} type="submit" onClick={this.handleClose}>
+                Close
+              </Button>
+              <Button variant="success" style={{marginLeft:"705px"}} type="submit" onClick={this.onSubmit}>
+                Submit
+              </Button>
+            </Form>
+          </DialogContent>
         </Dialog>
       </div>
     );
