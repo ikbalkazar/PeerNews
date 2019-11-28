@@ -13,6 +13,8 @@ id_location = {}
 
 
 def add_client(id, websocket):
+    if id in clients:
+        remove_client(id)
     clients[id] = websocket
     id_location[id] = len(client_ids)
     client_ids.append(id)
