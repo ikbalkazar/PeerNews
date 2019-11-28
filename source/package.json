@@ -1,7 +1,6 @@
 {
-  "name": "electrate",
+  "name": "peernews",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
   "main": "app/main.js",
   "scripts": {
     "postinstall": "install-app-deps",
@@ -10,14 +9,6 @@
     "test": "gulp test",
     "release": "gulp release"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
@@ -29,6 +20,7 @@
     "babel-jest": "^24.8.0",
     "electron": "^7.1.2",
     "electron-builder": "^20.39.0",
+    "electron-packager": "^14.1.1",
     "electron-react-devtools": "^0.5.3",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
@@ -75,7 +67,7 @@
     "ws": "^7.2.0"
   },
   "build": {
-    "appId": "com.karmadust.electrate",
+    "appId": "com.peernews.app",
     "files": [
       "app/**/*",
       "node_modules/**/*",
