@@ -116,7 +116,7 @@ export default class App extends React.Component {
           return (
             <Feed 
               followedTopics={routeParams.filter}
-              messages={globalMessages} 
+              messages={feedMessages} 
               getGlobalMessagesFilteredByTopics = {this.messageManager.getGlobalMessagesFilteredByTopics}
               navigate={this.navigate}
               upvote={this.messageManager.upvote}
@@ -125,7 +125,7 @@ export default class App extends React.Component {
           );
         }
       case ROUTES.focus:
-        const focusMessage = feedMessages.filter(message =>
+        const focusMessage = this.messageManager.getAllMessages().filter(message =>
           message.messageId === routeParams.messageId)[0];
           if( typeof routeParams.filter === "undefined" ){
             return (

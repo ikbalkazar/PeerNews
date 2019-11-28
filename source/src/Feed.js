@@ -56,7 +56,7 @@ export default class Feed extends React.Component {
       super(props);
       this.state = { 
         height:"", 
-        width:""  ,
+        width:"" ,
         followedTopics: this.props.followedTopics,
         messages: this.props.messages,
         upvote: this.props.upvote,
@@ -87,7 +87,7 @@ export default class Feed extends React.Component {
   };
 
   render () {
-    const { messages, upvote, downvote } = this.props;
+    const { messages, upvote, downvote } = this.state;
     const { height, width, followedTopics } = this.state;
     messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     return (

@@ -117,6 +117,28 @@ export default class MessageManager {
     return this.torrentMedia.get(messageId);
   };
 
+  getAllMessages = (topics) => {
+    const messages = this.messages;
+    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const groupByReMessageId = (subMessages) => {
+      const result = new Map();
+      for (const subMessage of subMessages) {
+        const current = result.get(subMessage.reMessageId) || [];
+        result.set(subMessage.reMessageId, [...current, subMessage]);
+      }
+      return result;
+    };
+    const globalMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+    const comments = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.COMMENT));
+    const votes = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.VOTE));
+    return globalMessages.map(message => ({
+      ...message,
+      comments: comments.get(message.messageId) || [],
+      votes: votes.get(message.messageId) || [],
+      media: this.getMessageMedia(message.messageId, message.media),
+    }));
+  };
+
   getFeedMessages = (topics) => {
     const messages = this.messages;
     const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);

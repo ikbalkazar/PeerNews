@@ -82,9 +82,8 @@ export default class GlobalPage extends React.Component {
     const newMarkedTopics = Object.assign([], this.state.markedTopics);
     newMarkedTopics[index] = topic;
 
-    this.setState({markedTopics:newMarkedTopics});
     const filteredMessages = this.props.getGlobalMessagesFilteredByTopics( newMarkedTopics );
-    this.setState({messages:filteredMessages});
+    this.setState({messages:filteredMessages, markedTopics:newMarkedTopics});
   };
 
   render () {
