@@ -50,14 +50,14 @@ const styles = {
   },
 }
 
-export default class Feed extends React.Component {
+export default class GlobalPage extends React.Component {
 
   constructor(props) {
       super(props);
       this.state = { 
         height:"", 
-        width:""  ,
-        followedTopics: this.props.followedTopics,
+        width:"" , 
+        markedTopics: this.props.markedTopics,
         messages: this.props.messages,
         upvote: this.props.upvote,
         downvote: this.props.downvote,
@@ -66,36 +66,37 @@ export default class Feed extends React.Component {
 
   handleClick = (message) => {
     const { navigate } = this.props;
-    navigate(ROUTES.focus, { messageId: message.messageId, backTrace: ROUTES.feed, filter: this.state.followedTopics });
+    navigate(ROUTES.focus, { messageId: message.messageId, backTrace: ROUTES.globalPage, filter: this.state.markedTopics });
   };
 
   handleTopicSelect = (label, event) => {
 
-    const index = this.state.followedTopics.findIndex((topic)=> {
+    const index = this.state.markedTopics.findIndex((topic)=> {
         return (topic.label === label);
     })
 
-    const topic = Object.assign({}, this.state.followedTopics[index]);
+    const topic = Object.assign({}, this.state.markedTopics[index]);
 
     topic.value = event.target.checked;
 
-    const newfollowedTopics = Object.assign([], this.state.followedTopics);
-    newfollowedTopics[index] = topic;
+    const newMarkedTopics = Object.assign([], this.state.markedTopics);
+    newMarkedTopics[index] = topic;
 
-    const filteredMessages = this.props.getGlobalMessagesFilteredByTopics( newfollowedTopics );
-    this.setState({messages:filteredMessages, followedTopics:newfollowedTopics});
+    this.setState({markedTopics:newMarkedTopics});
+    const filteredMessages = this.props.getGlobalMessagesFilteredByTopics( newMarkedTopics );
+    this.setState({messages:filteredMessages});
   };
 
   render () {
-    const { messages, upvote, downvote } = this.props;
-    const { height, width, followedTopics } = this.state;
+    const { messages, upvote, downvote } = this.state;
+    const { height, width, markedTopics } = this.state;
     messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     return (
       <div>
         <div style={styles.root}>
           <FormControl component="fieldset" style={styles.formControl}>
             <FormLabel component="legend" style={{textAlign:"left"}} >Select topics</FormLabel>
-            {followedTopics.map((topic, index) => 
+            {markedTopics.map((topic, index) => 
               <FormGroup key = {topic.label}>
                 <FormControlLabel
                   label={topic.label}
@@ -114,7 +115,7 @@ export default class Feed extends React.Component {
               isPreview={true}
               upVote={upvote} 
               downVote={downvote}
-            /> 
+            />
           )}
         </div>
       </div>

@@ -7,14 +7,16 @@ const log = createLogger('MessageManager');
 const DISK_WRITE_INTERVAL = 5000;
 
 export default class MessageManager {
-  constructor({sender, peerManager, torrentManager, onChange}) {
+  constructor({sender, peerManager, torrentManager, onChange, markedTopics}) {
     this.sender = sender;
     this.peerManager = peerManager;
     this.torrentManager = torrentManager;
     this.messages = new Map();
+    this.followedTopics = [];
     this.torrentMedia = new Map();
     this.onChange = onChange;
     this.messageStore = new MessageStore(sender);
+    this.markedTopics = markedTopics;
     this.loadMessagesOnDisk();
     this.scheduleDiskWrite();
   }
@@ -115,9 +117,32 @@ export default class MessageManager {
     return this.torrentMedia.get(messageId);
   };
 
-  getFeedMessages = () => {
+  getFeedMessages = (topics) => {
     const messages = this.messages;
-    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const parsedMessages = unFilteredParsedMessages.map( message => {
+        if( message.type === Message.type.TEXT || message.type === Message.type.FILTERED ){
+          let indicator = false;
+          for( var i = 0; i < topics.length; i++ )
+            for( var j = 0; j < message.topics.length; j++ )
+              if( topics[i].label === message.topics[j] )
+                indicator = true;
+
+          if( indicator === true ){
+            let newMessage = message;
+            newMessage.type = Message.type.TEXT;
+            return( message );
+          }
+          else{
+            let newMessage = message;
+            newMessage.type = Message.type.FILTERED;
+            return( newMessage );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
     const groupByReMessageId = (subMessages) => {
       const result = new Map();
       for (const subMessage of subMessages) {
@@ -126,10 +151,64 @@ export default class MessageManager {
       }
       return result;
     };
-    const feedMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+    const globalMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
     const comments = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.COMMENT));
     const votes = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.VOTE));
-    return feedMessages.map(message => ({
+    return globalMessages.map(message => ({
+      ...message,
+      comments: comments.get(message.messageId) || [],
+      votes: votes.get(message.messageId) || [],
+      media: this.getMessageMedia(message.messageId, message.media),
+    }));
+  };
+
+  getGlobalMessagesFilteredByTopics = (topics) => {
+    const messages = this.messages;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const parsedMessages = unFilteredParsedMessages.map( message => {
+        if( message.type === Message.type.TEXT || message.type === Message.type.FILTERED ){
+          let total = 0;
+          let truedTopics = 0;
+          for( var i = 0; i < topics.length; i++ ){
+            let indicator = false;
+            if( topics[i].value === true )
+              truedTopics++;
+            for( var j = 0; j < message.topics.length; j++ ){
+              if( topics[i].value === true && topics[i].label === message.topics[j] )
+                indicator = true;
+            }
+            if( indicator === true )
+              total = total + 1;
+          }
+          console.log( total );
+          console.log( truedTopics );
+          if( total === truedTopics ){
+            let newMessage = message;
+            newMessage.type = Message.type.TEXT;
+            return( message );
+          }
+          else{
+            let newMessage = message;
+            newMessage.type = Message.type.FILTERED;
+            return( newMessage );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
+    const groupByReMessageId = (subMessages) => {
+      const result = new Map();
+      for (const subMessage of subMessages) {
+        const current = result.get(subMessage.reMessageId) || [];
+        result.set(subMessage.reMessageId, [...current, subMessage]);
+      }
+      return result;
+    };
+    const globalMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+    const comments = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.COMMENT));
+    const votes = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.VOTE));
+    return globalMessages.map(message => ({
       ...message,
       comments: comments.get(message.messageId) || [],
       votes: votes.get(message.messageId) || [],

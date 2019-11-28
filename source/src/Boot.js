@@ -38,6 +38,29 @@ const styles = {
         shadowRadius: '20px',
         shadowColor: '#330033',
         //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
+  },
+  divKeyPair: {
+        textAlign: 'center', 
+        padding: '20',
+        position: 'fixed',
+        width: '100%',
+        height: '100%',
+        backgroundImage: 'url(../assets/keypairpage2.jpg)',
+        backgroundSize: 'cover',
+        float: 'left',
+        borderRadius: '9px',
+        borderRadiusInputTopLeft: '9px',
+        borderRadiusInputTopRight: '9px',
+        borderRadiusInputBottomLeft: '9px',
+        borderRadiusInputBottomRight: '9px',
+        topLeftMode: 'true',
+        topRightMode: 'true',
+        bottomLeftMode: 'true',
+        bottomRightMode: 'true',
+        shadowOffset: {widht:2, height: 2},
+        shadowRadius: '20px',
+        shadowColor: '#330033',
+        //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
   }
 }
 
@@ -87,7 +110,7 @@ class Username extends React.Component {
     const { username, open, existingOpen, media } = this.state;
     return (
         <div style={styles.divMiddle}>
-          <div style={{fontSize:"120px", fontFamily:"Times New Roman", fontStyle:"italic", paddingTop: 50, textAlign:"center", color:"white"}}>PeerNews</div>
+          <div style={{opacity: '1.0', fontSize:"120px", fontFamily:"Times New Roman", fontStyle:"italic", paddingTop: 50, textAlign:"center", color:"white"}}>PeerNews</div>
           <div style={{paddingTop: 50, width:"45%", float:"left", color:"transparent"}}> </div>
           <div style={{paddingTop: 50, width:"10%", float:"left", color:"white"}}>
           <h2 style={{textAlign:"center", color:"white", cursor:"pointer", border: '1px solid white' }} onClick={this.handleOpen}>Join Now</h2>
@@ -125,19 +148,26 @@ class DisplayKeys extends React.Component {
     const { keyPair, onNext } = this.props;
     const { privateKey, publicKey } = keyPair;
     return (
-      <div style={{textAlign: 'center', padding: 20}}>
-        <h4>Take a note of your keys!</h4>
-        <h5>Private Key</h5>
-        <p>{encodeBase64(privateKey)}</p>
-        <h5>Public Key</h5>
-        <p>{encodeBase64(publicKey)}</p>
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={onNext}
-        >
-          Continue
-        </Button>
+      <div style={styles.divKeyPair}>
+        <a href="https://pngtree.com/free-backgrounds" style={{color:'transparent'}}>free background photos from pngtree.com</a>
+        <div style={{opacity: '0.6', fontSize:"80px", fontFamily:"Times New Roman", fontStyle:"italic", paddingTop: 50, textAlign:"left", paddingLeft:"220px", color:"red"}}>
+          <p>Welcome to our</p> <p>information world</p>
+        </div>
+
+        <div style={{color:"white", fontFamily:"Times New Roman", fontStyle:"italic", paddingTop: 50, textAlign:"left", paddingLeft:"100px"}}>
+          <h4>Show and copy the keys</h4>
+          <h5>Private Key</h5>
+          <p>{encodeBase64(privateKey)}</p>
+          <h5>Public Key</h5>
+          <p>{encodeBase64(publicKey)}</p>
+        </div>
+
+        <div style={{paddingTop: 50, width:"20%", float:"left", color:"transparent"}}> </div>
+        <div style={{paddingTop: 50, width:"10%", float:"left", color:"white"}}>
+          <h2 style={{opacity: '0.6', textAlign:"center", color:"white", cursor:"pointer"}} onClick={onNext}>Continue</h2>
+        </div>
+        <div style={{paddingTop: 50,width:"70%", float:"right", color:"transparent"}}> </div>
+
       </div>
     );
   }

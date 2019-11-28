@@ -79,12 +79,14 @@ export const toList = (iter) => {
 export const ROUTES = {
   feed: "3",
   focus: "5",
-  postMessage: "6"
+  postMessage: "6",
+  globalPage: "7"
 };
 
 export const ROUTE_NAME = {
   "3": 'Feed',
   "6": 'PostMessage',
+  "7": 'GlobalPage',
 };
 
 export const createLogger = (prefix) => (message) => console.log(`[${prefix}] ${message}`);

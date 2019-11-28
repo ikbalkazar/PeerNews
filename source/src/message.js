@@ -7,6 +7,7 @@ export const type = {
   REBROADCAST: "rebroadcast",
   COMMENT: "comment",
   VOTE: "vote",
+  FILTERED: "filtered",
 };
 
 export const createSender = (name) => {

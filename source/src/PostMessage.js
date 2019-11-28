@@ -10,16 +10,16 @@ import { Modal } from 'react-bootstrap';
 import { isHttpUrl } from './util';
 
 const topics = [
-	{label: "football", value: "football"},
-	{label: "culture", value: "culture"},
-	{label: "game", value: "game"},
-	{label: "comics", value: "comics"},
-	{label: "movies", value: "movies"},
-	{label: "movies", value: "movies"},
-	{label: "movies", value: "movies"},
-	{label: "movies", value: "movies"},
-	{label: "movies", value: "movies"},
-	{label: "commerce", value: "commerce"}
+  {label: "children", value: "children"},
+  {label: "comics", value: "comics"},
+  {label: "commerce", value: "commerce"},
+  {label: "crypto currency", value: "crypto currency"},
+  {label: "culture", value: "culture"},
+  {label: "food", value: "food"},
+  {label: "football", value: "football"},
+  {label: "game", value: "game"},
+  {label: "movies", value: "movies"},
+  {label: "travel", value: "travel"}
 ]
 
 const styles = {

@@ -26,8 +26,8 @@ const styles = {
   },
 
   messageCard: {
-        width: '40%',
-        left: '30%',
+        width: '50%',
+        left: '15%',
         height: 'auto',
         cursor: 'pointer',
   },
