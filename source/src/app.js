@@ -2,6 +2,7 @@ import React from 'react';
 
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
+import GlobalPage from './GlobalPage';
 import Compose from './Compose';
 import Focus from './Focus';
 import { ROUTES, ROUTE_NAME } from './util';
@@ -23,6 +24,30 @@ export default class App extends React.Component {
     this.state = {
       numPeers: 0,
       messages: new Map(),
+      followedTopics: [
+          {label: "children", value: false},
+          {label: "comics", value: false},
+          {label: "commerce", value: false},
+          {label: "crypto currency", value: false},
+          {label: "culture", value: false},
+          {label: "food", value: false},
+          {label: "football", value: false},
+          {label: "game", value: false},
+          {label: "movies", value: false},
+          {label: "travel", value: false}
+        ],
+      markedTopics: [
+          {label: "children", value: false},
+          {label: "comics", value: false},
+          {label: "commerce", value: false},
+          {label: "crypto currency", value: false},
+          {label: "culture", value: false},
+          {label: "food", value: false},
+          {label: "football", value: false},
+          {label: "game", value: false},
+          {label: "movies", value: false},
+          {label: "travel", value: false}
+        ],
       route: ROUTES.feed,
       routeParams: null,
     };
@@ -47,6 +72,9 @@ export default class App extends React.Component {
       onChange: (messages) => {
         this.setState({ messages: new Map(messages) });
       },
+      onChangeFollowedTopics: (followedTopics) => {
+        this.setState({ topics: followedTopics });
+      },
     });
   }
 
@@ -59,7 +87,7 @@ export default class App extends React.Component {
   };
 
   handleClickPage = (pageId) => {
-    this.setState({ route: pageId });
+    this.setState({ route: pageId, routeParams:{} });
   };
 
   navigate = (route, routeParams) => {
@@ -67,30 +95,62 @@ export default class App extends React.Component {
   };
 
   renderPage = () => {
-    const { route, routeParams } = this.state;
-    const feedMessages = this.messageManager.getFeedMessages();
+    const { route, routeParams, markedTopics, followedTopics } = this.state;
     switch (route) {
       case ROUTES.feed:
-        return (
-          <Feed 
-            messages={feedMessages} 
-            navigate={this.navigate}
-            upvote={this.messageManager.upvote}
-            downvote={this.messageManager.downvote}
-          />
-        );
+        if( routeParams === null || typeof routeParams.filter === "undefined"  ){
+          const feedMessages = this.messageManager.getFeedMessages( this.state.followedTopics );
+          return (
+            <Feed 
+              followedTopics={this.state.followedTopics}
+              messages={feedMessages} 
+              getGlobalMessagesFilteredByTopics = {this.messageManager.getGlobalMessagesFilteredByTopics}
+              navigate={this.navigate}
+              upvote={this.messageManager.upvote}
+              downvote={this.messageManager.downvote}
+            />
+          );
+        }
+        else{
+          const feedMessages = this.messageManager.getGlobalMessagesFilteredByTopics( routeParams.filter );
+          return (
+            <Feed 
+              followedTopics={routeParams.filter}
+              messages={feedMessages} 
+              getGlobalMessagesFilteredByTopics = {this.messageManager.getGlobalMessagesFilteredByTopics}
+              navigate={this.navigate}
+              upvote={this.messageManager.upvote}
+              downvote={this.messageManager.downvote}
+            />
+          );
+        }
       case ROUTES.focus:
-        const focusMessage = feedMessages.filter(message =>
+        const focusMessage = this.messageManager.getAllMessages().filter(message =>
           message.messageId === routeParams.messageId)[0];
-        return (
-          <Focus
-            message={focusMessage}
-            navigate={this.navigate}
-            postComment={this.messageManager.postComment}
-            upvote={this.messageManager.upvote}
-            downvote={this.messageManager.downvote}
-          />
-        );
+          if( typeof routeParams.filter === "undefined" ){
+            return (
+              <Focus
+                message={focusMessage}
+                backTrace={routeParams.backTrace}
+                navigate={this.navigate}
+                postComment={this.messageManager.postComment}
+                upvote={this.messageManager.upvote}
+                downvote={this.messageManager.downvote}
+              />
+            );
+          }
+          else
+           return (
+            <Focus
+              message={focusMessage}
+              filter={routeParams.filter}
+              backTrace={routeParams.backTrace}
+              navigate={this.navigate}
+              postComment={this.messageManager.postComment}
+              upvote={this.messageManager.upvote}
+              downvote={this.messageManager.downvote}
+            /> 
+          );
       case ROUTES.postMessage:
         return (
           <PostMessage
@@ -98,6 +158,34 @@ export default class App extends React.Component {
             seedAsTorrent={this.torrentManager.seed}
           />
         );
+      case ROUTES.globalPage:
+        if( routeParams === null || typeof routeParams.filter === "undefined"  ){
+          const globalMessages = this.messageManager.getGlobalMessagesFilteredByTopics( this.state.markedTopics );
+          return (
+            <GlobalPage 
+              markedTopics={this.state.markedTopics}
+              messages={globalMessages} 
+              getGlobalMessagesFilteredByTopics = {this.messageManager.getGlobalMessagesFilteredByTopics}
+              navigate={this.navigate}
+              upvote={this.messageManager.upvote}
+              downvote={this.messageManager.downvote}
+            />
+          );
+        }
+        else{
+          const globalMessages = this.messageManager.getGlobalMessagesFilteredByTopics( routeParams.filter );
+          return (
+            <GlobalPage 
+              markedTopics={routeParams.filter}
+              messages={globalMessages} 
+              getGlobalMessagesFilteredByTopics = {this.messageManager.getGlobalMessagesFilteredByTopics}
+              navigate={this.navigate}
+              upvote={this.messageManager.upvote}
+              downvote={this.messageManager.downvote}
+            />
+          );
+        }
+      
       default:
         return null;
     }
