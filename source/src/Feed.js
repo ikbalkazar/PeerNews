@@ -49,6 +49,14 @@ export default class Feed extends React.Component {
     navigate(ROUTES.focus, { messageId: message.messageId });
   };
 
+  handleTopicPage = ( topic ) => {
+      const { navigate, source, filter } = this.props;
+      if( source === ROUTES.TopicPage )
+        navigate(ROUTES.TopicPage, { filter: topic, previousPage: ROUTES.TopicPage, previousFilter: filter });
+      else
+          navigate(ROUTES.TopicPage, { filter: topic, previousPage: ROUTES.feed });
+  };
+
   render () {
     const { messages, upvote, downvote } = this.props;
     const { height, width } = this.state;
@@ -63,6 +71,7 @@ export default class Feed extends React.Component {
             isPreview={true}
             upVote={upvote} 
             downVote={downvote}
+            handleTopicPage = {this.handleTopicPage}
           />
         )}
       </div>

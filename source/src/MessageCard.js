@@ -94,7 +94,7 @@ const shorten = (s) => {
   return s.substring(0, 100) + '...';
 };
 
-export default ({message, onClick, isPreview, postComment, upVote, downVote}) => {
+export default ({message, onClick, isPreview, postComment, upVote, downVote, handleTopicPage}) => {
   let aggregateVotes = 0;
   for (const vote of message.votes) {
     aggregateVotes += parseInt(vote.delta);
@@ -145,7 +145,7 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote}) =>
                 key="topic"
                 style={{marginLeft:"5px", marginTop:"5px"}}
                 variant="outline-success"
-                disabled
+                onClick={() => handleTopicPage(topic)}
               >
                 {topic}
               </Button>

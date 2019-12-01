@@ -77,6 +77,7 @@ export const toList = (iter) => {
 };
 
 export const ROUTES = {
+  app: "1",
   feed: "3",
   focus: "5",
   postMessage: "6",

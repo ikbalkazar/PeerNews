@@ -137,9 +137,33 @@ export default class MessageManager {
     }));
   };
 
-  getFeedMessages = () => {
+  getFeedMessages = ( filter ) => {
     const messages = this.messages;
-    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const parsedMessages = unFilteredParsedMessages.map( message => {
+      if( message.type === Message.type.TEXT || message.type === Message.type.FILTERED ){
+        let indicator = false;
+        for( var i = 0; i < filter.length ; i++ )
+          for( var j = 0; j < message.topics.length; j++ ) {
+            if (filter[i].label === message.topics[j] && filter[i].value === true ) {
+              indicator = true;
+            }
+          }
+        if( indicator === true ){
+          let newMessage = message;
+          newMessage.type = Message.type.TEXT;
+          return( message );
+        }
+        else{
+          let newMessage = message;
+          newMessage.type = Message.type.FILTERED;
+          return( newMessage );
+        }
+      }
+      else{
+        return( message );
+      }
+    });
     const groupByReMessageId = (subMessages) => {
       const result = new Map();
       for (const subMessage of subMessages) {
@@ -162,13 +186,14 @@ export default class MessageManager {
 
   getFilteredMessagesByTopic = (topic) => {
       const messages = this.messages;
+      const label = typeof topic.label === "undefined" ? topic : topic.label;
       const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
       const parsedMessages = unFilteredParsedMessages.map( message => {
           if( message.type === Message.type.TEXT || message.type === Message.type.FILTERED ){
             let indicator = false;
             for( var j = 0; j < message.topics.length; j++ ) {
               console.log( message.topics[j] );
-              if (topic.label === message.topics[j])
+              if (label === message.topics[j])
                 indicator = true;
             }
 

@@ -28,17 +28,18 @@ export default class App extends React.Component {
       route: ROUTES.feed,
       routeParams: null,
       topics: [
-        {label: "children", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%"},
-        {label: "comics", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "39%"},
-        {label: "commerce", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "37%"},
-        {label: "crypto currency", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "31%"},
-        {label: "culture", value: false, valueString: "Unfollowed", color : "RED", marginLeft: "38%"},
-        {label: "food", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "41%"},
-        {label: "football", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%"},
-        {label: "game", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "41%"},
-        {label: "movies", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "39%"},
-        {label: "travel", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "39%"}
+        {label: "children", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%", wholePageMargin:"46%"},
+        {label: "comics", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "39%", wholePageMargin:"48%"},
+        {label: "commerce", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "37%", wholePageMargin:"46%"},
+        {label: "crypto currency", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "31%", wholePageMargin:"40%"},
+        {label: "culture", value: true, valueString: "Unfollowed", color : "GREEN", marginLeft: "38%", wholePageMargin:"47%"},
+        {label: "food", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "41%", wholePageMargin:"50%"},
+        {label: "football", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%", wholePageMargin:"46%"},
+        {label: "game", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "41%", wholePageMargin:"50%"},
+        {label: "movies", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "39%", wholePageMargin:"48%"},
+        {label: "travel", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "39%", wholePageMargin:"48%"}
       ],
+      firstSearch: null,
     };
     const { sender } = props;
     this.torrentManager = new TorrentManager();
@@ -101,11 +102,12 @@ export default class App extends React.Component {
 
   renderPage = () => {
     const { route, routeParams } = this.state;
-    const feedMessages = this.messageManager.getFeedMessages();
+    const feedMessages = this.messageManager.getFeedMessages(this.state.topics);
     switch (route) {
       case ROUTES.feed:
         return (
           <Feed
+              source={ROUTES.app}
             messages={feedMessages}
             navigate={this.navigate}
             upvote={this.messageManager.upvote}
@@ -132,16 +134,24 @@ export default class App extends React.Component {
           />
         );
       case ROUTES.TopicPage:
-        const filteredMessages = this.messageManager.getFilteredMessagesByTopic(routeParams.topic);
-        return (
-          <TopicPage
-            messages={filteredMessages}
-            navigate={this.navigate}
-            upvote={this.messageManager.upvote}
-            downvote={this.messageManager.downvote}
-            handleChangeTopic = {this.handleChangeTopic}
-          />
-        );
+        if( typeof routeParams.filter === "undefined" ) {
+          this.navigate(ROUTES.topics);
+        }
+        else {
+          const filteredMessages = this.messageManager.getFilteredMessagesByTopic(routeParams.filter);
+          return (
+              <TopicPage
+                  previousFilter={routeParams.previousFilter}
+                  filter={routeParams.filter}
+                  messages={filteredMessages}
+                  navigate={this.navigate}
+                  previousPage={routeParams.previousPage}
+                  upvote={this.messageManager.upvote}
+                  downvote={this.messageManager.downvote}
+                  handleChangeTopic={this.handleChangeTopic}
+              />
+          );
+        }
       case ROUTES.topics:
         return (
           <Topics
