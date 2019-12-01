@@ -115,6 +115,28 @@ export default class MessageManager {
     return this.torrentMedia.get(messageId);
   };
 
+  getAllMessages = () => {
+    const messages = this.messages;
+    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const groupByReMessageId = (subMessages) => {
+      const result = new Map();
+      for (const subMessage of subMessages) {
+        const current = result.get(subMessage.reMessageId) || [];
+        result.set(subMessage.reMessageId, [...current, subMessage]);
+      }
+      return result;
+    };
+    const feedMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+    const comments = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.COMMENT));
+    const votes = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.VOTE));
+    return feedMessages.map(message => ({
+      ...message,
+      comments: comments.get(message.messageId) || [],
+      votes: votes.get(message.messageId) || [],
+      media: this.getMessageMedia(message.messageId, message.media),
+    }));
+  };
+
   getFeedMessages = () => {
     const messages = this.messages;
     const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
@@ -135,6 +157,53 @@ export default class MessageManager {
       votes: votes.get(message.messageId) || [],
       media: this.getMessageMedia(message.messageId, message.media),
     }));
+  };
+
+
+  getFilteredMessagesByTopic = (topic) => {
+      const messages = this.messages;
+      const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+      const parsedMessages = unFilteredParsedMessages.map( message => {
+          if( message.type === Message.type.TEXT || message.type === Message.type.FILTERED ){
+            let indicator = false;
+            for( var j = 0; j < message.topics.length; j++ ) {
+              console.log( message.topics[j] );
+              if (topic.label === message.topics[j])
+                indicator = true;
+            }
+
+            if( indicator === true ){
+              let newMessage = message;
+              newMessage.type = Message.type.TEXT;
+              return( message );
+            }
+            else{
+              let newMessage = message;
+              newMessage.type = Message.type.FILTERED;
+              return( newMessage );
+            }
+          }
+          else{
+            return( message );
+          }
+       });
+      const groupByReMessageId = (subMessages) => {
+          const result = new Map();
+          for (const subMessage of subMessages) {
+            const current = result.get(subMessage.reMessageId) || [];
+            result.set(subMessage.reMessageId, [...current, subMessage]);
+          }
+          return result;
+      };
+      const globalMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+      const comments = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.COMMENT));
+      const votes = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.VOTE));
+      return globalMessages.map(message => ({
+          ...message,
+          comments: comments.get(message.messageId) || [],
+          votes: votes.get(message.messageId) || [],
+          media: this.getMessageMedia(message.messageId, message.media),
+      }));
   };
 
 }

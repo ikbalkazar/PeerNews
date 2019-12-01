@@ -9,6 +9,8 @@ import PeerManager from './PeerManager';
 import MessageManager from './MessageManager';
 import PostMessage from './PostMessage';
 import TorrentManager from './TorrentManager';
+import TopicPage from './TopicPage';
+import Topics from './Topics';
 
 const TEST_MESSAGES = new Map([
   ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
@@ -25,6 +27,18 @@ export default class App extends React.Component {
       messages: new Map(),
       route: ROUTES.feed,
       routeParams: null,
+      topics: [
+        {label: "children", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%"},
+        {label: "comics", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "39%"},
+        {label: "commerce", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "37%"},
+        {label: "crypto currency", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "31%"},
+        {label: "culture", value: false, valueString: "Unfollowed", color : "RED", marginLeft: "38%"},
+        {label: "food", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "41%"},
+        {label: "football", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%"},
+        {label: "game", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "41%"},
+        {label: "movies", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "39%"},
+        {label: "travel", value: false, valueString: "Unfollowed", color: "RED", marginLeft: "39%"}
+      ],
     };
     const { sender } = props;
     this.torrentManager = new TorrentManager();
@@ -66,14 +80,33 @@ export default class App extends React.Component {
     this.setState({ route, routeParams });
   };
 
+  handleChangeTopic = ( label, value ) => {
+    const index = this.state.topics.findIndex((topic)=> {
+        return (topic.label === label);
+    })
+
+    const topic = Object.assign({}, this.state.topics[index]);
+
+    topic.value = value;
+    if( value === true )
+      topic.color = "GREEN";
+    else
+      topic.color = "RED";
+
+    const newTopics = Object.assign([], this.state.topics);
+    newTopics[index] = topic;
+
+    this.setState({topics:newTopics});
+  };
+
   renderPage = () => {
     const { route, routeParams } = this.state;
     const feedMessages = this.messageManager.getFeedMessages();
     switch (route) {
       case ROUTES.feed:
         return (
-          <Feed 
-            messages={feedMessages} 
+          <Feed
+            messages={feedMessages}
             navigate={this.navigate}
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
@@ -96,6 +129,25 @@ export default class App extends React.Component {
           <PostMessage
             postMessage={this.messageManager.postMessage}
             seedAsTorrent={this.torrentManager.seed}
+          />
+        );
+      case ROUTES.TopicPage:
+        const filteredMessages = this.messageManager.getFilteredMessagesByTopic(routeParams.topic);
+        return (
+          <TopicPage
+            messages={filteredMessages}
+            navigate={this.navigate}
+            upvote={this.messageManager.upvote}
+            downvote={this.messageManager.downvote}
+            handleChangeTopic = {this.handleChangeTopic}
+          />
+        );
+      case ROUTES.topics:
+        return (
+          <Topics
+            navigate={this.navigate}
+            topicsList={this.state.topics}
+            handleChangeTopic={this.handleChangeTopic}
           />
         );
       default:

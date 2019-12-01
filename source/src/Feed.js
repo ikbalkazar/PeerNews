@@ -65,7 +65,6 @@ export default class Feed extends React.Component {
             downVote={downvote}
           />
         )}
-
       </div>
     );
   }
