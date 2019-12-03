@@ -54,8 +54,7 @@ const PopOverPublicID = (userID) => {
 }
 
 export default class Focus extends React.Component {
-  handleClickBack = (event) => {
-    event.preventDefault();
+  handleClickBack = () => {
     const { navigate, backTrace } = this.props;
     navigate( backTrace[backTrace.length-1].page, { backTrace: backTrace.filter( x => x.value != backTrace[backTrace.length-1].value ), filter: backTrace[backTrace.length-1].filter });
   };
@@ -96,19 +95,14 @@ export default class Focus extends React.Component {
   render () {
     const { message, upvote, downvote } = this.props;
     return (
-      <Container fluid>
-        <Button variant="primary" onClick={this.handleClickBack}>
-          {'< Back'}
-        </Button>
-        <Row><Col>
+      <div>
+        <Button variant="dark" size="lg" onClick={() => this.handleClickBack()}>Back</Button>
+        <div style={{marginTop: "-46px"}}>
           <MessageCard message={message} postComment={this.postComment} upVote={upvote} downVote={downvote} />
-        </Col></Row>
-        <Row><Col>
           <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
           {message.comments.map(comment => this.renderCard(comment))}
-        </Col></Row>
-        
-      </Container>
+        </div>
+      </div>
     );
   }
 }

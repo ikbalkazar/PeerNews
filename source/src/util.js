@@ -83,13 +83,15 @@ export const ROUTES = {
   postMessage: "6",
   topics: "7",
   TopicPage: "8",
-  UserPostPage: "9"
+  UserPostPage: "9",
+  Profile: "10"
 };
 
 export const ROUTE_NAME = {
   "3": 'Feed',
   "6": 'PostMessage',
   "7": 'Topics',
+  "10": 'Profile',
 };
 
 export const createLogger = (prefix) => (message) => console.log(`[${prefix}] ${message}`);

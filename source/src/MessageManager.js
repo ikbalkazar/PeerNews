@@ -145,7 +145,7 @@ export default class MessageManager {
         let indicator = false;
         for( var i = 0; i < filter.length ; i++ )
           for( var j = 0; j < message.topics.length; j++ ) {
-            if (filter[i].label === message.topics[j] && filter[i].value === true ) {
+            if (filter[i].label === message.topics[j].label && filter[i].value === true ) {
               indicator = true;
             }
           }
@@ -185,8 +185,7 @@ export default class MessageManager {
           if( message.type === Message.type.TEXT ){
             let indicator = false;
             for( var j = 0; j < message.topics.length; j++ ) {
-              console.log( message.topics[j] );
-              if (label === message.topics[j])
+              if (label === message.topics[j].label)
                 indicator = true;
             }
 

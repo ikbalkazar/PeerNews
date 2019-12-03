@@ -19,8 +19,8 @@ const styles = {
         topRightMode: 'true',
         bottomLeftMode: 'true',
         bottomRightMode: 'true',
-        shadowOffset: {widht:2, height: 2},
-        shadowRadius: '20px',
+        shadowOffset: {widht:20, height: 20},
+        shadowRadius: '200px',
         shadowColor: '#330033',
         //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
   },

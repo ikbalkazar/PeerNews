@@ -111,11 +111,12 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
       <Card
         key={message.messageId}
         message={message}
+        className="rounded"
         style={ isPreview ? styles.messageCard : styles.messageCardFocus }
       >
         <Card.Header
           onClick={handleClick}
-          style={{textAlign:'center'}}
+          style={{textAlign:'center', backgroundColor: '#F0E68C'}}
         >
           {message.title}
         </Card.Header>
@@ -148,7 +149,7 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
                 variant="outline-success"
                 onClick={() => handleTopicPage(topic)}
               >
-                {topic}
+                {topic.label}
               </Button>
             )}
           </ButtonToolbar>

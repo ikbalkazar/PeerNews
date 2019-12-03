@@ -7,6 +7,7 @@ import { Link, animeteScroll as scroll } from 'react-scroll';
 import { Player } from 'video-react';
 import ReactPlayer from 'react-player'
 import Button from "react-bootstrap/Button";
+import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
 
 const styles = {
 
@@ -37,6 +38,20 @@ const styles = {
   }
 }
 
+const PopOverPublicID = (value) => {
+    return (
+      <Popover id="popover-basic" style={{cursor:'pointer'}} >
+      {
+          value === true  ?
+          <Popover.Title as="h3">Click to follow</Popover.Title>
+          :
+          <Popover.Title as="h3">Click to unfollow</Popover.Title>
+      }
+      </Popover>
+    )
+}
+
+
 export default class TopicPage extends React.Component {
 
   constructor(props) {
@@ -54,16 +69,20 @@ export default class TopicPage extends React.Component {
     const { height, width } = this.state;
     return (
         <div>
-            <Button variant="dark" size="lg" onClick={() => this.handleBack()}>Back</Button>
-            <h1 style={{marginLeft: filter.wholePageMargin, marginTop: "-50px"}}>{filter.label}</h1>
-            <Feed
-                backTrace={backTrace}
-                filter={filter}
-                messages={messages}
-                navigate={navigate}
-                upvote={upvote}
-                downvote={downvote}
-            />
+            <div style={{position:"fixed", float:"left", width:"100%", marginTop:"-50px"}}>
+              <Button variant="dark" size="lg" onClick={() => this.handleBack()} fixed="top">Back</Button>
+              <h1 style={{textAlign:"center", marginTop: "-50px"}}>{filter.label}</h1>
+            </div>
+            <div style={{marginTop: "50px"}}>
+              <Feed
+                  backTrace={backTrace}
+                  filter={filter}
+                  messages={messages}
+                  navigate={navigate}
+                  upvote={upvote}
+                  downvote={downvote}
+              />
+            </div>
         </div>
     );
   }

@@ -144,7 +144,7 @@ export default class PostMessage extends React.Component {
 		event.preventDefault();
 		const { text, media, title, selectedOptions } = this.state;
 		const { seedAsTorrent } = this.props;
-		const topics = selectedOptions.map( x => x.label );
+		const topics = selectedOptions.map( x => x );
 		if (title.length > 0 && topics.length > 0) {
 				this.setState({ loading: true });
 				if ( media === "" || media === null ){
@@ -184,6 +184,18 @@ export default class PostMessage extends React.Component {
 			<div style={ styles.div } >
 				<div className="form-group">
 					<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
+				</div>
+				<div className="form-group">
+					<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={text} onChange={this.handleText}>
+					</textarea>
+				</div>
+				<Select value={this.state.selectedOptions} placeholder="Select topics from below" isMulti options={topics} style={styles.selectArea} onChange={this.onChange}></Select>
+				<div style={{textAlign: 'center', marginTop: 20}}>
+					<Button variant="success" size="lg" type="submit" onClick={this.onSubmit} disabled={loading}>
+						{loading ? 'Submitting...' : 'Submit'}
+					</Button>
+				</div>
+				<div style={{textAlign: 'left', marginTop: -60}}>
 					<MediaUploader
 						media={media}
 						onChange={this.handleMediaFilePath}
@@ -191,16 +203,6 @@ export default class PostMessage extends React.Component {
 						header="Upload a file or enter a video/image link"
 						showPreview
 					/>
-				</div>
-				<div className="form-group">
-					<textarea type="text" className="form-control" id="message" placeholder="Enter your text message here.." style={styles.textArea} value={text} onChange={this.handleText}>
-					</textarea>
-				</div>
-				<Select value={this.state.selectedOptions} placeholder="Select topics from below" isMulti options={topics} style={styles.selectArea} onChange={this.onChange}></Select>
-				<div style={{textAlign: 'center', marginTop: 100}}>
-					<Button variant="success" size="lg" type="submit" onClick={this.onSubmit} disabled={loading}>
-						{loading ? 'Submitting...' : 'Submit'}
-					</Button>
 				</div>
 			</div>
 		);

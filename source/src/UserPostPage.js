@@ -54,16 +54,20 @@ export default class UserPostPage extends React.Component {
     const { height, width } = this.state;
     return (
         <div>
-            <Button variant="dark" size="lg" onClick={() => this.handleBack()}>Back</Button>
-            <h1 style={{marginLeft: "20%", marginTop: "-50px"}}>{filter}</h1>
-            <Feed
-                backTrace={backTrace}
-                filter={filter}
-                messages={messages}
-                navigate={navigate}
-                upvote={upvote}
-                downvote={downvote}
-            />
+            <div style={{position:"fixed", float:"left", width:"100%", marginTop:"-50px"}}>
+              <Button variant="dark" size="lg" onClick={() => this.handleBack()} fixed="top">Back</Button>
+              <h1 style={{textAlign:"center", marginTop: "-50px"}}>{filter}</h1>
+            </div>
+            <div style={{marginTop: "50px"}}>
+              <Feed
+                  backTrace={backTrace}
+                  filter={filter}
+                  messages={messages}
+                  navigate={navigate}
+                  upvote={upvote}
+                  downvote={downvote}
+              />
+            </div>
         </div>
     );
   }

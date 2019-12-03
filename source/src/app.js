@@ -2,6 +2,7 @@ import React from 'react';
 
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
+import Profile from './Profile';
 import Compose from './Compose';
 import Focus from './Focus';
 import { ROUTES, ROUTE_NAME } from './util';
@@ -29,16 +30,16 @@ export default class App extends React.Component {
       route: ROUTES.feed,
       routeParams: null,
       topics: [
-        {label: "children", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%", wholePageMargin:"46%"},
-        {label: "comics", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "39%", wholePageMargin:"48%"},
-        {label: "commerce", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "37%", wholePageMargin:"46%"},
-        {label: "crypto currency", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "31%", wholePageMargin:"40%"},
-        {label: "culture", value: true, valueString: "Unfollowed", color : "GREEN", marginLeft: "38%", wholePageMargin:"47%"},
-        {label: "food", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "41%", wholePageMargin:"50%"},
-        {label: "football", value: true, valuestring: "Followed", color: "GREEN", marginLeft: "37%", wholePageMargin:"46%"},
-        {label: "game", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "41%", wholePageMargin:"50%"},
-        {label: "movies", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "39%", wholePageMargin:"48%"},
-        {label: "travel", value: true, valueString: "Unfollowed", color: "GREEN", marginLeft: "39%", wholePageMargin:"48%"}
+        {label: "children", value: true, color: "GREEN", marginLeft: "37%"},
+        {label: "comics", value: true, color: "GREEN", marginLeft: "39%"},
+        {label: "commerce", value: true, color: "GREEN", marginLeft: "37%"},
+        {label: "crypto currency", value: true, color: "GREEN", marginLeft: "31%"},
+        {label: "culture", value: true, color : "GREEN", marginLeft: "38%"},
+        {label: "food", value: true, color: "GREEN", marginLeft: "41%"},
+        {label: "football", value: true, color: "GREEN", marginLeft: "37%"},
+        {label: "game", value: true, color: "GREEN", marginLeft: "41%"},
+        {label: "movies", value: true, color: "GREEN", marginLeft: "39%"},
+        {label: "travel", value: true, color: "GREEN", marginLeft: "39%"}
       ],
       firstSearch: null,
     };
@@ -108,6 +109,16 @@ export default class App extends React.Component {
       case ROUTES.feed:
         return (
           <Feed
+            backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
+            messages={feedMessages}
+            navigate={this.navigate}
+            upvote={this.messageManager.upvote}
+            downvote={this.messageManager.downvote}
+          />
+        );
+      case ROUTES.Profile:
+        return (
+          <Profile
             backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
             messages={feedMessages}
             navigate={this.navigate}
