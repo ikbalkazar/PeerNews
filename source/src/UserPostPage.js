@@ -37,7 +37,7 @@ const styles = {
   }
 }
 
-export default class TopicPage extends React.Component {
+export default class UserPostPage extends React.Component {
 
   constructor(props) {
       super(props);
@@ -55,7 +55,7 @@ export default class TopicPage extends React.Component {
     return (
         <div>
             <Button variant="dark" size="lg" onClick={() => this.handleBack()}>Back</Button>
-            <h1 style={{marginLeft: filter.wholePageMargin, marginTop: "-50px"}}>{filter.label}</h1>
+            <h1 style={{marginLeft: "20%", marginTop: "-50px"}}>{filter}</h1>
             <Feed
                 backTrace={backTrace}
                 filter={filter}

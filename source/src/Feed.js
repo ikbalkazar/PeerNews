@@ -45,22 +45,25 @@ export default class Feed extends React.Component {
   }
 
   handleClick = (message) => {
-    const { navigate } = this.props;
-    navigate(ROUTES.focus, { messageId: message.messageId });
+    const { navigate, backTrace } = this.props;
+    navigate(ROUTES.focus, { messageId: message.messageId, backTrace: backTrace});
+  };
+
+  handleUserClick = (senderId) => {
+    const { navigate, backTrace } = this.props;
+    navigate(ROUTES.UserPostPage, { filter: senderId, backTrace: backTrace });
   };
 
   handleTopicPage = ( topic ) => {
-      const { navigate, source, filter } = this.props;
-      if( source === ROUTES.TopicPage )
-        navigate(ROUTES.TopicPage, { filter: topic, previousPage: ROUTES.TopicPage, previousFilter: filter });
-      else
-          navigate(ROUTES.TopicPage, { filter: topic, previousPage: ROUTES.feed });
+      const { navigate, backTrace } = this.props;
+      navigate(ROUTES.TopicPage, { filter: topic, backTrace: backTrace });
   };
 
   render () {
-    const { messages, upvote, downvote } = this.props;
+    const { messages, upvote, downvote, backTrace } = this.props;
     const { height, width } = this.state;
     messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
+    console.log( backTrace );
     return (
       <div style={styles.div} >
         {messages.map(message =>
@@ -72,6 +75,7 @@ export default class Feed extends React.Component {
             upVote={upvote} 
             downVote={downvote}
             handleTopicPage = {this.handleTopicPage}
+            handleUserClick = {this.handleUserClick}
           />
         )}
       </div>

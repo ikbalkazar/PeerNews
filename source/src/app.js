@@ -11,6 +11,7 @@ import PostMessage from './PostMessage';
 import TorrentManager from './TorrentManager';
 import TopicPage from './TopicPage';
 import Topics from './Topics';
+import UserPostPage from './UserPostPage';
 
 const TEST_MESSAGES = new Map([
   ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
@@ -107,7 +108,7 @@ export default class App extends React.Component {
       case ROUTES.feed:
         return (
           <Feed
-              source={ROUTES.app}
+            backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
             messages={feedMessages}
             navigate={this.navigate}
             upvote={this.messageManager.upvote}
@@ -116,9 +117,11 @@ export default class App extends React.Component {
         );
       case ROUTES.focus:
         const focusMessage = feedMessages.filter(message =>
-          message.messageId === routeParams.messageId)[0];
+        message.messageId === routeParams.messageId)[0];
         return (
           <Focus
+            filter={routeParams.filter}
+            backTrace={routeParams.backTrace}
             message={focusMessage}
             navigate={this.navigate}
             postComment={this.messageManager.postComment}
@@ -134,27 +137,37 @@ export default class App extends React.Component {
           />
         );
       case ROUTES.TopicPage:
-        if( typeof routeParams.filter === "undefined" ) {
-          this.navigate(ROUTES.topics);
-        }
-        else {
-          const filteredMessages = this.messageManager.getFilteredMessagesByTopic(routeParams.filter);
-          return (
-              <TopicPage
-                  previousFilter={routeParams.previousFilter}
-                  filter={routeParams.filter}
-                  messages={filteredMessages}
-                  navigate={this.navigate}
-                  previousPage={routeParams.previousPage}
-                  upvote={this.messageManager.upvote}
-                  downvote={this.messageManager.downvote}
-                  handleChangeTopic={this.handleChangeTopic}
-              />
-          );
-        }
+        const filteredMessages = this.messageManager.getFilteredMessagesByTopic(routeParams.filter);
+        routeParams.backTrace.push( { filter: routeParams.filter, page: ROUTES.TopicPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
+        return (
+            <TopicPage
+                filter={routeParams.filter}
+                backTrace={routeParams.backTrace}
+                messages={filteredMessages}
+                navigate={this.navigate}
+                upvote={this.messageManager.upvote}
+                downvote={this.messageManager.downvote}
+                handleChangeTopic={this.handleChangeTopic}
+            />
+        );
+      case ROUTES.UserPostPage:
+        const filteredUserMessages = this.messageManager.getFilteredMessagesByUser(routeParams.filter);
+        routeParams.backTrace.push( { filter: routeParams.filter, page: ROUTES.UserPostPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
+        return (
+            <UserPostPage
+                filter={routeParams.filter}
+                backTrace={routeParams.backTrace}
+                messages={filteredUserMessages}
+                navigate={this.navigate}
+                upvote={this.messageManager.upvote}
+                downvote={this.messageManager.downvote}
+                handleChangeTopic={this.handleChangeTopic}
+            />
+        );
       case ROUTES.topics:
         return (
           <Topics
+            backTrace={ [ { filter: "", page: ROUTES.topics, value: 1 } ] }
             navigate={this.navigate}
             topicsList={this.state.topics}
             handleChangeTopic={this.handleChangeTopic}

@@ -82,7 +82,8 @@ export const ROUTES = {
   focus: "5",
   postMessage: "6",
   topics: "7",
-  TopicPage: "8"
+  TopicPage: "8",
+  UserPostPage: "9"
 };
 
 export const ROUTE_NAME = {

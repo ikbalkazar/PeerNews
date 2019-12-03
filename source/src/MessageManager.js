@@ -140,8 +140,8 @@ export default class MessageManager {
   getFeedMessages = ( filter ) => {
     const messages = this.messages;
     const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
-    const parsedMessages = unFilteredParsedMessages.map( message => {
-      if( message.type === Message.type.TEXT || message.type === Message.type.FILTERED ){
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+      if( message.type === Message.type.TEXT ){
         let indicator = false;
         for( var i = 0; i < filter.length ; i++ )
           for( var j = 0; j < message.topics.length; j++ ) {
@@ -150,14 +150,7 @@ export default class MessageManager {
             }
           }
         if( indicator === true ){
-          let newMessage = message;
-          newMessage.type = Message.type.TEXT;
           return( message );
-        }
-        else{
-          let newMessage = message;
-          newMessage.type = Message.type.FILTERED;
-          return( newMessage );
         }
       }
       else{
@@ -188,8 +181,8 @@ export default class MessageManager {
       const messages = this.messages;
       const label = typeof topic.label === "undefined" ? topic : topic.label;
       const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
-      const parsedMessages = unFilteredParsedMessages.map( message => {
-          if( message.type === Message.type.TEXT || message.type === Message.type.FILTERED ){
+      const parsedMessages = unFilteredParsedMessages.filter( message => {
+          if( message.type === Message.type.TEXT ){
             let indicator = false;
             for( var j = 0; j < message.topics.length; j++ ) {
               console.log( message.topics[j] );
@@ -198,14 +191,7 @@ export default class MessageManager {
             }
 
             if( indicator === true ){
-              let newMessage = message;
-              newMessage.type = Message.type.TEXT;
               return( message );
-            }
-            else{
-              let newMessage = message;
-              newMessage.type = Message.type.FILTERED;
-              return( newMessage );
             }
           }
           else{
@@ -230,5 +216,37 @@ export default class MessageManager {
           media: this.getMessageMedia(message.messageId, message.media),
       }));
   };
+
+    getFilteredMessagesByUser = (userId) => {
+      const messages = this.messages;
+      const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+      const parsedMessages = unFilteredParsedMessages.filter( message => {
+          if( message.type === Message.type.TEXT ){
+            if( message.senderId === userId ){
+              return( message );
+            }
+          }
+          else{
+            return( message );
+          }
+       });
+      const groupByReMessageId = (subMessages) => {
+          const result = new Map();
+          for (const subMessage of subMessages) {
+            const current = result.get(subMessage.reMessageId) || [];
+            result.set(subMessage.reMessageId, [...current, subMessage]);
+          }
+          return result;
+      };
+      const globalMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+      const comments = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.COMMENT));
+      const votes = groupByReMessageId(parsedMessages.filter(x => x.type === Message.type.VOTE));
+      return globalMessages.map(message => ({
+          ...message,
+          comments: comments.get(message.messageId) || [],
+          votes: votes.get(message.messageId) || [],
+          media: this.getMessageMedia(message.messageId, message.media),
+      }));
+    };
 
 }

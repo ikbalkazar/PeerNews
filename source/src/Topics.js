@@ -67,8 +67,8 @@ export default class Topics extends React.Component {
   }
 
   handleClick = (topic) => {
-    const { navigate } = this.props;
-    navigate(ROUTES.TopicPage, { filter: topic, previousPage: ROUTES.topics });
+    const { navigate, backTrace } = this.props;
+    navigate(ROUTES.TopicPage, { filter: topic, backTrace: backTrace });
   };
 
   unfollowTopic = ( label ) => {
@@ -82,7 +82,6 @@ export default class Topics extends React.Component {
   render () {
     const { topicsList } = this.props;
     const { height, width } = this.state;
-    console.log( topicsList );
     return (
       <div>
           {topicsList.map(topic => 

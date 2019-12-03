@@ -56,8 +56,8 @@ const PopOverPublicID = (userID) => {
 export default class Focus extends React.Component {
   handleClickBack = (event) => {
     event.preventDefault();
-    const { navigate } = this.props;
-    navigate(ROUTES.feed, {});
+    const { navigate, backTrace } = this.props;
+    navigate( backTrace[backTrace.length-1].page, { backTrace: backTrace.filter( x => x.value != backTrace[backTrace.length-1].value ), filter: backTrace[backTrace.length-1].filter });
   };
 
   postComment = (comment) => {

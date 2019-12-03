@@ -94,7 +94,7 @@ const shorten = (s) => {
   return s.substring(0, 100) + '...';
 };
 
-export default ({message, onClick, isPreview, postComment, upVote, downVote, handleTopicPage}) => {
+export default ({message, onClick, isPreview, postComment, upVote, downVote, handleTopicPage, handleUserClick}) => {
   let aggregateVotes = 0;
   for (const vote of message.votes) {
     aggregateVotes += parseInt(vote.delta);
@@ -126,10 +126,11 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
           <Card.Text onClick={handleClick}>{messageText}</Card.Text>
           <blockquote className="blockquote mb-0">
             <footer className="blockquote-footer">
+              <cite onClick={() => handleUserClick(message.senderId)}>{message.senderName} </cite>
               <OverlayTrigger
                 placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
               >
-              <cite>{message.senderName} @{senderId}</cite>
+              <cite>@{senderId}</cite>
               </OverlayTrigger>
               <b style={commentNumberStyle}> {aggregateVotes} </b>
               <GoThumbsup size={30} style={thumbUpStyle} onClick={() => upVote(message.messageId)} />
