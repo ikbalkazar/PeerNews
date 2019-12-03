@@ -137,17 +137,21 @@ export default class MessageManager {
     }));
   };
 
-  getFeedMessages = ( filter ) => {
+  getFeedMessages = ( filterTopic, filterUser ) => {
     const messages = this.messages;
     const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
     const parsedMessages = unFilteredParsedMessages.filter( message => {
       if( message.type === Message.type.TEXT ){
         let indicator = false;
-        for( var i = 0; i < filter.length ; i++ )
+        for( var i = 0 ; i < filterTopic.length ; i++ )
           for( var j = 0; j < message.topics.length; j++ ) {
-            if (filter[i].label === message.topics[j].label && filter[i].value === true ) {
+            if (filterTopic[i].label === message.topics[j].label && filterTopic[i].value === true ) {
               indicator = true;
             }
+          }
+        for( var i = 0 ; i < filterUser.length ; i++ )
+          if (filterUser[i].id === message.senderId ) {
+            indicator = true;
           }
         if( indicator === true ){
           return( message );
@@ -179,7 +183,7 @@ export default class MessageManager {
 
   getFilteredMessagesByTopic = (topic) => {
       const messages = this.messages;
-      const label = typeof topic.label === "undefined" ? topic : topic.label;
+      const label = topic.label;
       const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
       const parsedMessages = unFilteredParsedMessages.filter( message => {
           if( message.type === Message.type.TEXT ){

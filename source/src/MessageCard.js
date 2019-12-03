@@ -10,11 +10,6 @@ import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
 const styles = {
 
   div: {
-        borderRadius: '9px',
-        borderRadiusInputTopLeft: '9px',
-        borderRadiusInputTopRight: '9px',
-        borderRadiusInputBottomLeft: '9px',
-        borderRadiusInputBottomRight: '9px',
         topLeftMode: 'true',
         topRightMode: 'true',
         bottomLeftMode: 'true',

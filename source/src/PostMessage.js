@@ -10,16 +10,16 @@ import { Modal } from 'react-bootstrap';
 import { isHttpUrl } from './util';
 
 const topics = [
-	{label: "children", value: "children", valuestring: "Followed", color: "GREEN", marginLeft: "37%"},
-	{label: "comics", value: "comics", valueString: "Unfollowed", color: "RED", marginLeft: "39%"},
-	{label: "commerce", value: "commerce", valueString: "Unfollowed", color: "RED", marginLeft: "37%"},
-	{label: "crypto currency", value: "crypto currency", valueString: "Unfollowed", color: "RED", marginLeft: "31%"},
-	{label: "culture", value: "culture", valueString: "Unfollowed", color : "RED", marginLeft: "38%"},
-	{label: "food", value: "food", valueString: "Unfollowed", color: "RED", marginLeft: "41%"},
-	{label: "football", value: "football", valuestring: "Followed", color: "GREEN", marginLeft: "37%"},
-	{label: "game", value: "game", valueString: "Unfollowed", color: "RED", marginLeft: "41%"},
-	{label: "movies", value: "movies", valueString: "Unfollowed", color: "RED", marginLeft: "39%"},
-	{label: "travel", value: "travel", valueString: "Unfollowed", color: "RED", marginLeft: "39%"}
+	{label: "children", value: "children", color: "GREEN", marginLeft: "37%"},
+	{label: "comics", value: "comics", color: "RED", marginLeft: "39%"},
+	{label: "commerce", value: "commerce", color: "RED", marginLeft: "37%"},
+	{label: "crypto currency", value: "crypto currency", color: "RED", marginLeft: "31%"},
+	{label: "culture", value: "culture", color : "RED", marginLeft: "38%"},
+	{label: "food", value: "food", color: "RED", marginLeft: "41%"},
+	{label: "football", value: "football", color: "GREEN", marginLeft: "37%"},
+	{label: "game", value: "game", color: "RED", marginLeft: "41%"},
+	{label: "movies", value: "movies", color: "RED", marginLeft: "39%"},
+	{label: "travel", value: "travel", color: "RED", marginLeft: "39%"}
 ]
 
 const styles = {

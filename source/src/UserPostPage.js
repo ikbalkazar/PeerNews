@@ -49,16 +49,31 @@ export default class UserPostPage extends React.Component {
         navigate( backTrace[backTrace.length-2].page, { backTrace: backTrace.filter( x => x.value != backTrace[backTrace.length-1].value && x.value != backTrace[backTrace.length-2].value), filter: backTrace[backTrace.length-2].filter });
     };
 
+  unfollowUser = () => {
+    this.props.handleChangeUserInSinglePage( this.props.filter, false );
+  };
+
+  followUser = () => {
+    this.props.handleChangeUserInSinglePage( this.props.filter, true );
+  };
+
   render () {
-    const { navigate, messages, upvote, downvote, filter, backTrace } = this.props;
+    const { navigate, messages, upvote, downvote, filter, backTrace, searchResult } = this.props;
     const { height, width } = this.state;
+    const color = searchResult === true ? "GREEN" : "RED";
     return (
         <div>
-            <div style={{position:"fixed", float:"left", width:"100%", marginTop:"-50px"}}>
-              <Button variant="dark" size="lg" onClick={() => this.handleBack()} fixed="top">Back</Button>
-              <h1 style={{textAlign:"center", marginTop: "-50px"}}>{filter}</h1>
+            <div style={{position:"fixed", width:"100%", marginTop:"-56px", zIndex: 11 }}>
+              <Button variant="dark" size="lg" onClick={() => this.handleBack()}>Back</Button>
+              <h1 style={{backgroundColor: color , textAlign:"center", marginTop: "-48px"}}>{messages[0].senderName}</h1>
+              {
+                searchResult === false ?
+                  <Button style={{marginTop: "-90px", marginLeft: "95%"}} variant="success" size="lg" onClick={() => this.followUser()}>Follow</Button>
+                  :
+                  <Button style={{marginTop: "-90px", marginLeft: "94%"}} variant="danger" size="lg" onClick={() => this.unfollowUser()}>Unfollow</Button>
+              }
             </div>
-            <div style={{marginTop: "50px"}}>
+            <div style={{marginTop: "56px", zIndex:1 }}>
               <Feed
                   backTrace={backTrace}
                   filter={filter}

@@ -41,9 +41,13 @@ export default class App extends React.Component {
         {label: "movies", value: true, color: "GREEN", marginLeft: "39%"},
         {label: "travel", value: true, color: "GREEN", marginLeft: "39%"}
       ],
-      firstSearch: null,
+      users: [
+      ],
+      userCaseChange: null,
+      topicCaseChange: null,
     };
     const { sender } = props;
+    this.state.users.push( {id:sender.id} );
     this.torrentManager = new TorrentManager();
     this.peerManager = new PeerManager({
       sender,
@@ -83,6 +87,20 @@ export default class App extends React.Component {
     this.setState({ route, routeParams });
   };
 
+  handleChangeUserInSinglePage = ( id, value ) => {
+
+    let newUsers = Object.assign([], this.state.users).filter( x => x );
+
+    if( value === true ){
+      newUsers.push({ id: id });
+    }
+    else{
+      newUsers = newUsers.filter( x => x.id !== id );
+    }
+    
+    this.setState({users:newUsers, userCaseChange:true});
+  };
+
   handleChangeTopic = ( label, value ) => {
     const index = this.state.topics.findIndex((topic)=> {
         return (topic.label === label);
@@ -102,11 +120,31 @@ export default class App extends React.Component {
     this.setState({topics:newTopics});
   };
 
+  handleChangeTopicInSinglePage = ( label, value ) => {
+    const index = this.state.topics.findIndex((topic)=> {
+        return (topic.label === label);
+    })
+
+    const topic = Object.assign({}, this.state.topics[index]);
+
+    topic.value = value;
+    if( value === true )
+      topic.color = "GREEN";
+    else
+      topic.color = "RED";
+
+    const newTopics = Object.assign([], this.state.topics);
+    newTopics[index] = topic;
+
+    this.setState({topics:newTopics, topicCaseChange:true});
+  };
+
   renderPage = () => {
     const { route, routeParams } = this.state;
-    const feedMessages = this.messageManager.getFeedMessages(this.state.topics);
+    const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
       case ROUTES.feed:
+      console.log( this.state.users );
         return (
           <Feed
             backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
@@ -148,31 +186,43 @@ export default class App extends React.Component {
           />
         );
       case ROUTES.TopicPage:
-        const filteredMessages = this.messageManager.getFilteredMessagesByTopic(routeParams.filter);
-        routeParams.backTrace.push( { filter: routeParams.filter, page: ROUTES.TopicPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
+        const filter = this.state.topics.filter(x => x.label === routeParams.filter.label );
+        const filteredMessages = this.messageManager.getFilteredMessagesByTopic(filter[0]);
+        if( this.state.topicCaseChange === true )
+          this.state.topicCaseChange = null;
+        else
+          routeParams.backTrace.push( { filter: filter[0], page: ROUTES.TopicPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
         return (
             <TopicPage
-                filter={routeParams.filter}
+                filter={filter[0]}
                 backTrace={routeParams.backTrace}
                 messages={filteredMessages}
                 navigate={this.navigate}
                 upvote={this.messageManager.upvote}
                 downvote={this.messageManager.downvote}
-                handleChangeTopic={this.handleChangeTopic}
+                handleChangeTopicInSinglePage={this.handleChangeTopicInSinglePage}
             />
         );
       case ROUTES.UserPostPage:
         const filteredUserMessages = this.messageManager.getFilteredMessagesByUser(routeParams.filter);
-        routeParams.backTrace.push( { filter: routeParams.filter, page: ROUTES.UserPostPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
+        const search = Object.assign([], this.state.users).filter( x => x.id === routeParams.filter );
+        let searchResult = false;
+        if( search.length > 0 )
+          searchResult = true;
+        if( this.state.userCaseChange === true )
+          this.state.userCaseChange = null;
+        else
+          routeParams.backTrace.push( { filter: routeParams.filter, page: ROUTES.UserPostPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
         return (
             <UserPostPage
+                searchResult={searchResult}
                 filter={routeParams.filter}
                 backTrace={routeParams.backTrace}
                 messages={filteredUserMessages}
                 navigate={this.navigate}
                 upvote={this.messageManager.upvote}
                 downvote={this.messageManager.downvote}
-                handleChangeTopic={this.handleChangeTopic}
+                handleChangeUserInSinglePage={this.handleChangeUserInSinglePage}
             />
         );
       case ROUTES.topics:
