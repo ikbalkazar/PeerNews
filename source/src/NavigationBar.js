@@ -12,7 +12,7 @@ export default class NavigationBar extends React.Component {
   };
 
   render () {
-    const { pages, onClickPage } = this.props;
+    const { pages, onClickPage, activePage } = this.props;
     return (
       <div style={{height:'30px'}}>
         <Navbar bg="dark" variant="dark" fixed="top" >
@@ -21,6 +21,7 @@ export default class NavigationBar extends React.Component {
             {pages.map(page => (
               <Nav.Link
                 key={page.id}
+                style={ activePage.type.name === page.name ? {color:"RED"} : {color:""}}
                 onClick={() => onClickPage(page.id)}
               >
                 {page.name}

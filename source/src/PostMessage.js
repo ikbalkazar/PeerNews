@@ -182,6 +182,7 @@ export default class PostMessage extends React.Component {
 
 		return (
 			<div style={ styles.div } >
+				<h1 style={{textAlign:"center", marginTop: "0px"}}>Create a new post</h1>
 				<div className="form-group">
 					<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
 				</div>

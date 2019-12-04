@@ -144,7 +144,6 @@ export default class App extends React.Component {
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
       case ROUTES.feed:
-      console.log( this.state.users );
         return (
           <Feed
             backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
@@ -249,6 +248,7 @@ export default class App extends React.Component {
         {`Peers #: ${numPeers}`}
         <NavigationBar
           pages={pages}
+          activePage={page}
           onClickPage={this.handleClickPage}
           onLogout={this.props.onLogout}
         />
