@@ -68,9 +68,9 @@ export default class UserPostPage extends React.Component {
               <h1 style={{backgroundColor: color , textAlign:"center", marginTop: "-48px"}}>{messages[0].senderName}</h1>
               {
                 searchResult === false ?
-                  <Button style={{marginTop: "-90px", marginLeft: "95%"}} variant="success" size="lg" onClick={() => this.followUser()}>Follow</Button>
+                  <Button style={{position: "absolute", top: 0, right: '0px'}} variant="success" size="lg" onClick={() => this.followUser()}>Follow</Button>
                   :
-                  <Button style={{marginTop: "-90px", marginLeft: "94%"}} variant="danger" size="lg" onClick={() => this.unfollowUser()}>Unfollow</Button>
+                  <Button style={{position: "absolute", top: 0, right: '0px'}} variant="danger" size="lg" onClick={() => this.unfollowUser()}>Unfollow</Button>
               }
             </div>
             <div style={{marginTop: "56px", zIndex:1 }}>
