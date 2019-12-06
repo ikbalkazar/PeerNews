@@ -92,6 +92,9 @@ export default class Focus extends React.Component {
 
   render () {
     const { message, upvote, downvote } = this.props;
+    if (!message) {
+      return null;
+    }
     return (
       <div>
         <StackedBar

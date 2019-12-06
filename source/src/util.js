@@ -85,7 +85,7 @@ export const ROUTES = {
   TopicPage: "8",
   UserPostPage: "9",
   Profile: "10",
-  Trending: "11",
+  trending: "11",
   Fresh: "12"
 };
 

@@ -155,6 +155,29 @@ export default class App extends React.Component {
     const { route, routeParams } = this.state;
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
+      case ROUTES.Fresh:
+        const freshMessages = this.messageManager.getAllMessages();
+        return (
+          <Feed
+            backTrace={ [ { filter: "", page: ROUTES.Fresh, value: 1 } ] }
+            messages={freshMessages}
+            navigate={this.navigate}
+            upvote={this.messageManager.upvote}
+            downvote={this.messageManager.downvote}
+          />
+        );
+      case ROUTES.trending:
+        const messages = this.messageManager.getAllMessages();
+        return (
+          <Feed
+            backTrace={ [ { filter: "", page: ROUTES.trending, value: 1 } ] }
+            messages={messages}
+            navigate={this.navigate}
+            upvote={this.messageManager.upvote}
+            downvote={this.messageManager.downvote}
+            sortByUpvotes={true}
+          />
+        );
       case ROUTES.feed:
         return (
           <Feed
@@ -246,7 +269,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { numPeers } = this.state;
+    const { numPeers, route } = this.state;
     const page = this.renderPage();
     const pageIds = Object.keys(ROUTE_NAME);
     const pages = pageIds.map(id => ({id, name: ROUTE_NAME[id]}));
@@ -255,7 +278,7 @@ export default class App extends React.Component {
         {`Peers #: ${numPeers}`}
         <NavigationBar
           pages={pages}
-          activePage={page}
+          activePage={route}
           onClickPage={this.handleClickPage}
           onLogout={this.props.onLogout}
         />

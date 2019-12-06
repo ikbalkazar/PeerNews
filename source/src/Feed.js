@@ -55,9 +55,13 @@ export default class Feed extends React.Component {
   };
 
   render () {
-    const { messages, upvote, downvote, backTrace } = this.props;
+    const { messages, upvote, downvote, backTrace, sortByUpvotes } = this.props;
     const { height, width } = this.state;
-    messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
+    if (sortByUpvotes) {
+      messages.sort((a, b) => b.votes.length - a.votes.length);
+    } else {
+      messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
+    }
     return (
       <div style={styles.div} >
         {messages.map(message =>
