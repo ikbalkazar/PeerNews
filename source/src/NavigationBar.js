@@ -21,7 +21,7 @@ export default class NavigationBar extends React.Component {
             {pages.map(page => (
               <Nav.Link
                 key={page.id}
-                style={ activePage.type.name === page.name ? {color:"RED"} : {color:""}}
+                style={ activePage.type.name === page.name ? {color:'#17a2b8'} : {color:""}}
                 onClick={() => onClickPage(page.id)}
               >
                 {page.name}

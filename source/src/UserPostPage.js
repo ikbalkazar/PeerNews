@@ -1,12 +1,6 @@
 import React from 'react';
-import { ROUTES } from './util';
-import Card from "react-bootstrap/Card";
 import Feed from './Feed';
-import Image from 'react-image-resizer';
-import { Link, animeteScroll as scroll } from 'react-scroll';
-import { Player } from 'video-react';
-import ReactPlayer from 'react-player'
-import Button from "react-bootstrap/Button";
+import StackedBar from './StackedBar';
 
 const styles = {
 
@@ -59,17 +53,16 @@ export default class UserPostPage extends React.Component {
     console.log( backTrace );
     return (
         <div>
-            <div style={{position:"fixed", width:"100%", marginTop:"-56px", zIndex: 11 }}>
-              <Button variant="dark" size="lg" onClick={() => this.props.backNavigation()}>Back</Button>
-              <h1 style={{backgroundColor: color , textAlign:"center", marginTop: "-48px"}}>{messages[0].senderName}</h1>
-              {
-                searchResult === false ?
-                  <Button style={{position: "absolute", top: 0, right: '0px'}} variant="success" size="lg" onClick={() => this.followUser()}>Follow</Button>
-                  :
-                  <Button style={{position: "absolute", top: 0, right: '0px'}} variant="danger" size="lg" onClick={() => this.unfollowUser()}>Unfollow</Button>
-              }
-            </div>
-            <div style={{marginTop: "56px", zIndex:1 }}>
+            <StackedBar
+              title={messages[0].senderName}
+              onBack={this.props.backNavigation}
+              isRightOn={!searchResult}
+              onRightOnClick={this.followUser}
+              rightOnTitle="Follow"
+              onRightOffClick={this.unfollowUser}
+              rightOffTitle="Unfollow"
+            />
+            <div style={{marginTop: "54px", zIndex:1 }}>
               <Feed
                   backTrace={backTrace}
                   filter={filter}
