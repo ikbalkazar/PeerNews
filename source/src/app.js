@@ -153,6 +153,8 @@ export default class App extends React.Component {
 
   renderPage = () => {
     const { route, routeParams } = this.state;
+    console.log( this.state.topics );
+    console.log( this.state.users );
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
       case ROUTES.Fresh:

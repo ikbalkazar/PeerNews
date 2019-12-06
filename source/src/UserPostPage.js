@@ -56,7 +56,7 @@ export default class UserPostPage extends React.Component {
             <StackedBar
               title={messages[0].senderName}
               onBack={this.props.backNavigation}
-              isRightOn={!searchResult}
+              isRightOn={searchResult}
               onRightOnClick={this.followUser}
               rightOnTitle="Follow"
               onRightOffClick={this.unfollowUser}
