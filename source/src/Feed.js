@@ -41,17 +41,17 @@ export default class Feed extends React.Component {
 
   handleClick = (message) => {
     const { navigate, backTrace } = this.props;
-    navigate(ROUTES.focus, { messageId: message.messageId, backTrace: backTrace});
+    navigate(ROUTES.focus, { filter: message.messageId, backTrace: backTrace});
   };
 
   handleUserClick = (senderId) => {
     const { navigate, backTrace } = this.props;
-    navigate(ROUTES.UserPostPage, { filter: senderId, backTrace: backTrace });
+    navigate(ROUTES.UserPostPage, { oldFilter:this.props.filter, filter: senderId, backTrace: backTrace });
   };
 
   handleTopicPage = ( topic ) => {
       const { navigate, backTrace } = this.props;
-      navigate(ROUTES.TopicPage, { filter: topic, backTrace: backTrace });
+      navigate(ROUTES.TopicPage, { oldFilter:this.props.filter, filter: topic, backTrace: backTrace });
   };
 
   render () {

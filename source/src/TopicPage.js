@@ -54,11 +54,6 @@ export default class TopicPage extends React.Component {
       this.state = { height:"", width:""  };
   };
 
-    handleBack = () => {
-        const { navigate, backTrace } = this.props;
-        navigate( backTrace[backTrace.length-2].page, { backTrace: backTrace.filter( x => x.value != backTrace[backTrace.length-1].value && x.value != backTrace[backTrace.length-2].value), filter: backTrace[backTrace.length-2].filter });
-    };
-
   unfollowTopic = () => {
     this.props.handleChangeTopicInSinglePage( this.props.filter.label, false );
   };
@@ -70,11 +65,10 @@ export default class TopicPage extends React.Component {
   render () {
     const { navigate, messages, upvote, downvote, filter, backTrace } = this.props;
     const { height, width } = this.state;
-    console.log( filter );
     return (
         <div>
             <div style={{position:"fixed", width:"100%", marginTop:"-56px", zIndex: 11 }}>
-              <Button variant="dark" size="lg" onClick={() => this.handleBack()}>Back</Button>
+              <Button variant="dark" size="lg" onClick={() => this.props.backNavigation()}>Back</Button>
               <h1 style={{backgroundColor:filter.color, textAlign:"center", marginTop: "-48px"}}>{filter.label}</h1>
               {
                 filter.value === false ?

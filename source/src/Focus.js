@@ -64,6 +64,17 @@ export default class Focus extends React.Component {
     postComment(message.messageId, comment);
   };
 
+  handleUserClick = (senderId) => {
+    const { navigate, backTrace } = this.props;
+    navigate(ROUTES.UserPostPage, { oldFilter:this.props.filter, filter: senderId, backTrace: backTrace });
+  };
+
+  handleTopicPage = ( topic ) => {
+      const { navigate, backTrace } = this.props;
+      navigate(ROUTES.TopicPage, { oldFilter:this.props.filter, filter: topic, backTrace: backTrace });
+  };
+
+
   renderCard = (message) => {
     return (
       <Card
@@ -98,7 +109,14 @@ export default class Focus extends React.Component {
       <div>
         <Button variant="dark" size="lg" onClick={() => this.handleClickBack()}>Back</Button>
         <div style={{marginTop: "-46px"}}>
-          <MessageCard message={message} postComment={this.postComment} upVote={upvote} downVote={downvote} />
+          <MessageCard 
+              message={message} 
+              postComment={this.postComment} 
+              upVote={upvote} 
+              downVote={downvote} 
+              handleTopicPage = {this.handleTopicPage}
+              handleUserClick = {this.handleUserClick}
+          />
           <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
           {message.comments.map(comment => this.renderCard(comment))}
         </div>

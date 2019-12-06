@@ -79,11 +79,24 @@ export default class App extends React.Component {
     this.messageManager.messageReceived(message);
   };
 
+  handleStackPop = () => {
+    const { routeParams } = this.state;
+
+    const path = routeParams.backTrace[routeParams.backTrace.length-1].page;
+
+    routeParams.filter = routeParams.backTrace[routeParams.backTrace.length-1].filter;
+    routeParams.backTrace = routeParams.backTrace.filter( x => x.value != routeParams.backTrace[routeParams.backTrace.length-1].value );
+
+    this.setState( {route:path} );
+  };
+
   handleClickPage = (pageId) => {
     this.setState({ route: pageId });
   };
 
   navigate = (route, routeParams) => {
+    routeParams.backTrace.push( { filter: routeParams.oldFilter, page: this.state.route, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
+    console.log( "control " + JSON.stringify(routeParams.backTrace) );
     this.setState({ route, routeParams });
   };
 
@@ -165,7 +178,7 @@ export default class App extends React.Component {
         );
       case ROUTES.focus:
         const focusMessage = feedMessages.filter(message =>
-        message.messageId === routeParams.messageId)[0];
+        message.messageId === routeParams.filter)[0];
         return (
           <Focus
             filter={routeParams.filter}
@@ -173,6 +186,7 @@ export default class App extends React.Component {
             message={focusMessage}
             navigate={this.navigate}
             postComment={this.messageManager.postComment}
+            backNavigation={this.handleStackPop}
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
           />
@@ -187,10 +201,6 @@ export default class App extends React.Component {
       case ROUTES.TopicPage:
         const filter = this.state.topics.filter(x => x.label === routeParams.filter.label );
         const filteredMessages = this.messageManager.getFilteredMessagesByTopic(filter[0]);
-        if( this.state.topicCaseChange === true )
-          this.state.topicCaseChange = null;
-        else
-          routeParams.backTrace.push( { filter: filter[0], page: ROUTES.TopicPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
         return (
             <TopicPage
                 filter={filter[0]}
@@ -200,6 +210,7 @@ export default class App extends React.Component {
                 upvote={this.messageManager.upvote}
                 downvote={this.messageManager.downvote}
                 handleChangeTopicInSinglePage={this.handleChangeTopicInSinglePage}
+                backNavigation={this.handleStackPop}
             />
         );
       case ROUTES.UserPostPage:
@@ -208,10 +219,6 @@ export default class App extends React.Component {
         let searchResult = false;
         if( search.length > 0 )
           searchResult = true;
-        if( this.state.userCaseChange === true )
-          this.state.userCaseChange = null;
-        else
-          routeParams.backTrace.push( { filter: routeParams.filter, page: ROUTES.UserPostPage, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
         return (
             <UserPostPage
                 searchResult={searchResult}
@@ -219,6 +226,7 @@ export default class App extends React.Component {
                 backTrace={routeParams.backTrace}
                 messages={filteredUserMessages}
                 navigate={this.navigate}
+                backNavigation={this.handleStackPop}
                 upvote={this.messageManager.upvote}
                 downvote={this.messageManager.downvote}
                 handleChangeUserInSinglePage={this.handleChangeUserInSinglePage}

@@ -44,11 +44,6 @@ export default class UserPostPage extends React.Component {
       this.state = { height:"", width:""  };
   };
 
-    handleBack = () => {
-        const { navigate, backTrace } = this.props;
-        navigate( backTrace[backTrace.length-2].page, { backTrace: backTrace.filter( x => x.value != backTrace[backTrace.length-1].value && x.value != backTrace[backTrace.length-2].value), filter: backTrace[backTrace.length-2].filter });
-    };
-
   unfollowUser = () => {
     this.props.handleChangeUserInSinglePage( this.props.filter, false );
   };
@@ -61,10 +56,11 @@ export default class UserPostPage extends React.Component {
     const { navigate, messages, upvote, downvote, filter, backTrace, searchResult } = this.props;
     const { height, width } = this.state;
     const color = searchResult === true ? "GREEN" : "RED";
+    console.log( backTrace );
     return (
         <div>
             <div style={{position:"fixed", width:"100%", marginTop:"-56px", zIndex: 11 }}>
-              <Button variant="dark" size="lg" onClick={() => this.handleBack()}>Back</Button>
+              <Button variant="dark" size="lg" onClick={() => this.props.backNavigation()}>Back</Button>
               <h1 style={{backgroundColor: color , textAlign:"center", marginTop: "-48px"}}>{messages[0].senderName}</h1>
               {
                 searchResult === false ?
