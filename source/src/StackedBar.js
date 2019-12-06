@@ -5,7 +5,7 @@ const capitalizeFirstLetter = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1)
 };
 
-export default ({onBack, title, isRightOn, onRightOnClick, onRightOffClick, rightOnTitle, rightOffTitle}) => (
+export default ({onBack, title, noRight, isRightOn, onRightOnClick, onRightOffClick, rightOnTitle, rightOffTitle}) => (
   <div style={{
     position:"fixed", width:"100%", marginTop:"-54px", zIndex: 11,
     backgroundColor: '#e8e8e8',
@@ -15,7 +15,7 @@ export default ({onBack, title, isRightOn, onRightOnClick, onRightOffClick, righ
     <h4 style={{textAlign:"center", marginTop: "-35px", fontWeight: 800}}>
       {capitalizeFirstLetter(title)}
     </h4>
-    {
+    {!noRight && (
       (!isRightOn) ?
         <Button style={{position: 'absolute', right: 23, top: 7}} variant="success" size="md" onClick={onRightOnClick}>
           {rightOnTitle}
@@ -24,6 +24,6 @@ export default ({onBack, title, isRightOn, onRightOnClick, onRightOffClick, righ
         <Button style={{position: 'absolute', right: 23, top: 7}} variant="danger" size="md" onClick={onRightOffClick}>
           {rightOffTitle}
         </Button>
-    }
+    )}
   </div>
 );

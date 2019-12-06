@@ -1,14 +1,9 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import MessageCard from './MessageCard';
 import { ROUTES } from './util';
-import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
 import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
-
+import StackedBar from './StackedBar';
 
 const styles = {
 
@@ -99,8 +94,12 @@ export default class Focus extends React.Component {
     const { message, upvote, downvote } = this.props;
     return (
       <div>
-        <Button variant="dark" size="lg" onClick={() => this.props.backNavigation()}>Back</Button>
-        <div style={{marginTop: "-46px"}}>
+        <StackedBar
+          title={message.title}
+          onBack={this.props.backNavigation}
+          noRight={true}
+        />
+        <div style={{marginTop: "54px", zIndex:1}}>
           <MessageCard 
               message={message} 
               postComment={this.postComment} 

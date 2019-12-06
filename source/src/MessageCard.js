@@ -109,12 +109,14 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
         className="rounded"
         style={ isPreview ? styles.messageCard : styles.messageCardFocus }
       >
-        <Card.Header
-          onClick={handleClick}
-          style={{textAlign:'left', color: 'black', fontWeight: '800'}}
-        >
-          {message.title}
-        </Card.Header>
+        {isPreview &&
+          <Card.Header
+            onClick={handleClick}
+            style={{textAlign:'left', color: 'black', fontWeight: '800'}}
+          >
+            {message.title}
+          </Card.Header>
+        }
         {mediaURL &&
           <MediaViewer mediaURL={mediaURL}/>
         }
