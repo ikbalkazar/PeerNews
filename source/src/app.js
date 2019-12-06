@@ -96,7 +96,6 @@ export default class App extends React.Component {
 
   navigate = (route, routeParams) => {
     routeParams.backTrace.push( { filter: routeParams.oldFilter, page: this.state.route, value: routeParams.backTrace[routeParams.backTrace.length-1].value + 1 } );
-    console.log( "control " + JSON.stringify(routeParams.backTrace) );
     this.setState({ route, routeParams });
   };
 

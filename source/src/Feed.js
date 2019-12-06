@@ -41,7 +41,7 @@ export default class Feed extends React.Component {
 
   handleClick = (message) => {
     const { navigate, backTrace } = this.props;
-    navigate(ROUTES.focus, { filter: message.messageId, backTrace: backTrace});
+    navigate(ROUTES.focus, { oldFilter: this.props.filter, filter: message.messageId, backTrace: backTrace});
   };
 
   handleUserClick = (senderId) => {

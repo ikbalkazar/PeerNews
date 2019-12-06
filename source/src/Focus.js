@@ -53,10 +53,6 @@ const PopOverPublicID = (userID) => {
 }
 
 export default class Focus extends React.Component {
-  handleClickBack = () => {
-    const { navigate, backTrace } = this.props;
-    navigate( backTrace[backTrace.length-1].page, { backTrace: backTrace.filter( x => x.value != backTrace[backTrace.length-1].value ), filter: backTrace[backTrace.length-1].filter });
-  };
 
   postComment = (comment) => {
     const { message, postComment } = this.props;
@@ -103,7 +99,7 @@ export default class Focus extends React.Component {
     const { message, upvote, downvote } = this.props;
     return (
       <div>
-        <Button variant="dark" size="lg" onClick={() => this.handleClickBack()}>Back</Button>
+        <Button variant="dark" size="lg" onClick={() => this.props.backNavigation()}>Back</Button>
         <div style={{marginTop: "-46px"}}>
           <MessageCard 
               message={message} 
