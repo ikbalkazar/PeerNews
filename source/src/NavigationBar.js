@@ -30,7 +30,7 @@ export default class NavigationBar extends React.Component {
           </Nav>
           <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-info">Search</Button>
+            <Button variant="outline-info" style={{marginRight: 15}}>Search</Button>
             <Button variant="danger" className="mr-sm-2" onClick={this.handleLogout}>Logout</Button>
           </Form>
         </Navbar>

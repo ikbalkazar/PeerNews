@@ -13,10 +13,9 @@ import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
 const styles = {
 
   messageCard: {
-        width: '40%',
-        left: '30%',
-        height: 'auto',
-        cursor: 'pointer',
+        width: '600px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
   },
 
   messageCardFocus: {
@@ -93,9 +92,6 @@ export default class Focus extends React.Component {
               >
                 <cite>{message.senderName} @{ message.senderId.substring(0,10)+'...' }</cite>
               </OverlayTrigger>
-              <GoThumbsup size={20} style={styles.goThumbsupFocus} />
-              <b style={styles.commentNumber}> TODO </b>
-              <GoThumbsdown size={20} style={styles.goThumbsdownFocus} />
             </footer>
           </blockquote>
         </Card.Body>

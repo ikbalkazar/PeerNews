@@ -8,3 +8,7 @@ body {
     margin: 70px auto;
     text-align: center;
 }
+
+.message-card-body:hover {
+    background-color: #e8e8e8;
+}

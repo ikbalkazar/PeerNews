@@ -15,6 +15,7 @@ export default class MessageManager {
     this.torrentMedia = new Map();
     this.onChange = onChange;
     this.messageStore = new MessageStore(sender);
+    this.firstLoadHappened = false;
     this.loadMessagesOnDisk();
     this.scheduleDiskWrite();
   }
@@ -24,11 +25,14 @@ export default class MessageManager {
     for (const message of messagesOnDisk) {
       this.messageReceived(message, false);
     }
+    this.firstLoadHappened = true;
   };
 
   scheduleDiskWrite = () => {
     setInterval(() => {
-      this.messageStore.write(this.getRawMessages());
+      if (this.firstLoadHappened) {
+        this.messageStore.write(this.getRawMessages());
+      }
     }, DISK_WRITE_INTERVAL);
   };
 

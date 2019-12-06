@@ -21,15 +21,17 @@ const styles = {
   },
 
   messageCard: {
-        width: '40%',
-        left: '30%',
+        width: '600px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
         height: 'auto',
         cursor: 'pointer',
   },
 
   messageCardFocus: {
-        width: '60%',
-        left: '20%',
+        width: '600px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
         height: 'auto',
         cursor: 'pointer',
   },
@@ -62,11 +64,11 @@ const styles = {
   },
 
   video: {
-        width: '40%',
+        width: '100%',
   },
 
   videoFocus: {
-        width: '60%',
+        width: '100%',
   },
 
 }
@@ -97,8 +99,6 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
   const handleClick = isPreview ? onClick : () => {};
   const messageText = isPreview ? shorten(message.text) : message.text;
   const senderId = message.senderId.substring(0, 10) + '...';
-  const thumbUpStyle = isPreview ? styles.goThumbsup : styles.goThumbsupFocus;
-  const thumbDownStyle = isPreview ? styles.goThumbsdown : styles.goThumbsdownFocus;
   const commentNumberStyle = isPreview ? styles.commentNumber : styles.commentNumberFocus;
   const mediaURL = message.media || message.video || message.image;
   return (
@@ -111,32 +111,34 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
       >
         <Card.Header
           onClick={handleClick}
-          style={{textAlign:'center', backgroundColor: '#F0E68C'}}
+          style={{textAlign:'left', color: 'black', fontWeight: '800'}}
         >
           {message.title}
         </Card.Header>
         {mediaURL &&
           <MediaViewer mediaURL={mediaURL}/>
         }
-        <Card.Body>
+        <Card.Body className="message-card-body">
           <Card.Text onClick={handleClick}>{messageText}</Card.Text>
-          <blockquote className="blockquote mb-0">
-            <footer className="blockquote-footer">
+          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', minHeight: 30}}>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
               <cite onClick={() => handleUserClick(message.senderId)}>{message.senderName} </cite>
               <OverlayTrigger
                 placement="right" delay={{ show: 250, hide: 800 }} overlay={PopOverPublicID(message.senderId)}
               >
               <cite>@{senderId}</cite>
               </OverlayTrigger>
-              <b style={commentNumberStyle}> {aggregateVotes} </b>
-              <GoThumbsup size={30} style={thumbUpStyle} onClick={() => upVote(message.messageId)} />
-              <GoThumbsdown size={30} style={thumbDownStyle} onClick={() => downVote(message.messageId)} />
+            </div>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+              <GoThumbsup size={25} style={{marginTop: -4}} onClick={() => upVote(message.messageId)} />
+              <b style={{marginLeft: 10, marginRight: 10}}> {aggregateVotes} </b>
+              <GoThumbsdown size={25} style={{marginTop: 4}} onClick={() => downVote(message.messageId)} />
               {!isPreview &&
                 <ComposeComment postComment={postComment}/>
               }
-            </footer>
-          </blockquote>
-          <ButtonToolbar>
+            </div>
+          </div>
+          <ButtonToolbar style={{marginLeft: -5}}>
             {message.topics.map( topic =>
               <Button
                 key="topic"

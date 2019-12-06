@@ -8,8 +8,8 @@ import Button from 'react-bootstrap/Button';
 
 const styles = {
   commentButton: {
-    marginLeft: "880px",
-    marginTop: "-55px",
+    marginLeft: 20,
+    marginTop: -5,
   }
 };
 

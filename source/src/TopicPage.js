@@ -6,8 +6,8 @@ import Image from 'react-image-resizer';
 import { Link, animeteScroll as scroll } from 'react-scroll';
 import { Player } from 'video-react';
 import ReactPlayer from 'react-player'
-import Button from "react-bootstrap/Button";
 import { Popover, OverlayTrigger, renderTooltip } from 'react-bootstrap';
+import StackedBar from './StackedBar';
 
 const styles = {
 
@@ -67,16 +67,15 @@ export default class TopicPage extends React.Component {
     const { height, width } = this.state;
     return (
         <div>
-            <div style={{position:"fixed", width:"100%", marginTop:"-56px", zIndex: 11 }}>
-              <Button variant="dark" size="lg" onClick={() => this.props.backNavigation()}>Back</Button>
-              <h1 style={{backgroundColor:filter.color, textAlign:"center", marginTop: "-48px"}}>{filter.label}</h1>
-              {
-                filter.value === false ?
-                  <Button style={{marginTop: "-90px", marginLeft: "95%"}} variant="success" size="lg" onClick={() => this.followTopic()}>Follow</Button>
-                  :
-                  <Button style={{marginTop: "-90px", marginLeft: "94%"}} variant="danger" size="lg" onClick={() => this.unfollowTopic()}>Unfollow</Button>
-              }
-            </div>
+            <StackedBar
+              title={filter.label}
+              onBack={this.props.backNavigation}
+              isRightOn={filter.value}
+              onRightOnClick={this.followTopic}
+              rightOnTitle="Follow"
+              onRightOffClick={this.unfollowTopic}
+              rightOffTitle="Unfollow"
+            />
             <div style={{marginTop: "56px", zIndex:1 }}>
               <Feed
                   backTrace={backTrace}
