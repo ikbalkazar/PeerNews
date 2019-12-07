@@ -86,7 +86,8 @@ export const ROUTES = {
   UserPostPage: "9",
   Profile: "10",
   trending: "11",
-  Fresh: "12"
+  Fresh: "12",
+  search: "13",
 };
 
 export const ROUTE_NAME = {

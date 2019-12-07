@@ -45,6 +45,7 @@ export default class App extends React.Component {
       ],
       userCaseChange: null,
       topicCaseChange: null,
+      searchedKeyword: null,
     };
     const { sender } = props;
     this.state.users.push( {id:sender.id} );
@@ -91,7 +92,7 @@ export default class App extends React.Component {
   };
 
   handleClickPage = (pageId) => {
-    this.setState({ route: pageId });
+    this.setState({ route: pageId, searchedKeyword: null });
   };
 
   navigate = (route, routeParams) => {
@@ -151,12 +152,28 @@ export default class App extends React.Component {
     this.setState({topics:newTopics, topicCaseChange:true});
   };
 
+  handleSearchClick = (keyword) => {
+    console.log(`[SearchClick] ${this.state.searchedKeyword}`);
+    this.setState({ route: ROUTES.search, searchedKeyword: keyword });
+  };
+
   renderPage = () => {
-    const { route, routeParams } = this.state;
+    const { route, routeParams, searchedKeyword } = this.state;
     console.log( this.state.topics );
     console.log( this.state.users );
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
+      case ROUTES.search:
+        const searchedMessages = this.messageManager.getSearchedMessages(searchedKeyword);
+        return (
+          <Feed
+            backTrace={[ { filter: "", page: ROUTES.search, value: 1 } ]}
+            messages={searchedMessages}
+            navigate={this.navigate}
+            upvote={this.messageManager.upvote}
+            downvote={this.messageManager.downvote}
+          />
+        );
       case ROUTES.Fresh:
         const freshMessages = this.messageManager.getAllMessages();
         return (
@@ -271,7 +288,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { numPeers, route } = this.state;
+    const { numPeers, route, searchedKeyword } = this.state;
     const page = this.renderPage();
     const pageIds = Object.keys(ROUTE_NAME);
     const pages = pageIds.map(id => ({id, name: ROUTE_NAME[id]}));
@@ -283,6 +300,7 @@ export default class App extends React.Component {
           activePage={route}
           onClickPage={this.handleClickPage}
           onLogout={this.props.onLogout}
+          onSearchClick={this.handleSearchClick}
         />
         {page}
       </div>

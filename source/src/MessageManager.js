@@ -141,6 +141,26 @@ export default class MessageManager {
     }));
   };
 
+  getSearchedMessages = (keyword) => {
+    const messages = this.getAllMessages();
+    if (!keyword) {
+      return messages;
+    }
+    const lowerKeyword = keyword.toLowerCase();
+    const matches = (text) => {
+      return text.toLowerCase().includes(lowerKeyword);
+    };
+    return messages.filter(message => {
+      const cands = [message.title, message.text, message.senderId, message.senderName];
+      for (const cand of cands) {
+        if (matches(cand)) {
+          return true;
+        }
+      }
+      return false;
+    });
+  };
+
   getFeedMessages = ( filterTopic, filterUser ) => {
     const messages = this.messages;
     const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
