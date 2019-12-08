@@ -5,9 +5,9 @@ import { createLogger, hashDigest } from './util';
 
 const log = createLogger('fsutils');
 
-const appPath = () => (electron.app || electron.remote.app).getPath('userData');
+export const appPath = () => (electron.app || electron.remote.app).getPath('userData');
 
-const fullPath = (filename) => path.join(appPath(), filename);
+export const fullPath = (filename) => path.join(appPath(), filename);
 
 const getMediaTypeExtension = (filename) => {
   const parts = filename.split(".");

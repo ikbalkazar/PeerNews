@@ -1,6 +1,6 @@
 import WebTorrent from 'webtorrent';
 import { createLogger } from './util';
-import { readAppFile, writeAppFile, readFile } from './fsutils';
+import { readAppFile, writeAppFile, readFile, appPath } from './fsutils';
 
 const log = createLogger('TorrentManager');
 
@@ -52,7 +52,10 @@ export default class TorrentManager {
       });
       return;
     }
-    this.client.add(magnetURI, (torrent) => {
+    const opts = {
+      path: appPath(),
+    };
+    this.client.add(magnetURI, opts, (torrent) => {
       log(`received torrent obj for download`);
       torrent.on('done', () => {
         const file = torrent.files[0];
@@ -77,7 +80,10 @@ export default class TorrentManager {
     const pathParts = filePath.split('/');
     buf.name = pathParts[pathParts.length - 1];
     log(`torrents ${this.client.torrents.length}`);
-    const torrent = this.client.seed(buf, (torrent) => {
+    const opts = {
+      path: appPath(),
+    };
+    const torrent = this.client.seed(buf, opts, (torrent) => {
       log(`created torrent with magnet uri ${torrent.magnetURI}`);
       const torrentFilePath = `${torrent.path}/${torrent.files[0].path}`;
       this.addCompleteTorrent(torrent.magnetURI, torrentFilePath);
