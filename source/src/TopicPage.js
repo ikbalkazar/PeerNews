@@ -84,6 +84,7 @@ export default class TopicPage extends React.Component {
                   navigate={navigate}
                   upvote={upvote}
                   downvote={downvote}
+                  controlVote={this.props.controlVote}
               />
             </div>
         </div>

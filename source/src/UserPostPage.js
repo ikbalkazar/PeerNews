@@ -70,6 +70,7 @@ export default class UserPostPage extends React.Component {
                   navigate={navigate}
                   upvote={upvote}
                   downvote={downvote}
+                  controlVote={this.props.controlVote}
               />
             </div>
         </div>

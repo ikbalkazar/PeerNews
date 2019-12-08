@@ -74,6 +74,7 @@ export default class Feed extends React.Component {
             downVote={downvote}
             handleTopicPage = {this.handleTopicPage}
             handleUserClick = {this.handleUserClick}
+            controlVote={this.props.controlVote}
           />
         )}
       </div>

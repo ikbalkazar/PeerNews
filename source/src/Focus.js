@@ -110,6 +110,7 @@ export default class Focus extends React.Component {
               downVote={downvote} 
               handleTopicPage = {this.handleTopicPage}
               handleUserClick = {this.handleUserClick}
+              controlVote={this.props.controlVote}
           />
           <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
           {message.comments.map(comment => this.renderCard(comment))}

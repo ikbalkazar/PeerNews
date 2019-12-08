@@ -89,12 +89,60 @@ export default class MessageManager {
     this.messageReceived(JSON.stringify(Message.createComment(this.sender, messageId, text)));
   };
 
+  controlVote = (messageId) => {
+    const messages = this.messages;
+    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const groupByReMessageId = (subMessages) => {
+      const result = new Map();
+      for (const subMessage of subMessages) {
+        const current = result.get(subMessage.reMessageId) || [];
+        result.set(subMessage.reMessageId, [...current, subMessage]);
+      }
+      return result;
+    };
+    const filter = parsedMessages.filter(x => x.senderId === this.sender.id && x.type === Message.type.VOTE && x.reMessageId === messageId );
+    if( filter.length === 0 )
+      return 0;
+    else if( filter[0].delta === 1 )
+      return 1;
+    else
+      return -1;
+  };
+
   upvote = (messageId) => {
-    this.messageReceived(JSON.stringify(Message.createVote(this.sender, messageId, 1)));
+    const messages = this.messages;
+    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const groupByReMessageId = (subMessages) => {
+      const result = new Map();
+      for (const subMessage of subMessages) {
+        const current = result.get(subMessage.reMessageId) || [];
+        result.set(subMessage.reMessageId, [...current, subMessage]);
+      }
+      return result;
+    };
+    const filter = parsedMessages.filter(x => x.senderId === this.sender.id && x.type === Message.type.VOTE && x.reMessageId === messageId );
+    if( filter.length === 0 )
+      this.messageReceived(JSON.stringify(Message.createVote(this.sender, messageId, 1)));
+    else
+      console.log( "already voted ");
   };
 
   downvote = (messageId) => {
-    this.messageReceived(JSON.stringify(Message.createVote(this.sender, messageId, -1)));
+    const messages = this.messages;
+    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const groupByReMessageId = (subMessages) => {
+      const result = new Map();
+      for (const subMessage of subMessages) {
+        const current = result.get(subMessage.reMessageId) || [];
+        result.set(subMessage.reMessageId, [...current, subMessage]);
+      }
+      return result;
+    };
+    const filter = parsedMessages.filter(x => x.senderId === this.sender.id && x.type === Message.type.VOTE && x.reMessageId === messageId );
+    if( filter.length === 0 )
+      this.messageReceived(JSON.stringify(Message.createVote(this.sender, messageId, -1)));
+    else
+      console.log( "already voted ");
   };
 
   rebroadcast = () => {

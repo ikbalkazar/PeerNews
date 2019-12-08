@@ -195,6 +195,7 @@ export default class App extends React.Component {
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
             sortByUpvotes={true}
+            controlVote={this.messageManager.controlVote}
           />
         );
       case ROUTES.feed:
@@ -205,6 +206,7 @@ export default class App extends React.Component {
             navigate={this.navigate}
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
+            controlVote={this.messageManager.controlVote}
           />
         );
       case ROUTES.Profile:
@@ -230,6 +232,7 @@ export default class App extends React.Component {
             backNavigation={this.handleStackPop}
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
+            controlVote={this.messageManager.controlVote}
           />
         );
       case ROUTES.postMessage:
@@ -252,6 +255,7 @@ export default class App extends React.Component {
                 downvote={this.messageManager.downvote}
                 handleChangeTopicInSinglePage={this.handleChangeTopicInSinglePage}
                 backNavigation={this.handleStackPop}
+                controlVote={this.messageManager.controlVote}
             />
         );
       case ROUTES.UserPostPage:
@@ -271,6 +275,7 @@ export default class App extends React.Component {
                 upvote={this.messageManager.upvote}
                 downvote={this.messageManager.downvote}
                 handleChangeUserInSinglePage={this.handleChangeUserInSinglePage}
+                controlVote={this.messageManager.controlVote}
             />
         );
       case ROUTES.topics:

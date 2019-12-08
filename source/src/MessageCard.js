@@ -91,7 +91,7 @@ const shorten = (s) => {
   return s.substring(0, 100) + '...';
 };
 
-export default ({message, onClick, isPreview, postComment, upVote, downVote, handleTopicPage, handleUserClick}) => {
+export default ({message, onClick, isPreview, postComment, upVote, downVote, handleTopicPage, handleUserClick, controlVote}) => {
   let aggregateVotes = 0;
   for (const vote of message.votes) {
     aggregateVotes += parseInt(vote.delta);
@@ -101,6 +101,7 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
   const senderId = message.senderId.substring(0, 10) + '...';
   const commentNumberStyle = isPreview ? styles.commentNumber : styles.commentNumberFocus;
   const mediaURL = message.media || message.video || message.image;
+  const previousVote = controlVote( message.messageId );
   return (
     <div>
       <Card
@@ -132,9 +133,19 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
               </OverlayTrigger>
             </div>
             <div style={{display: 'flex', flexDirection: 'row'}}>
-              <GoThumbsup size={25} style={{marginTop: -4}} onClick={() => upVote(message.messageId)} />
+              {
+                previousVote === 1 ?
+                  <GoThumbsup size={25} style={{marginTop: -4, color: "blue"}} onClick={() => upVote(message.messageId)} />
+                  :
+                  <GoThumbsup size={25} style={{marginTop: -4}} onClick={() => upVote(message.messageId)} />
+              }
               <b style={{marginLeft: 10, marginRight: 10}}> {aggregateVotes} </b>
-              <GoThumbsdown size={25} style={{marginTop: 4}} onClick={() => downVote(message.messageId)} />
+              {
+                previousVote === -1 ?
+                  <GoThumbsdown size={25} style={{marginTop: 4, color : "red"}} onClick={() => downVote(message.messageId)} />
+                  :
+                  <GoThumbsdown size={25} style={{marginTop: 4}} onClick={() => downVote(message.messageId)} />
+              }
               {!isPreview &&
                 <ComposeComment postComment={postComment}/>
               }
