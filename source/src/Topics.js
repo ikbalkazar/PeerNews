@@ -13,37 +13,16 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
+import Button from 'react-bootstrap/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Form from 'react-bootstrap/Form';
 
 const styles = {
 
-  div: {
-        borderRadius: '9px',
-        borderRadiusInputTopLeft: '9px',
-        borderRadiusInputTopRight: '9px',
-        borderRadiusInputBottomLeft: '9px',
-        borderRadiusInputBottomRight: '9px',
-        topLeftMode: 'true',
-        topRightMode: 'true',
-        bottomLeftMode: 'true',
-        bottomRightMode: 'true',
-        shadowOffset: {widht:2, height: 2},
-        shadowRadius: '20px',
-        shadowColor: '#330033',
-        //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
-  },
-
-  messageCard: {
-        width: '40%',
-        left: '30%',
-        height: 'auto',
-  },
-
-  video: {
-        width: '40%',
-  },
-
   root: {
-      backgroundColor: 'lightblue',
+      backgroundColor: "#cdc9cd",
       backgroundSize: "100% 100%",
       marginBottom: "20px",
       marginLeft:"auto",
@@ -66,7 +45,7 @@ export default class Topics extends React.Component {
 
   constructor(props) {
       super(props);
-      this.state = { height:"", width:""  };
+      this.state = { height:"", width:"", informationBoxCases:[]  };
   }
 
   handleClick = (topic) => {
@@ -82,9 +61,45 @@ export default class Topics extends React.Component {
     this.props.handleChangeTopic( label, true );
   };
 
+  getTotalPostOfTopic = (topic) => {
+    const result = this.props.getTotalPostOfTopic(topic);
+    return result;
+  };
+  getTotalCommentOfTopic = (topic) => {
+    const result = this.props.getTotalCommentOfTopic(topic);
+    return result;
+  };
+  getTotalUpVotesOfTopic = (topic) => {
+    const result = this.props.getTotalUpVotesOfTopic(topic);
+    return result;
+  };
+  getTotalDownVotesOfTopic = (topic) => {
+    const result = this.props.getTotalDownVotesOfTopic(topic);
+    return result;
+  };
+  handleClose = ( topic ) => {
+    let topics = this.state.informationBoxCases;
+    for( var i = 0 ; i < topics.length ; i++ )
+      if( topics[i].label === topic.label )
+        topics[i].value = false;
+    this.setState( { informationBoxCases: topics } );
+  };
+  handleOpen = ( topic ) => {
+    let topics = this.state.informationBoxCases;
+    for( var i = 0 ; i < topics.length ; i++ )
+      if( topics[i].label === topic.label )
+        topics[i].value = true;
+    this.setState( { informationBoxCases: topics } );
+  };
+  check = ( topic ) => {
+    return this.state.informationBoxCases.filter( x => x.label === topic.label )[0].value;
+  };
+
   render () {
     const { topicsList } = this.props;
-    const { height, width } = this.state;
+    const { height, width, informationBoxCases } = this.state;
+    for( var i = 0 ; i < topicsList.length ; i++ )
+      informationBoxCases.push( {label: topicsList[i].label, value:false, id: i} );
     return (
       <div>
           {topicsList.map(topic => 
@@ -93,12 +108,31 @@ export default class Topics extends React.Component {
                     color:topic.color, fontSize:"50px", fontFamily:"Allan", fontStyle:"italic", cursor:"pointer"}} onClick={() => this.handleClick(topic)}>
                   {topic.label}
               </div>
+              <div style={{opacity: '1.0', fontSize:"15px", fontFamily:"Allan", fontStyle:"italic", cursor:"pointer", display: "flex", alignItems: "center", justifyContent: "center" }} >
+                <Dialog open={this.check(topic)} onClose={() => this.handleClose(topic)} maxWidth="sm" fullWidth="true" aria-labelledby="max-width-dialog-title">
+                  <DialogContent>
+                    <DialogContentText style={{textAlign:"center"}}>
+                      <p><b>Statistical information of "{topic.label}":</b></p>
+                      <p> Total post Count : {this.getTotalPostOfTopic(topic)} </p>
+                      <p> Total comment Count : {this.getTotalCommentOfTopic(topic)} </p>
+                      <p> Total upvote Count : {this.getTotalUpVotesOfTopic(topic)} </p>
+                      <p> Total downvote Count : {this.getTotalDownVotesOfTopic(topic)} </p>
+                    </DialogContentText>
+                  </DialogContent>
+                    <Button variant="danger" onClick={() => this.handleClose(topic)}>
+                      Close
+                    </Button>
+                </Dialog>
+              </div>
               <div style={styles.buttonDiv}>
+                  <Button variant="outline-info" color="primary" onClick={() => this.handleOpen(topic)}>
+                    Information
+                  </Button>
                   {
-                      topic.value === true ?
-                          <button style={{fontSize: "15px", left:"auto", right:"auto" }} onClick={() => this.unfollowTopic(topic.label)}>unfollow</button>
-                          :
-                          <button style={{fontSize: "15px", left:"auto", right:"auto"}} onClick={() => this.followTopic(topic.label)}>follow</button>
+                    topic.value === true ?
+                        <Button variant="outline-danger" style={{fontSize: "15px", marginLeft:"10px", left:"auto", right:"auto" }} onClick={() => this.unfollowTopic(topic.label)}>unfollow</Button>
+                        :
+                        <Button variant="outline-success" style={{fontSize: "15px", marginLeft:"10px", left:"auto", right:"auto"}} onClick={() => this.followTopic(topic.label)}>follow</Button>
                   }
               </div>
             </div>

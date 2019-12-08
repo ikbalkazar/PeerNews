@@ -89,17 +89,110 @@ export default class MessageManager {
     this.messageReceived(JSON.stringify(Message.createComment(this.sender, messageId, text)));
   };
 
+  getMessageById = ( messageId ) => {
+    const messages = this.messages;
+    const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const filteredMessages = parsedMessages.filter(x => x.messageId === messageId );
+    return filteredMessages[0];
+  };
+
+  getTotalPostOfTopic = (topic) => {
+    const messages = this.messages;
+    const label = topic.label;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        if( message.type === Message.type.TEXT ){
+          let indicator = false;
+          for( var j = 0; j < message.topics.length; j++ ) {
+            if (label === message.topics[j].label)
+              indicator = true;
+          }
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     }); 
+    const globalMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+    return globalMessages.length;
+  };
+  getTotalCommentOfTopic = (topic) => {
+    const messages = this.messages;
+    const label = topic.label;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed).filter( msg => msg.type === Message.type.COMMENT );
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        const msg = this.getMessageById( message.reMessageId );
+        if( msg.type === Message.type.TEXT ){
+          let indicator = false;
+          for( var j = 0; j < msg.topics.length; j++ ) {
+            if (label === msg.topics[j].label)
+              indicator = true;
+          }
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
+    return parsedMessages.length;
+  };
+  getTotalUpVotesOfTopic = (topic) => {
+    const messages = this.messages;
+    const label = topic.label;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed).filter( msg => msg.type === Message.type.VOTE && msg.delta === 1 );
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        const msg = this.getMessageById( message.reMessageId );
+        if( msg.type === Message.type.TEXT ){
+          let indicator = false;
+          for( var j = 0; j < msg.topics.length; j++ ) {
+            if (label === msg.topics[j].label)
+              indicator = true;
+          }
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
+    return parsedMessages.length;
+  };
+
+  getTotalDownVotesOfTopic = (topic) => {
+    const messages = this.messages;
+    const label = topic.label;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed).filter( msg => msg.type === Message.type.VOTE && msg.delta === -1 );
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        const msg = this.getMessageById( message.reMessageId );
+        if( msg.type === Message.type.TEXT ){
+          let indicator = false;
+          for( var j = 0; j < msg.topics.length; j++ ) {
+            if (label === msg.topics[j].label)
+              indicator = true;
+          }
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
+    return parsedMessages.length;
+  };
+
   controlVote = (messageId) => {
     const messages = this.messages;
     const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);
-    const groupByReMessageId = (subMessages) => {
-      const result = new Map();
-      for (const subMessage of subMessages) {
-        const current = result.get(subMessage.reMessageId) || [];
-        result.set(subMessage.reMessageId, [...current, subMessage]);
-      }
-      return result;
-    };
     const filter = parsedMessages.filter(x => x.senderId === this.sender.id && x.type === Message.type.VOTE && x.reMessageId === messageId );
     if( filter.length === 0 )
       return 0;

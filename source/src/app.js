@@ -1,5 +1,4 @@
 import React from 'react';
-
 import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Profile from './Profile';
@@ -287,6 +286,10 @@ export default class App extends React.Component {
             navigate={this.navigate}
             topicsList={this.state.topics}
             handleChangeTopic={this.handleChangeTopic}
+            getTotalPostOfTopic={this.messageManager.getTotalPostOfTopic}
+            getTotalCommentOfTopic={this.messageManager.getTotalCommentOfTopic}
+            getTotalUpVotesOfTopic={this.messageManager.getTotalUpVotesOfTopic}
+            getTotalDownVotesOfTopic={this.messageManager.getTotalDownVotesOfTopic}
           />
         );
       default:
