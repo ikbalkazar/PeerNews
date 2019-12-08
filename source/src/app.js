@@ -30,16 +30,16 @@ export default class App extends React.Component {
       route: ROUTES.feed,
       routeParams: null,
       topics: [
-        {label: "children", value: true, color: "GREEN", marginLeft: "37%"},
-        {label: "comics", value: true, color: "GREEN", marginLeft: "39%"},
-        {label: "commerce", value: true, color: "GREEN", marginLeft: "37%"},
-        {label: "crypto currency", value: true, color: "GREEN", marginLeft: "31%"},
-        {label: "culture", value: true, color : "GREEN", marginLeft: "38%"},
-        {label: "food", value: true, color: "GREEN", marginLeft: "41%"},
-        {label: "football", value: true, color: "GREEN", marginLeft: "37%"},
-        {label: "game", value: true, color: "GREEN", marginLeft: "41%"},
-        {label: "movies", value: true, color: "GREEN", marginLeft: "39%"},
-        {label: "travel", value: true, color: "GREEN", marginLeft: "39%"}
+        {label: "children", value: true, color: "GREEN"},
+        {label: "comics", value: true, color: "GREEN"},
+        {label: "commerce", value: true, color: "GREEN"},
+        {label: "crypto currency", value: true, color: "GREEN"},
+        {label: "culture", value: true, color : "GREEN"},
+        {label: "food", value: true, color: "GREEN"},
+        {label: "football", value: true, color: "GREEN"},
+        {label: "game", value: true, color: "GREEN"},
+        {label: "movies", value: true, color: "GREEN"},
+        {label: "travel", value: true, color: "GREEN"}
       ],
       users: [
       ],
