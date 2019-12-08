@@ -125,14 +125,14 @@ export default class Topics extends React.Component {
                 </Dialog>
               </div>
               <div style={styles.buttonDiv}>
-                  <Button variant="outline-info" color="primary" onClick={() => this.handleOpen(topic)}>
+                  <Button variant="outline-info" style={{marginBottom:"5px"}} color="primary" onClick={() => this.handleOpen(topic)}>
                     Information
                   </Button>
                   {
                     topic.value === true ?
-                        <Button variant="outline-danger" style={{fontSize: "15px", marginLeft:"10px", left:"auto", right:"auto" }} onClick={() => this.unfollowTopic(topic.label)}>unfollow</Button>
+                        <Button variant="outline-danger" style={{fontSize: "15px", marginLeft:"10px", marginBottom:"5px", left:"auto", right:"auto" }} onClick={() => this.unfollowTopic(topic.label)}>unfollow</Button>
                         :
-                        <Button variant="outline-success" style={{fontSize: "15px", marginLeft:"10px", left:"auto", right:"auto"}} onClick={() => this.followTopic(topic.label)}>follow</Button>
+                        <Button variant="outline-success" style={{fontSize: "15px", marginLeft:"10px", marginBottom:"5px", left:"auto", right:"auto"}} onClick={() => this.followTopic(topic.label)}>follow</Button>
                   }
               </div>
             </div>
