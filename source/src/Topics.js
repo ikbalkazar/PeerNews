@@ -43,7 +43,7 @@ const styles = {
   },
 
   root: {
-      backgroundImage: 'url(../assets/image.jpg)',
+      backgroundColor: 'BLUE',
       backgroundSize: "100% 100%",
       marginBottom: "20px",
       paddingTop: "30px",

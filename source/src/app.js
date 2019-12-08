@@ -172,6 +172,7 @@ export default class App extends React.Component {
             navigate={this.navigate}
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
+            controlVote={this.messageManager.controlVote}
           />
         );
       case ROUTES.Fresh:
@@ -183,6 +184,7 @@ export default class App extends React.Component {
             navigate={this.navigate}
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
+            controlVote={this.messageManager.controlVote}
           />
         );
       case ROUTES.trending:
