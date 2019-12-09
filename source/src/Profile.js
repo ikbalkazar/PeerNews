@@ -50,11 +50,13 @@ export default class Profile extends React.Component {
   onClickUser( user ){
     console.log('user clicked');
     console.log(user);
+    this.props.navigate(ROUTES.UserPostPage, { oldFilter:this.props.filter, filter: user, backTrace: this.props.backTrace });
   };
 
   onClickTopic( topic ){
     console.log('topic clicked');
-    console.log(topic);
+    console.log(topic.label);
+    this.props.navigate(ROUTES.TopicPage, { filter: topic, backTrace: this.props.backTrace });
   };
 
   onClickDisplayKey = ( key ) => {
@@ -74,7 +76,7 @@ export default class Profile extends React.Component {
     const color = this.state.background;
     const list = ['element1', 'hello2', 'abc3'];
     const followedUsers = this.props.users.map( item => (item.id) );
-    const followedTopics = this.props.topics.map( item => ( item.label ) );
+    const followedTopics = this.props.topics;
     const user = serializeSender( this.props.myself );
 
     console.log(followedUsers);
@@ -114,14 +116,14 @@ export default class Profile extends React.Component {
           <h3 style={{textAlign: 'center',marginTop:'5%'}}> Followed Topics </h3>
            <ListGroup style={{overflowY: 'scroll', position:'absolute' , top:'70px' , bottom:'0px' , left:'0px' ,right:'0px'}}>
            {
-             followedTopics.map(item => ( <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickTopic(item)}>{item}</ListGroup.Item>))
+             followedTopics.map(item => ( <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickTopic(item)}>{item.label}</ListGroup.Item>))
            }
           </ListGroup>
         </div>
 
-        <div style={{ position: 'absolute', left: '50%' , transform: 'translateX(-50%)', borderRadius: '15px', borderStyle: 'solid' , borderWidth: '3px' , borderColor:'black' , width: '85%' , height:'300px' , marginLeft:'auto' , marginRight:'auto' , marginTop:'650px'}}>
+        <div style={{ position: 'absolute', minWidth:'1000px' ,left: '50%' , transform: 'translateX(-50%)', borderRadius: '15px', borderStyle: 'solid' , borderWidth: '3px' , borderColor:'black' , width: '85%' , height:'300px' , marginLeft:'auto' , marginRight:'auto' , marginTop:'650px'}}>
 
-                            <div style={{ position:'absolute', left: '10%' , top:'25%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '40%' ,height: '50%'}}>
+                            <div style={{ position:'absolute', minWidth:'500px' ,left: '10%' , top:'25%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '40%' ,height: '50%'}}>
                               <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.publicKey)}>
                                 <Button style={{position:'absolute', left:'0px'}} variant="success" size="lg">What is my Public Key?</Button>
                               </OverlayTrigger>

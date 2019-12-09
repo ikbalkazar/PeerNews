@@ -213,10 +213,11 @@ export default class App extends React.Component {
       case ROUTES.Profile:
         return (
           <Profile
-            backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
+            backTrace={ [ { filter: "", page: ROUTES.Profile, value: 1 } ] }
             users={this.state.users}
             topics={this.state.topics}
             myself={this.props.sender}
+            navigate={this.navigate}
           />
         );
       case ROUTES.focus:
