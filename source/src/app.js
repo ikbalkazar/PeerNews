@@ -47,7 +47,7 @@ export default class App extends React.Component {
       searchedKeyword: null,
     };
     const { sender } = props;
-    this.state.users.push( {id:sender.id} );
+    this.state.users.push( {id:sender.id , name:sender.name} );
     this.torrentManager = new TorrentManager();
     this.peerManager = new PeerManager({
       sender,
@@ -99,12 +99,12 @@ export default class App extends React.Component {
     this.setState({ route, routeParams });
   };
 
-  handleChangeUserInSinglePage = ( id, value ) => {
+  handleChangeUserInSinglePage = ( id, name, value ) => {
 
     let newUsers = Object.assign([], this.state.users).filter( x => x );
 
     if( value === true ){
-      newUsers.push({ id: id });
+      newUsers.push({ id: id, name: name });
     }
     else{
       newUsers = newUsers.filter( x => x.id !== id );

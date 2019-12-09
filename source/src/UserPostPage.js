@@ -39,11 +39,11 @@ export default class UserPostPage extends React.Component {
   };
 
   unfollowUser = () => {
-    this.props.handleChangeUserInSinglePage( this.props.filter, false );
+    this.props.handleChangeUserInSinglePage( this.props.filter, this.props.messages[0].senderName , false );
   };
 
   followUser = () => {
-    this.props.handleChangeUserInSinglePage( this.props.filter, true );
+    this.props.handleChangeUserInSinglePage( this.props.filter, this.props.messages[0].senderName , true );
   };
 
   render () {

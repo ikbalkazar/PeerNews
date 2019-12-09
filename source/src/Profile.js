@@ -19,8 +19,6 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
 
-
-
 export default class Profile extends React.Component {
 
 
@@ -71,11 +69,13 @@ export default class Profile extends React.Component {
   };
 
 
+
+
   render () {
 
     const color = this.state.background;
     const list = ['element1', 'hello2', 'abc3'];
-    const followedUsers = this.props.users.map( item => (item.id) );
+    const followedUsers = this.props.users;
     const followedTopics = this.props.topics;
     const user = serializeSender( this.props.myself );
 
@@ -107,7 +107,11 @@ export default class Profile extends React.Component {
           <h3 style={{textAlign: 'center',marginTop:'5%'}}> Followed Users </h3>
           <ListGroup style={{overflowY: 'scroll', position:'absolute' , top:'70px' , bottom:'0px' , left:'0px' ,right:'0px'}} >
            {
-             followedUsers.map(item => ( <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickUser(item)}>{item}</ListGroup.Item>))
+             followedUsers.map(item => (
+                <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 800 }} overlay={this.onClickDisplayKey(item.id)}>
+                  <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickUser(item.id)}>{item.name} @ <i>{item.id.substring(0,15)}</i>...</ListGroup.Item>
+                </OverlayTrigger>
+                ))
            }
           </ListGroup>
         </div>
