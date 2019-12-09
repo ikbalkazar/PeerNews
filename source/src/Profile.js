@@ -1,84 +1,163 @@
 import React from 'react';
 import { ROUTES } from './util';
-import MessageCard from './MessageCard';
-import Card from "react-bootstrap/Card";
-import Image from 'react-image-resizer';
-import { Link, animeteScroll as scroll } from 'react-scroll';
-import { Player } from 'video-react';
-import ReactPlayer from 'react-player'
+import { serializeSender } from './message';
 
-const styles = {
+import {
+  AlphaPicker,
+  BlockPicker,
+  ChromePicker,
+  CirclePicker,
+  CompactPicker,
+  GithubPicker, HuePicker, MaterialPicker, PhotoshopPicker,
+  SketchPicker, SliderPicker, SwatchesPicker, TwitterPicker
+} from 'react-color';
 
-  div: {
-        borderRadius: '9px',
-        borderRadiusInputTopLeft: '9px',
-        borderRadiusInputTopRight: '9px',
-        borderRadiusInputBottomLeft: '9px',
-        borderRadiusInputBottomRight: '9px',
-        topLeftMode: 'true',
-        topRightMode: 'true',
-        bottomLeftMode: 'true',
-        bottomRightMode: 'true',
-        shadowOffset: {widht:20, height: 20},
-        shadowRadius: '200px',
-        shadowColor: '#330033',
-        //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
-  },
+import Button from "react-bootstrap/Button";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+import ListGroup from 'react-bootstrap/ListGroup'
+import Popover from 'react-bootstrap/Popover'
+import Alert from 'react-bootstrap/Alert'
 
-  messageCard: {
-        width: '40%',
-        left: '30%',
-        height: 'auto',
-  },
 
-  video: {
-        width: '40%',
-  }
-
-}
 
 export default class Profile extends React.Component {
 
+
+
   constructor(props) {
       super(props);
-      this.state = { height:"", width:""  };
+
   }
 
-  handleClick = (message) => {
-    const { navigate, backTrace } = this.props;
-    navigate(ROUTES.focus, { messageId: message.messageId, backTrace: backTrace});
+  state = {
+    background: '#fff',
   };
 
-  handleUserClick = (senderId) => {
-    const { navigate, backTrace } = this.props;
-    navigate(ROUTES.UserPostPage, { filter: senderId, backTrace: backTrace });
+  handleChangeComplete = (color) => {
+    this.setState({background: color.hex });
   };
 
-  handleTopicPage = ( topic ) => {
-      const { navigate, backTrace } = this.props;
-      navigate(ROUTES.TopicPage, { filter: topic, backTrace: backTrace });
+  onExport = event => {
+    event.preventDefault();
+    console.log('Exported');
   };
+
+  renderTooltip(props) {
+      return <Tooltip show="true" {...props}>You should export your profile to save your configurations so that you can load them when you come back !</Tooltip>;
+  };
+
+  onClickUser( user ){
+    console.log('user clicked');
+    console.log(user);
+  };
+
+  onClickTopic( topic ){
+    console.log('topic clicked');
+    console.log(topic);
+  };
+
+  onClickDisplayKey = ( key ) => {
+      return (
+            <Popover id="popover-basic" onClick={() => {navigator.clipboard.writeText(key)}} style={{cursor:'pointer'}} >
+              <Popover.Title as="h3">Click to copy</Popover.Title>
+              <Popover.Content>
+                <b> {key} </b>
+              </Popover.Content>
+            </Popover>
+          )
+  };
+
 
   render () {
-    const { messages, upvote, downvote, backTrace } = this.props;
-    const { height, width } = this.state;
-    messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
-    console.log( backTrace );
+
+    const color = this.state.background;
+    const list = ['element1', 'hello2', 'abc3'];
+    const followedUsers = this.props.users.map( item => (item.id) );
+    const followedTopics = this.props.topics.map( item => ( item.label ) );
+    const user = serializeSender( this.props.myself );
+
+    console.log(followedUsers);
+    console.log(followedTopics);
+    console.log(user);
+    console.log(color);
+
+    const numberOfPosts = 15;
+    const numberOfUpvotes = 5;
+    const numberOfDownvotes = 2;
+
     return (
-      <div style={styles.div} >
-        {messages.map(message =>
-          <MessageCard
-            key={message.messageId}
-            message={message}
-            onClick={() => this.handleClick(message)}
-            isPreview={true}
-            upVote={upvote} 
-            downVote={downvote}
-            handleTopicPage = {this.handleTopicPage}
-            handleUserClick = {this.handleUserClick}
-          />
-        )}
+
+      <div style={{ position: 'absolute', overflowY:'auto', top:0, left:0 ,width: '100%', height: '100%', backgroundColor:color}}>
+
+        <div style={{position: 'absolute',left: '20%' , transform: 'translateX(-50%)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '25%' , height: '500px', marginTop: '100px' }}>
+          <h3 style={{textAlign: 'center',marginTop:'5%'}}> Customize Your Background Color</h3>
+          <div style={{position: 'absolute',left: '50%' , transform: 'translateX(-50%)'}}>
+            <SketchPicker
+                 color={ this.state.background }
+                 onChangeComplete={ this.handleChangeComplete }
+            />
+          </div>
+        </div>
+
+
+        <div style={{position: 'absolute', left: '50%' , transform: 'translateX(-50%)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '25%' , height: '500px', marginTop: '100px' }}>
+          <h3 style={{textAlign: 'center',marginTop:'5%'}}> Followed Users </h3>
+          <ListGroup style={{overflowY: 'scroll', position:'absolute' , top:'70px' , bottom:'0px' , left:'0px' ,right:'0px'}} >
+           {
+             followedUsers.map(item => ( <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickUser(item)}>{item}</ListGroup.Item>))
+           }
+          </ListGroup>
+        </div>
+
+        <div style={{position: 'absolute', left: '80%' , transform: 'translateX(-50%)',borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '25%' ,height: '500px', marginTop: '100px' }}>
+          <h3 style={{textAlign: 'center',marginTop:'5%'}}> Followed Topics </h3>
+           <ListGroup style={{overflowY: 'scroll', position:'absolute' , top:'70px' , bottom:'0px' , left:'0px' ,right:'0px'}}>
+           {
+             followedTopics.map(item => ( <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickTopic(item)}>{item}</ListGroup.Item>))
+           }
+          </ListGroup>
+        </div>
+
+        <div style={{ position: 'absolute', left: '50%' , transform: 'translateX(-50%)', borderRadius: '15px', borderStyle: 'solid' , borderWidth: '3px' , borderColor:'black' , width: '85%' , height:'300px' , marginLeft:'auto' , marginRight:'auto' , marginTop:'650px'}}>
+
+                            <div style={{ position:'absolute', left: '10%' , top:'25%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '40%' ,height: '50%'}}>
+                              <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.publicKey)}>
+                                <Button style={{position:'absolute', left:'0px'}} variant="success" size="lg">What is my Public Key?</Button>
+                              </OverlayTrigger>
+
+                              <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.privateKey)}>
+                                <Button style={{position:'absolute', right:'0px'}} variant="success" size="lg">What is my Private Key?</Button>
+                              </OverlayTrigger>
+
+                              <div style={{position:'absolute',bottom:'0px', width:'100%'}}>
+                                <OverlayTrigger placement="right" delay={{ show: 250, hide: 500 }} overlay={this.renderTooltip}>
+                                  <Button variant="outline-primary" size="lg" color="primary" onClick={this.onExport} block>
+                                    Export Your Profile
+                                  </Button>
+                                </OverlayTrigger>
+                              </div>
+                            </div>
+
+                            <div style={{ position: 'absolute', left: '60%' , top:'10%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '30%' ,height: '80%'}}>
+                               <h2 style={{textAlign:'center'}}>Your Statistics</h2>
+                               <Alert variant='dark'>
+                                 Post Entries: {numberOfPosts}
+                               </Alert>
+                               <Alert variant='success'>
+                                 Upvotes: {numberOfUpvotes}
+                               </Alert>
+                               <Alert variant='danger'>
+                                 Downvotes: {numberOfDownvotes}
+                               </Alert>
+                            </div>
+        </div>
+
+
+
+
       </div>
+
     );
   }
 }

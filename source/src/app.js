@@ -214,10 +214,9 @@ export default class App extends React.Component {
         return (
           <Profile
             backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
-            messages={feedMessages}
-            navigate={this.navigate}
-            upvote={this.messageManager.upvote}
-            downvote={this.messageManager.downvote}
+            users={this.state.users}
+            topics={this.state.topics}
+            myself={this.props.sender}
           />
         );
       case ROUTES.focus:
