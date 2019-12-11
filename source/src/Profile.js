@@ -32,6 +32,23 @@ export default class Profile extends React.Component {
     background: '#fff',
   };
 
+  getTotalPostOfUser = (user) => {
+    const result = this.props.getTotalPostOfUser(user);
+    return result;
+  };
+  getTotalCommentOfUser = (user) => {
+    const result = this.props.getTotalCommentOfUser(user);
+    return result;
+  };
+  getTotalUpVotesOfUser = (user) => {
+    const result = this.props.getTotalUpVotesOfUser(user);
+    return result;
+  };
+  getTotalDownVotesOfUser = (user) => {
+    const result = this.props.getTotalDownVotesOfUser(user);
+    return result;
+  };
+
   handleChangeComplete = (color) => {
     this.setState({background: color.hex });
   };
@@ -84,9 +101,9 @@ export default class Profile extends React.Component {
     console.log(user);
     console.log(color);
 
-    const numberOfPosts = 15;
-    const numberOfUpvotes = 5;
-    const numberOfDownvotes = 2;
+    const numberOfPosts = this.getTotalPostOfUser(user);
+    const numberOfUpvotes = this.getTotalUpVotesOfUser(user);
+    const numberOfDownvotes = this.getTotalDownVotesOfUser(user);
 
     return (
 

@@ -190,6 +190,92 @@ export default class MessageManager {
     return parsedMessages.length;
   };
 
+  getTotalPostOfUser = (user) => {
+    const messages = this.messages;
+    const id = user.id;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed);
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        if( message.type === Message.type.TEXT ){
+          let indicator = false;
+          if( message.senderId === id )
+            indicator = true;
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     }); 
+    const globalMessages = parsedMessages.filter(x => x.type === Message.type.TEXT);
+    return globalMessages.length;
+  };
+  getTotalCommentOfUser = (user) => {
+    const messages = this.messages;
+    const id = user.id;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed).filter( msg => msg.type === Message.type.COMMENT );
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        const msg = this.getMessageById( message.reMessageId );
+        if( msg.type === Message.type.TEXT ){
+          let indicator = false;
+          if( message.senderId === id )
+            indicator = true;
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
+    return parsedMessages.length;
+  };
+  getTotalUpVotesOfUser = (user) => {
+    const messages = this.messages;
+    const id = user.id;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed).filter( msg => msg.type === Message.type.VOTE && msg.delta === 1 );
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        const msg = this.getMessageById( message.reMessageId );
+        if( msg.type === Message.type.TEXT ){
+          let indicator = false;
+          if( message.senderId === id )
+            indicator = true;
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
+    return parsedMessages.length;
+  };
+
+  getTotalDownVotesOfUser = (user) => {
+    const messages = this.messages;
+    const id = user.id;
+    const unFilteredParsedMessages = toList(messages.values()).map(({parsed}) => parsed).filter( msg => msg.type === Message.type.VOTE && msg.delta === -1 );
+    const parsedMessages = unFilteredParsedMessages.filter( message => {
+        const msg = this.getMessageById( message.reMessageId );
+        if( msg.type === Message.type.TEXT ){
+          let indicator = false;
+          if( message.senderId === id )
+            indicator = true;
+
+          if( indicator === true ){
+            return( message );
+          }
+        }
+        else{
+          return( message );
+        }
+     });
+    return parsedMessages.length;
+  };
+
   controlVote = (messageId) => {
     const messages = this.messages;
     const parsedMessages = toList(messages.values()).map(({parsed}) => parsed);

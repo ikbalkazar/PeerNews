@@ -218,6 +218,10 @@ export default class App extends React.Component {
             topics={this.state.topics}
             myself={this.props.sender}
             navigate={this.navigate}
+            getTotalPostOfUser={this.messageManager.getTotalPostOfUser}
+            getTotalCommentOfUser={this.messageManager.getTotalCommentOfUser}
+            getTotalUpVotesOfUser={this.messageManager.getTotalUpVotesOfUser}
+            getTotalDownVotesOfUser={this.messageManager.getTotalDownVotesOfUser}
           />
         );
       case ROUTES.focus:
