@@ -100,13 +100,14 @@ export default class Focus extends React.Component {
       return null;
     }
     return (
-      <div style={{backgroundColor:this.props.theme.backgroundColor}}>
+      <div style={{position:'absolute',top:'55px',left:0,width:'100%',height:'100%',backgroundColor:this.props.theme.backgroundColor}}>
+      <div>
         <StackedBar
           title={message.title}
           onBack={this.props.backNavigation}
           noRight={true}
         />
-        <div style={{marginTop: "54px", zIndex:1}}>
+        <div style={{marginTop: '55px', zIndex:1}}>
           <MessageCard 
               message={message} 
               postComment={this.postComment} 
@@ -120,6 +121,7 @@ export default class Focus extends React.Component {
           <h5 style={{textAlign: 'center', paddingTop: 50, color:this.props.theme.textColor}}>Comments</h5>
           {message.comments.map(comment => this.renderCard(comment))}
         </div>
+      </div>
       </div>
     );
   }

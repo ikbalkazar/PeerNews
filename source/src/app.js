@@ -176,6 +176,7 @@ export default class App extends React.Component {
         const searchedMessages = this.messageManager.getSearchedMessages(searchedKeyword);
         return (
           <Feed
+            topSwing={'55px'}
             backTrace={[ { filter: "", page: ROUTES.search, value: 1 } ]}
             messages={searchedMessages}
             navigate={this.navigate}
@@ -189,6 +190,7 @@ export default class App extends React.Component {
         const freshMessages = this.messageManager.getAllMessages();
         return (
           <Feed
+            topSwing={'55px'}
             backTrace={ [ { filter: "", page: ROUTES.Fresh, value: 1 } ] }
             messages={freshMessages}
             navigate={this.navigate}
@@ -202,6 +204,7 @@ export default class App extends React.Component {
         const messages = this.messageManager.getAllMessages();
         return (
           <Feed
+            topSwing={'55px'}
             backTrace={ [ { filter: "", page: ROUTES.trending, value: 1 } ] }
             messages={messages}
             navigate={this.navigate}
@@ -215,6 +218,7 @@ export default class App extends React.Component {
       case ROUTES.feed:
         return (
           <Feed
+            topSwing={'55px'}
             backTrace={ [ { filter: "", page: ROUTES.feed, value: 1 } ] }
             messages={feedMessages}
             navigate={this.navigate}
@@ -270,6 +274,7 @@ export default class App extends React.Component {
         const filteredMessages = this.messageManager.getFilteredMessagesByTopic(filter[0]);
         return (
             <TopicPage
+                topSwing={'107px'}
                 filter={filter[0]}
                 backTrace={routeParams.backTrace}
                 messages={filteredMessages}
@@ -290,6 +295,7 @@ export default class App extends React.Component {
           searchResult = true;
         return (
             <UserPostPage
+                topSwing={'107px'}
                 searchResult={searchResult}
                 filter={routeParams.filter}
                 backTrace={routeParams.backTrace}

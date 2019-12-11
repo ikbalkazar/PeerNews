@@ -67,6 +67,7 @@ export default class TopicPage extends React.Component {
     const { height, width } = this.state;
     return (
         <div>
+          <div style={{position:'absolute'}}>
             <StackedBar
               title={filter.label}
               onBack={this.props.backNavigation}
@@ -76,8 +77,11 @@ export default class TopicPage extends React.Component {
               onRightOffClick={this.unfollowTopic}
               rightOffTitle="Unfollow"
             />
-            <div style={{marginTop: "54px", paddingTop: 0, zIndex:1, height:'100%', overflowY: 'auto' }}>
-              <Feed
+          </div>
+            <div style={{position:'relative', marginTop: "55px", paddingTop: 0, zIndex:1, height:'100%', overflowY: 'auto' }}>
+              <div>
+                <Feed
+                  topSwing={this.props.topSwing}
                   backTrace={backTrace}
                   filter={filter}
                   messages={messages}
@@ -86,7 +90,8 @@ export default class TopicPage extends React.Component {
                   downvote={downvote}
                   controlVote={this.props.controlVote}
                   theme={this.props.theme}
-              />
+                />
+              </div>
             </div>
         </div>
     );

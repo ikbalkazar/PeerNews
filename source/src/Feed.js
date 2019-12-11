@@ -58,7 +58,7 @@ export default class Feed extends React.Component {
       messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     }
     return (
-      <div style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',backgroundColor:this.props.theme.backgroundColor}}>
+      <div style={{position:'fixed',top:this.props.topSwing,left:0,width:'100%',height:'100%',backgroundColor:this.props.theme.backgroundColor}}>
       <div style={styles.div} >
         {messages.map(message =>
           <MessageCard

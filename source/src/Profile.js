@@ -80,6 +80,12 @@ export default class Profile extends React.Component {
           )
   };
 
+  changeTheme = ( theme ) => {
+
+    console.log('theme changed' + theme);
+
+  };
+
   render () {
     const color = this.props.theme.backgroundColor;
     const list = ['element1', 'hello2', 'abc3'];
@@ -108,6 +114,13 @@ export default class Profile extends React.Component {
                  onChangeComplete={ this.handleChangeComplete }
             />
           </div>
+
+          <div style={{position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'236px' , height:'18%' , bottom:'0px'}}>
+            <h5 style={{textAlign: 'center'}}>Change Your Theme</h5>
+            <Button style={{position:'absolute', left:'0%', bottom:0}} variant="outline-info"  onClick={() => this.changeTheme('light')}>Light Theme</Button>
+            <Button style={{position:'absolute', right:'0%', bottom:0}}variant="outline-dark"  onClick={() => this.changeTheme('dark')}>Dark Theme</Button>
+          </div>
+
         </div>
 
 
@@ -134,9 +147,9 @@ export default class Profile extends React.Component {
           </ListGroup>
         </div>
 
-        <div style={{ position: 'absolute', minWidth:'1000px' ,left: '50%' , transform: 'translateX(-50%)', borderRadius: '15px', borderStyle: 'solid' , borderWidth: '3px' , borderColor:'black' , width: '85%' , height:'300px' , marginLeft:'auto' , marginRight:'auto' , marginTop:'650px'}}>
+        <div style={{ position: 'absolute', minWidth:'1000px' ,left: '50%' , transform: 'translateX(-50%)', borderRadius: '15px', borderStyle: 'solid' , borderWidth: '0px' , borderColor:'black' , width: '85%' , height:'300px' , marginLeft:'auto' , marginRight:'auto' , marginTop:'650px'}}>
 
-                            <div style={{ position:'absolute', minWidth:'500px' ,left: '10%' , top:'25%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '40%' ,height: '50%'}}>
+                            <div style={{ position:'absolute', minWidth:'500px' ,left: '10%' , top:'25%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '0px', borderColor: 'lightgray',  width: '40%' ,height: '50%'}}>
                               <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.publicKey)}>
                                 <Button style={{position:'absolute', left:'0px'}} variant="success" size="lg">What is my Public Key?</Button>
                               </OverlayTrigger>
@@ -147,7 +160,7 @@ export default class Profile extends React.Component {
 
                               <div style={{position:'absolute',bottom:'0px', width:'100%'}}>
                                 <OverlayTrigger placement="right" delay={{ show: 250, hide: 500 }} overlay={this.renderTooltip}>
-                                  <Button variant="outline-primary" size="lg" color="primary" onClick={this.onExport} block>
+                                  <Button variant="outline-primary" size="lg" color="primary" onClick={() => this.onExport} block>
                                     Export Your Profile
                                   </Button>
                                 </OverlayTrigger>

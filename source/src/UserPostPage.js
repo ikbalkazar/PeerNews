@@ -64,6 +64,7 @@ export default class UserPostPage extends React.Component {
             />
             <div style={{marginTop: "54px", zIndex:1 }}>
               <Feed
+                  topSwing={this.props.topSwing}
                   backTrace={backTrace}
                   filter={filter}
                   messages={messages}
