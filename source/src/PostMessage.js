@@ -86,8 +86,9 @@ const styles = {
 	},
 
 	div: {
+	    position:'relative',
     	width: 700,
-		  marginTop: 50,
+		  marginTop: '7%',
 			marginLeft: 'auto',
 		  marginRight: 'auto',
    		borderRadius: '9px',
@@ -98,6 +99,7 @@ const styles = {
    		shadowOffset: {widht:2, height: 2},
    		shadowRadius: '20px',
    		shadowColor: '#330033',
+   		backgroundColor:'white',
 		//background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
 	}
 
@@ -181,6 +183,7 @@ export default class PostMessage extends React.Component {
 		const {text, title, loading, media} = this.state;
 
 		return (
+		  <div style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', overflow:'auto', backgroundColor:'red'}}>
 			<div style={ styles.div } >
 				<h1 style={{textAlign:"center", marginTop: "0px"}}>Create a new post</h1>
 				<div className="form-group">
@@ -205,6 +208,7 @@ export default class PostMessage extends React.Component {
 						showPreview
 					/>
 				</div>
+			</div>
 			</div>
 		);
   }
