@@ -54,6 +54,7 @@ export default class UserPostPage extends React.Component {
     return (
         <div>
             <StackedBar
+              theme={this.props.theme}
               title={messages[0].senderName}
               onBack={this.props.backNavigation}
               isRightOn={searchResult}

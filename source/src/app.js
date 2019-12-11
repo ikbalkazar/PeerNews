@@ -45,10 +45,10 @@ export default class App extends React.Component {
       userCaseChange: null,
       topicCaseChange: null,
       searchedKeyword: null,
-      theme: {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd" },
+      theme: {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
       themesList: [
-        {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd" },
-        {name: "dark", textColor: "white", optionColor:"RED", borderColor:"white", backgroundColor:"black", insideColor: "black", headerColor: "grey", topicColor:"black" }
+        {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
+        {name: "dark", textColor: "white", optionColor:"red", borderColor:"white", backgroundColor:"black", insideColor: "black", headerColor: "grey", topicColor:"black", stackedbarBackground: "#e8e8e8" }
       ],
     };
     const { sender } = props;
@@ -83,6 +83,11 @@ export default class App extends React.Component {
     }
     this.messageManager.messageReceived(message);
   };
+
+  changeTheme = (theme) => {
+    const newTheme = this.state.themesList.filter( x => x.name === theme )[0];
+    this.setState( {theme:newTheme} );
+  }
 
   handleStackPop = () => {
     const { routeParams } = this.state;
@@ -168,8 +173,6 @@ export default class App extends React.Component {
 
   renderPage = () => {
     const { route, routeParams, searchedKeyword, theme } = this.state;
-    console.log( this.state.topics );
-    console.log( this.state.users );
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
       case ROUTES.search:
@@ -242,6 +245,7 @@ export default class App extends React.Component {
             getTotalDownVotesOfUser={this.messageManager.getTotalDownVotesOfUser}
             changeBackgroundColor={this.changeBackgroundColor}
             theme={theme}
+            changeTheme={this.changeTheme}
           />
         );
       case ROUTES.focus:

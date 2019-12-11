@@ -5,10 +5,10 @@ const capitalizeFirstLetter = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1)
 };
 
-export default ({onBack, title, noRight, isRightOn, onRightOnClick, onRightOffClick, rightOnTitle, rightOffTitle}) => (
+export default ({theme, onBack, title, noRight, isRightOn, onRightOnClick, onRightOffClick, rightOnTitle, rightOffTitle}) => (
   <div style={{
     position:"fixed", width:"100%", marginTop:"-54px", zIndex: 11,
-    backgroundColor: '#e8e8e8',
+    backgroundColor: theme.stackedbarBackground,
     height: 53,
   }}>
     <Button variant="light" size="md" style={{marginLeft: 13, marginTop: 8}} onClick={onBack}>{'Back'}</Button>
