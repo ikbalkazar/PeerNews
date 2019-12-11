@@ -76,7 +76,7 @@ export default class TopicPage extends React.Component {
               onRightOffClick={this.unfollowTopic}
               rightOffTitle="Unfollow"
             />
-            <div style={{marginTop: "54px", paddingTop: 0, zIndex:1 }}>
+            <div style={{marginTop: "54px", paddingTop: 0, zIndex:1, height:'100%', overflowY: 'auto' }}>
               <Feed
                   backTrace={backTrace}
                   filter={filter}
@@ -85,6 +85,7 @@ export default class TopicPage extends React.Component {
                   upvote={upvote}
                   downvote={downvote}
                   controlVote={this.props.controlVote}
+                  theme={this.props.theme}
               />
             </div>
         </div>

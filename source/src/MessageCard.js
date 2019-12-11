@@ -20,22 +20,6 @@ const styles = {
         //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
   },
 
-  messageCard: {
-        width: '600px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        height: 'auto',
-        cursor: 'pointer',
-  },
-
-  messageCardFocus: {
-        width: '600px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        height: 'auto',
-        cursor: 'pointer',
-  },
-
   goThumbsup: {
       marginLeft:"10px",
       marginTop:"-10px",
@@ -91,11 +75,33 @@ const shorten = (s) => {
   return s.substring(0, 100) + '...';
 };
 
-export default ({message, onClick, isPreview, postComment, upVote, downVote, handleTopicPage, handleUserClick, controlVote}) => {
+export default ({message, onClick, isPreview, postComment, upVote, downVote, handleTopicPage, handleUserClick, controlVote, theme}) => {
   let aggregateVotes = 0;
   for (const vote of message.votes) {
     aggregateVotes += parseInt(vote.delta);
   }
+
+  const messageCard = {
+        width: '600px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        height: 'auto',
+        cursor: 'pointer',
+        backgroundColor: theme.insideColor,
+        color: theme.textColor,
+        borderColor: theme.borderColor
+  }
+  const messageCardFocus = {
+        width: '600px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        height: 'auto',
+        cursor: 'pointer',
+        backgroundColor: theme.insideColor,
+        color: theme.textColor,
+        borderColor: theme.borderColor
+  }
+
   const handleClick = isPreview ? onClick : () => {};
   const messageText = isPreview ? shorten(message.text) : message.text;
   const senderId = message.senderId.substring(0, 10) + '...';
@@ -108,12 +114,12 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
         key={message.messageId}
         message={message}
         className="rounded"
-        style={ isPreview ? styles.messageCard : styles.messageCardFocus }
+        style={ isPreview ? messageCard : messageCardFocus }
       >
         {isPreview &&
           <Card.Header
             onClick={handleClick}
-            style={{textAlign:'left', color: 'black', fontWeight: '800'}}
+            style={{textAlign:'left', color: theme.textColor, backgroundColor: theme.headerColor, fontWeight: '800'}}
           >
             {message.title}
           </Card.Header>

@@ -21,18 +21,6 @@ import Form from 'react-bootstrap/Form';
 
 const styles = {
 
-  root: {
-      backgroundColor: "#cdc9cd",
-      backgroundSize: "100% 100%",
-      marginBottom: "20px",
-      marginLeft:"auto",
-      marginRight:"auto",
-      width:"600px",
-      heigth: "auto",
-      opacity: '1',
-      borderRadius: "15px 50px",
-  },
-
   buttonDiv: {
     display: "flex",
     alignItems: "center",
@@ -100,10 +88,28 @@ export default class Topics extends React.Component {
     const { height, width, informationBoxCases } = this.state;
     for( var i = 0 ; i < topicsList.length ; i++ )
       informationBoxCases.push( {label: topicsList[i].label, value:false, id: i} );
+
+    let borderString = "";
+    if( this.props.theme.borderColor !== "" )
+      borderString = "2px solid " + this.props.theme.borderColor;
+
+    const root = {
+      //backgroundColor: "#cdc9cd",
+      backgroundColor: this.props.theme.topicColor,
+      marginBottom: "20px",
+      marginLeft:"auto",
+      marginRight:"auto",
+      width:"600px",
+      heigth: "auto",
+      opacity: '1',
+      borderRadius: "15px 50px",
+      border: borderString
+    }
+
     return (
-      <div>
+      <div style={{backgroundColor:this.props.theme.backgroundColor, marginTop:"2px"}}>
           {topicsList.map(topic => 
-            <div style={styles.root}>
+            <div style={root}>
               <div style={{opacity: '1.0', textAlign:"center",
                     color:topic.color, fontSize:"50px", fontFamily:"Allan", fontStyle:"italic", cursor:"pointer"}} onClick={() => this.handleClick(topic)}>
                   {topic.label}

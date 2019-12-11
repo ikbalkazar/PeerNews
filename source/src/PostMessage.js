@@ -27,7 +27,7 @@ const styles = {
     inputStyle:{
     	fontSize: 20,
     	fontWeight: 'bold',
-    	color: 'blue',
+    	color: 'blue'
   	},
 
   	contentStyle:{
@@ -42,12 +42,12 @@ const styles = {
 
   	selectArea: {
    		border: 0,
-   		color: '',
    		background: 'transparent',
    		fontSize: '15px',
    		fontWeight: 'bold',
    		width: '100px',
    		maxMenuHeight: 5,
+   		color: 'orange',
 	},
 
 
@@ -84,25 +84,6 @@ const styles = {
 		border: '1px solid lightgray',
 		cursor: 'pointer',
 	},
-
-	div: {
-	    position:'relative',
-    	width: 700,
-		  marginTop: '7%',
-			marginLeft: 'auto',
-		  marginRight: 'auto',
-   		borderRadius: '9px',
-   		borderRadiusInputTopLeft: '9px',
-      	borderRadiusInputTopRight: '9px',
-      	borderRadiusInputBottomLeft: '9px',
-     	borderRadiusInputBottomRight: '9px',
-   		shadowOffset: {widht:2, height: 2},
-   		shadowRadius: '20px',
-   		shadowColor: '#330033',
-   		backgroundColor:'white',
-		//background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
-	}
-
 }
 
 
@@ -181,10 +162,28 @@ export default class PostMessage extends React.Component {
 
 	render () {
 		const {text, title, loading, media} = this.state;
+		const div = {
+		    position:'relative',
+	    	width: 700,
+			marginTop: '7%',
+			marginLeft: 'auto',
+			marginRight: 'auto',
+	   		borderRadius: '9px',
+	   		borderRadiusInputTopLeft: '9px',
+	      	borderRadiusInputTopRight: '9px',
+	      	borderRadiusInputBottomLeft: '9px',
+	     	borderRadiusInputBottomRight: '9px',
+	   		shadowOffset: {widht:2, height: 2},
+	   		shadowRadius: '20px',
+	   		shadowColor: '#330033',
+	   		backgroundColor: this.props.theme.insideColor,
+	   		color: this.props.theme.optionColor,
+	   		borderColor: this.props.theme.borderColor,
+		}
 
 		return (
-		  <div style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', overflow:'auto', backgroundColor:'red'}}>
-			<div style={ styles.div } >
+		  <div style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', overflow:'auto', backgroundColor:this.props.theme.backgroundColor}}>
+			<div style={ div } >
 				<h1 style={{textAlign:"center", marginTop: "0px"}}>Create a new post</h1>
 				<div className="form-group">
 					<input type="text" className="form-control" id="title" placeholder="Enter Your Title Here.." style={styles.inputStyle} value={title} onChange={this.handleTitle} ></input>
@@ -196,10 +195,10 @@ export default class PostMessage extends React.Component {
 				<Select value={this.state.selectedOptions} placeholder="Select topics from below" isMulti options={topics} style={styles.selectArea} onChange={this.onChange}></Select>
 				<div style={{textAlign: 'center', marginTop: 20}}>
 					<Button variant="success" size="lg" type="submit" onClick={this.onSubmit} disabled={loading}>
-						{loading ? 'Submitting...' : 'Submit'}
+						{loading ? 'Posting...' : 'Post'}
 					</Button>
 				</div>
-				<div style={{textAlign: 'left', marginTop: -60}}>
+				<div style={{textAlign: 'left', marginTop: -53}}>
 					<MediaUploader
 						media={media}
 						onChange={this.handleMediaFilePath}

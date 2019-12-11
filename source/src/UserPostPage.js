@@ -71,6 +71,7 @@ export default class UserPostPage extends React.Component {
                   upvote={upvote}
                   downvote={downvote}
                   controlVote={this.props.controlVote}
+                  theme={this.props.theme}
               />
             </div>
         </div>

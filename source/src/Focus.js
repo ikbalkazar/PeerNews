@@ -7,12 +7,6 @@ import StackedBar from './StackedBar';
 
 const styles = {
 
-  messageCard: {
-        width: '600px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-  },
-
   messageCardFocus: {
         width: '60%',
         left: '20%',
@@ -66,11 +60,21 @@ export default class Focus extends React.Component {
 
 
   renderCard = (message) => {
+    const messageCard = {
+        width: '600px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        height: 'auto',
+        cursor: 'pointer',
+        backgroundColor: this.props.theme.insideColor,
+        color: this.props.theme.textColor,
+        borderColor: this.props.theme.borderColor
+  }
     return (
       <Card
         key={message.messageId}
         message={message}
-        style={ styles.messageCard }
+        style={messageCard}
       > 
         <Card.Body>
           <Card.Text>
@@ -96,7 +100,7 @@ export default class Focus extends React.Component {
       return null;
     }
     return (
-      <div>
+      <div style={{backgroundColor:this.props.theme.backgroundColor}}>
         <StackedBar
           title={message.title}
           onBack={this.props.backNavigation}
@@ -111,8 +115,9 @@ export default class Focus extends React.Component {
               handleTopicPage = {this.handleTopicPage}
               handleUserClick = {this.handleUserClick}
               controlVote={this.props.controlVote}
+              theme={this.props.theme}
           />
-          <h5 style={{textAlign: 'center', paddingTop: 50}}>Comments</h5>
+          <h5 style={{textAlign: 'center', paddingTop: 50, color:this.props.theme.textColor}}>Comments</h5>
           {message.comments.map(comment => this.renderCard(comment))}
         </div>
       </div>

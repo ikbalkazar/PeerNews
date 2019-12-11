@@ -7,16 +7,11 @@ import { Link, animeteScroll as scroll } from 'react-scroll';
 import { Player } from 'video-react';
 import ReactPlayer from 'react-player'
 
-const styles = {
+let styles = {
 
   div: {
-        topLeftMode: 'true',
-        topRightMode: 'true',
-        bottomLeftMode: 'true',
-        bottomRightMode: 'true',
-        shadowOffset: {widht:20, height: 20},
-        shadowRadius: '200px',
-        shadowColor: '#330033',
+        height:'100%',
+        overflowY: 'auto',
         //background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
   },
 
@@ -55,7 +50,7 @@ export default class Feed extends React.Component {
   };
 
   render () {
-    const { messages, upvote, downvote, backTrace, sortByUpvotes } = this.props;
+    const { messages, upvote, downvote, backTrace, sortByUpvotes, backgroundColor } = this.props;
     const { height, width } = this.state;
     if (sortByUpvotes) {
       messages.sort((a, b) => b.votes.length - a.votes.length);
@@ -63,7 +58,7 @@ export default class Feed extends React.Component {
       messages.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
     }
     return (
-      <div style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',backgroundColor:'red'}}>
+      <div style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',backgroundColor:this.props.theme.backgroundColor}}>
       <div style={styles.div} >
         {messages.map(message =>
           <MessageCard
@@ -76,6 +71,7 @@ export default class Feed extends React.Component {
             handleTopicPage = {this.handleTopicPage}
             handleUserClick = {this.handleUserClick}
             controlVote={this.props.controlVote}
+            theme={this.props.theme}
           />
         )}
       </div>

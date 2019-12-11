@@ -45,6 +45,11 @@ export default class App extends React.Component {
       userCaseChange: null,
       topicCaseChange: null,
       searchedKeyword: null,
+      theme: {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd" },
+      themesList: [
+        {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd" },
+        {name: "dark", textColor: "white", optionColor:"RED", borderColor:"white", backgroundColor:"black", insideColor: "black", headerColor: "grey", topicColor:"black" }
+      ],
     };
     const { sender } = props;
     this.state.users.push( {id:sender.id , name:sender.name} );
@@ -155,9 +160,14 @@ export default class App extends React.Component {
     console.log(`[SearchClick] ${this.state.searchedKeyword}`);
     this.setState({ route: ROUTES.search, searchedKeyword: keyword });
   };
+  changeBackgroundColor = (color) => {
+    let newTheme = this.state.theme;
+    newTheme.backgroundColor = color;
+    this.setState( {theme : newTheme} );
+  };
 
   renderPage = () => {
-    const { route, routeParams, searchedKeyword } = this.state;
+    const { route, routeParams, searchedKeyword, theme } = this.state;
     console.log( this.state.topics );
     console.log( this.state.users );
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
@@ -172,6 +182,7 @@ export default class App extends React.Component {
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
             controlVote={this.messageManager.controlVote}
+            theme={theme}
           />
         );
       case ROUTES.Fresh:
@@ -184,6 +195,7 @@ export default class App extends React.Component {
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
             controlVote={this.messageManager.controlVote}
+            theme={theme}
           />
         );
       case ROUTES.trending:
@@ -197,6 +209,7 @@ export default class App extends React.Component {
             downvote={this.messageManager.downvote}
             sortByUpvotes={true}
             controlVote={this.messageManager.controlVote}
+            theme={theme}
           />
         );
       case ROUTES.feed:
@@ -208,6 +221,7 @@ export default class App extends React.Component {
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
             controlVote={this.messageManager.controlVote}
+            theme={theme}
           />
         );
       case ROUTES.Profile:
@@ -222,6 +236,8 @@ export default class App extends React.Component {
             getTotalCommentOfUser={this.messageManager.getTotalCommentOfUser}
             getTotalUpVotesOfUser={this.messageManager.getTotalUpVotesOfUser}
             getTotalDownVotesOfUser={this.messageManager.getTotalDownVotesOfUser}
+            changeBackgroundColor={this.changeBackgroundColor}
+            theme={theme}
           />
         );
       case ROUTES.focus:
@@ -238,6 +254,7 @@ export default class App extends React.Component {
             upvote={this.messageManager.upvote}
             downvote={this.messageManager.downvote}
             controlVote={this.messageManager.controlVote}
+            theme={theme}
           />
         );
       case ROUTES.postMessage:
@@ -245,6 +262,7 @@ export default class App extends React.Component {
           <PostMessage
             postMessage={this.messageManager.postMessage}
             seedAsTorrent={this.torrentManager.seed}
+            theme={theme}
           />
         );
       case ROUTES.TopicPage:
@@ -261,6 +279,7 @@ export default class App extends React.Component {
                 handleChangeTopicInSinglePage={this.handleChangeTopicInSinglePage}
                 backNavigation={this.handleStackPop}
                 controlVote={this.messageManager.controlVote}
+                theme={theme}
             />
         );
       case ROUTES.UserPostPage:
@@ -281,6 +300,7 @@ export default class App extends React.Component {
                 downvote={this.messageManager.downvote}
                 handleChangeUserInSinglePage={this.handleChangeUserInSinglePage}
                 controlVote={this.messageManager.controlVote}
+                theme={theme}
             />
         );
       case ROUTES.topics:
@@ -294,6 +314,7 @@ export default class App extends React.Component {
             getTotalCommentOfTopic={this.messageManager.getTotalCommentOfTopic}
             getTotalUpVotesOfTopic={this.messageManager.getTotalUpVotesOfTopic}
             getTotalDownVotesOfTopic={this.messageManager.getTotalDownVotesOfTopic}
+            theme={theme}
           />
         );
       default:

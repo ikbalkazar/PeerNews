@@ -25,12 +25,7 @@ export default class Profile extends React.Component {
 
   constructor(props) {
       super(props);
-
   }
-
-  state = {
-    background: '#fff',
-  };
 
   getTotalPostOfUser = (user) => {
     const result = this.props.getTotalPostOfUser(user);
@@ -50,7 +45,7 @@ export default class Profile extends React.Component {
   };
 
   handleChangeComplete = (color) => {
-    this.setState({background: color.hex });
+    this.props.changeBackgroundColor( color.hex );
   };
 
   onExport = event => {
@@ -85,12 +80,8 @@ export default class Profile extends React.Component {
           )
   };
 
-
-
-
   render () {
-
-    const color = this.state.background;
+    const color = this.props.theme.backgroundColor;
     const list = ['element1', 'hello2', 'abc3'];
     const followedUsers = this.props.users;
     const followedTopics = this.props.topics;
@@ -107,13 +98,13 @@ export default class Profile extends React.Component {
 
     return (
 
-      <div style={{ position: 'absolute', overflowY:'auto', top:0, left:0 ,width: '100%', height: '100%', backgroundColor:color}}>
+      <div style={{ position: 'absolute', overflowY:'auto', top:0, left:0 ,width: '100%', height: '100%', backgroundColor:color, color:this.props.theme.textColor}}>
 
         <div style={{position: 'absolute',left: '20%' , transform: 'translateX(-50%)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '25%' , height: '500px', marginTop: '100px' }}>
           <h3 style={{textAlign: 'center',marginTop:'5%'}}> Customize Your Background Color</h3>
           <div style={{position: 'absolute',left: '50%' , transform: 'translateX(-50%)'}}>
             <SketchPicker
-                 color={ this.state.background }
+                 color={ color }
                  onChangeComplete={ this.handleChangeComplete }
             />
           </div>
@@ -126,7 +117,8 @@ export default class Profile extends React.Component {
            {
              followedUsers.map(item => (
                 <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 800 }} overlay={this.onClickDisplayKey(item.id)}>
-                  <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickUser(item.id)}>{item.name} @ <i>{item.id.substring(0,15)}</i>...</ListGroup.Item>
+                  <ListGroup.Item style={{cursor:'pointer', backgroundColor:this.props.theme.backgroundColor, borderColor:this.props.theme.borderColor}}
+                   onClick={() => this.onClickUser(item.id)}>{item.name} @ <i>{item.id.substring(0,15)}</i>...</ListGroup.Item>
                 </OverlayTrigger>
                 ))
            }
@@ -137,7 +129,7 @@ export default class Profile extends React.Component {
           <h3 style={{textAlign: 'center',marginTop:'5%'}}> Followed Topics </h3>
            <ListGroup style={{overflowY: 'scroll', position:'absolute' , top:'70px' , bottom:'0px' , left:'0px' ,right:'0px'}}>
            {
-             followedTopics.map(item => ( <ListGroup.Item style={{cursor:'pointer'}} onClick={() => this.onClickTopic(item)}>{item.label}</ListGroup.Item>))
+             followedTopics.map(item => ( <ListGroup.Item style={{cursor:'pointer',backgroundColor:this.props.theme.backgroundColor, borderColor:this.props.theme.borderColor}} onClick={() => this.onClickTopic(item)}>{item.label}</ListGroup.Item>))
            }
           </ListGroup>
         </div>
