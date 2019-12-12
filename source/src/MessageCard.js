@@ -108,6 +108,7 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
   const commentNumberStyle = isPreview ? styles.commentNumber : styles.commentNumberFocus;
   const mediaURL = message.media || message.video || message.image;
   const previousVote = controlVote( message.messageId );
+  const messageCardBodyClass = theme.name === "light" ? "message-card-body" : "";
   return (
     <div>
       <Card
@@ -127,7 +128,7 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
         {mediaURL &&
           <MediaViewer mediaURL={mediaURL}/>
         }
-        <Card.Body className="message-card-body">
+        <Card.Body className={messageCardBodyClass}>
           <Card.Text onClick={handleClick}>{messageText}</Card.Text>
           <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', minHeight: 30}}>
             <div style={{display: 'flex', flexDirection: 'row'}}>

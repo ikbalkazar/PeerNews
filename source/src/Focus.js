@@ -106,6 +106,7 @@ export default class Focus extends React.Component {
           title={message.title}
           onBack={this.props.backNavigation}
           noRight={true}
+          theme={this.props.theme}
         />
         <div style={{marginTop: '55px', zIndex:1}}>
           <MessageCard 

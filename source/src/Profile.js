@@ -81,9 +81,7 @@ export default class Profile extends React.Component {
   };
 
   changeTheme = ( theme ) => {
-
-    console.log('theme changed' + theme);
-
+    this.props.changeTheme( theme );
   };
 
   render () {

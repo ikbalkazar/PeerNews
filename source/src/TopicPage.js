@@ -69,6 +69,7 @@ export default class TopicPage extends React.Component {
         <div>
           <div style={{position:'absolute'}}>
             <StackedBar
+              theme={this.props.theme}
               title={filter.label}
               onBack={this.props.backNavigation}
               isRightOn={filter.value}
