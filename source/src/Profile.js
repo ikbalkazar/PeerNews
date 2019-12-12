@@ -90,7 +90,7 @@ export default class Profile extends React.Component {
     const color = this.props.theme.backgroundColor;
     const list = ['element1', 'hello2', 'abc3'];
     const followedUsers = this.props.users;
-    const followedTopics = this.props.topics;
+    const followedTopics = this.props.topics.filter( item => (item.value === true ) );
     const user = serializeSender( this.props.myself );
 
     console.log(followedUsers);
