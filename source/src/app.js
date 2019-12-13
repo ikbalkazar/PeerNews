@@ -45,7 +45,7 @@ export default class App extends React.Component {
       userCaseChange: null,
       topicCaseChange: null,
       searchedKeyword: null,
-      theme: {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
+      theme: {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"gray", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
       themesList: [
         {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
         {name: "dark", textColor: "white", optionColor:"red", borderColor:"white", backgroundColor:"black", insideColor: "black", headerColor: "grey", topicColor:"black", stackedbarBackground: "#e8e8e8" }

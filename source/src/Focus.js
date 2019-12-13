@@ -100,7 +100,7 @@ export default class Focus extends React.Component {
       return null;
     }
     return (
-      <div style={{position:'absolute',top:'55px',left:0,width:'100%',height:'100%',backgroundColor:this.props.theme.backgroundColor}}>
+      <div style={{position:'relative', top:'0px',left:0,width:'100%',height:'100%',backgroundColor:this.props.theme.backgroundColor}}>
       <div>
         <StackedBar
           title={message.title}
