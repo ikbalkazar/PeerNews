@@ -110,7 +110,7 @@ export default ({message, onClick, isPreview, postComment, upVote, downVote, han
   const previousVote = controlVote( message.messageId );
   const messageCardBodyClass = theme.name === "light" ? "message-card-body" : "";
   return (
-    <div>
+    <div style={{marginTop:'5px', marginBottom:'5px'}}>
       <Card
         key={message.messageId}
         message={message}
