@@ -4,9 +4,9 @@ export default class ConfigStore {
   constructor() {
     this.data = {
       sender: null,
-      torrent: {},
-      followedTopics: [],
-      followedUsers: [],
+      topics: [],
+      users: [],
+      theme: null,
     };
   }
 
@@ -18,6 +18,16 @@ export default class ConfigStore {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  clear = () => {
+    this.data = {
+      sender: null,
+      topics: [],
+      users: [],
+      theme: null,
+    };
+    this.save();
   };
 
   save = async () => {

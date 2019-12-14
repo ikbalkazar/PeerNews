@@ -13,46 +13,44 @@ import TopicPage from './TopicPage';
 import Topics from './Topics';
 import UserPostPage from './UserPostPage';
 
-const TEST_MESSAGES = new Map([
-  ["1", {senderId: 'Jon', type: "text", text: "Hello!", messageId: "1", timestamp: 0}],
-  ["2", {senderId: 'Sartre', type: "text", text: "Every existing thing is born without reason, prolongs itself out of weakness, and dies by chance.", messageId: "2", timestamp: 1}],
-  ["3", {senderId: 'Albert', type: "text", text: "You will never be happy if you continue to search for what happiness consists of. You will never live if you are looking for the meaning of life.", messageId: "3", timestamp: 2}],
-  ["4", {senderId: 'Jon', type: "text", text: "Huh, what kind of an existential hole did I find myself in here?", messageId: "4", timestamp: 3}],
-]);
+
+const DEFAULT_TOPICS = [
+  {label: "children", value: true, color: "GREEN"},
+  {label: "comics", value: true, color: "GREEN"},
+  {label: "commerce", value: true, color: "GREEN"},
+  {label: "crypto currency", value: true, color: "GREEN"},
+  {label: "culture", value: true, color : "GREEN"},
+  {label: "food", value: true, color: "GREEN"},
+  {label: "football", value: true, color: "GREEN"},
+  {label: "game", value: true, color: "GREEN"},
+  {label: "movies", value: true, color: "GREEN"},
+  {label: "travel", value: true, color: "GREEN"}
+];
+
+const THEMES = [
+  {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
+  {name: "dark", textColor: "white", optionColor:"red", borderColor:"white", backgroundColor:"black", insideColor: "black", headerColor: "grey", topicColor:"black", stackedbarBackground: "#e8e8e8" }
+];
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    const { sender, configStore } = props;
+    const storedTopics = configStore.get('topics') || [];
+    const storedUsers = configStore.get('users') || [];
+    const storedTheme = configStore.get('theme') || null;
     this.state = {
       numPeers: 0,
       messages: new Map(),
       route: ROUTES.feed,
       routeParams: null,
-      topics: [
-        {label: "children", value: true, color: "GREEN"},
-        {label: "comics", value: true, color: "GREEN"},
-        {label: "commerce", value: true, color: "GREEN"},
-        {label: "crypto currency", value: true, color: "GREEN"},
-        {label: "culture", value: true, color : "GREEN"},
-        {label: "food", value: true, color: "GREEN"},
-        {label: "football", value: true, color: "GREEN"},
-        {label: "game", value: true, color: "GREEN"},
-        {label: "movies", value: true, color: "GREEN"},
-        {label: "travel", value: true, color: "GREEN"}
+      topics: storedTopics.length > 0 ? storedTopics : DEFAULT_TOPICS,
+      users: storedUsers.length > 0 ? storedUsers : [
+        {id: sender.id, name: sender.name}
       ],
-      users: [
-      ],
-      userCaseChange: null,
-      topicCaseChange: null,
-      searchedKeyword: null,
-      theme: {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"gray", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
-      themesList: [
-        {name: "light", textColor: "black", optionColor:"black", borderColor:"", backgroundColor:"white", insideColor: "white", headerColor: "", topicColor:"#cdc9cd", stackedbarBackground: "#e8e8e8" },
-        {name: "dark", textColor: "white", optionColor:"red", borderColor:"white", backgroundColor:"black", insideColor: "black", headerColor: "grey", topicColor:"black", stackedbarBackground: "#e8e8e8" }
-      ],
+      theme: storedTheme !== null ? storedTheme : THEMES[0],
+      themesList: THEMES,
     };
-    const { sender } = props;
-    this.state.users.push( {id:sender.id , name:sender.name} );
     this.torrentManager = new TorrentManager();
     this.peerManager = new PeerManager({
       sender,
@@ -86,6 +84,7 @@ export default class App extends React.Component {
 
   changeTheme = (theme) => {
     const newTheme = this.state.themesList.filter( x => x.name === theme )[0];
+    this.props.configStore.set('theme', newTheme);
     this.setState( {theme:newTheme} );
   }
 
@@ -109,7 +108,7 @@ export default class App extends React.Component {
     this.setState({ route, routeParams });
   };
 
-  handleChangeUserInSinglePage = ( id, name, value ) => {
+  handleChangeFollowedUser = ( id, name, value ) => {
 
     let newUsers = Object.assign([], this.state.users).filter( x => x );
 
@@ -119,8 +118,9 @@ export default class App extends React.Component {
     else{
       newUsers = newUsers.filter( x => x.id !== id );
     }
-    
-    this.setState({users:newUsers, userCaseChange:true});
+
+    this.props.configStore.set('users', newUsers);
+    this.setState({users:newUsers });
   };
 
   handleChangeTopic = ( label, value ) => {
@@ -139,26 +139,8 @@ export default class App extends React.Component {
     const newTopics = Object.assign([], this.state.topics);
     newTopics[index] = topic;
 
+    this.props.configStore.set('topics', newTopics);
     this.setState({topics:newTopics});
-  };
-
-  handleChangeTopicInSinglePage = ( label, value ) => {
-    const index = this.state.topics.findIndex((topic)=> {
-        return (topic.label === label);
-    })
-
-    const topic = Object.assign({}, this.state.topics[index]);
-
-    topic.value = value;
-    if( value === true )
-      topic.color = "GREEN";
-    else
-      topic.color = "RED";
-
-    const newTopics = Object.assign([], this.state.topics);
-    newTopics[index] = topic;
-
-    this.setState({topics:newTopics, topicCaseChange:true});
   };
 
   handleSearchClick = (keyword) => {
@@ -168,6 +150,7 @@ export default class App extends React.Component {
   changeBackgroundColor = (color) => {
     let newTheme = this.state.theme;
     newTheme.backgroundColor = color;
+    this.props.configStore.set('theme', newTheme);
     this.setState( {theme : newTheme} );
   };
 
@@ -246,6 +229,7 @@ export default class App extends React.Component {
             changeBackgroundColor={this.changeBackgroundColor}
             theme={theme}
             changeTheme={this.changeTheme}
+            configStore={this.props.configStore}
           />
         );
       case ROUTES.focus:
@@ -285,7 +269,7 @@ export default class App extends React.Component {
                 navigate={this.navigate}
                 upvote={this.messageManager.upvote}
                 downvote={this.messageManager.downvote}
-                handleChangeTopicInSinglePage={this.handleChangeTopicInSinglePage}
+                handleChangeTopicInSinglePage={this.handleChangeTopic}
                 backNavigation={this.handleStackPop}
                 controlVote={this.messageManager.controlVote}
                 theme={theme}
@@ -308,7 +292,7 @@ export default class App extends React.Component {
                 backNavigation={this.handleStackPop}
                 upvote={this.messageManager.upvote}
                 downvote={this.messageManager.downvote}
-                handleChangeUserInSinglePage={this.handleChangeUserInSinglePage}
+                handleChangeUserInSinglePage={this.handleChangeFollowedUser}
                 controlVote={this.messageManager.controlVote}
                 theme={theme}
             />
@@ -333,7 +317,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { numPeers, route, searchedKeyword } = this.state;
+    const { numPeers, route } = this.state;
     const page = this.renderPage();
     const pageIds = Object.keys(ROUTE_NAME);
     const pages = pageIds.map(id => ({id, name: ROUTE_NAME[id]}));

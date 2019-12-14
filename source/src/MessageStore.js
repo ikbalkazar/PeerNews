@@ -7,7 +7,7 @@ const log = createLogger('MessageStore');
 
 export default class MessageStore {
   constructor(sender) {
-    this.filename = `${sender.name}-messages.json`;
+    this.filename = `messages.json`;
   }
 
   read = async () => {

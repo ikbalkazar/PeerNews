@@ -212,7 +212,7 @@ export default class Boot extends React.Component {
   };
 
   onLogout = () => {
-    this.configStore.set('sender', null);
+    this.configStore.clear();
     this.setState({ sender: null, tempSender: null, username: null });
   };
 

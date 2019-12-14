@@ -12,16 +12,19 @@ import {
   SketchPicker, SliderPicker, SwatchesPicker, TwitterPicker
 } from 'react-color';
 
+import MediaUploader from './MediaUploader';
 import Button from "react-bootstrap/Button";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
+import { writeFile } from './fsutils';
 
 export default class Profile extends React.Component {
-
-
+  state = {
+    exportPath: null,
+  };
 
   constructor(props) {
       super(props);
@@ -48,9 +51,14 @@ export default class Profile extends React.Component {
     this.props.changeBackgroundColor( color.hex );
   };
 
-  onExport = event => {
-    event.preventDefault();
-    console.log('Exported');
+  onExport = async () => {
+    const { exportPath } = this.state;
+    const { configStore } = this.props;
+    await writeFile(`${exportPath}/peernews-config.txt`, JSON.stringify(configStore.data));
+  };
+
+  handleExportPathChange = (path) => {
+    this.setState({ exportPath: path });
   };
 
   renderTooltip(props) {
@@ -99,6 +107,8 @@ export default class Profile extends React.Component {
     const numberOfPosts = this.getTotalPostOfUser(user);
     const numberOfUpvotes = this.getTotalUpVotesOfUser(user);
     const numberOfDownvotes = this.getTotalDownVotesOfUser(user);
+
+    const { exportPath } = this.state;
 
     return (
 
@@ -158,9 +168,14 @@ export default class Profile extends React.Component {
 
                               <div style={{position:'absolute',bottom:'0px', width:'100%'}}>
                                 <OverlayTrigger placement="right" delay={{ show: 250, hide: 500 }} overlay={this.renderTooltip}>
-                                  <Button variant="outline-primary" size="lg" color="primary" onClick={() => this.onExport} block>
-                                    Export Your Profile
-                                  </Button>
+                                  <MediaUploader
+                                    buttonTitle='Export Your Profile'
+                                    media={exportPath}
+                                    onChange={this.handleExportPathChange}
+                                    header='Choose a directory to export your configurations'
+                                    onSubmit={this.onExport}
+                                    isDirectory
+                                  />
                                 </OverlayTrigger>
                               </div>
                             </div>

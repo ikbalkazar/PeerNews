@@ -21,9 +21,13 @@ export default class MessageManager {
   }
 
   loadMessagesOnDisk = async () => {
-    const messagesOnDisk = await this.messageStore.read();
-    for (const message of messagesOnDisk) {
-      this.messageReceived(message, false);
+    try {
+      const messagesOnDisk = await this.messageStore.read();
+      for (const message of messagesOnDisk) {
+        this.messageReceived(message, false);
+      }
+    } catch (err) {
+      log(`error reading messages ${err}`)
     }
     this.firstLoadHappened = true;
   };

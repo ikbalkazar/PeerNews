@@ -29,9 +29,12 @@ export default class MediaUploader extends React.Component {
   };
 
   startChooseFile = async (event) => {
+    const { isDirectory } = this.props;
     event.preventDefault();
     const { onChange } = this.props;
-    const { canceled, filePaths } = await remote.dialog.showOpenDialog({ properties: ['openFile']});
+    const { canceled, filePaths } = await remote.dialog.showOpenDialog({
+      properties: [isDirectory ? 'openDirectory' : 'openFile']
+    });
     if (!canceled && filePaths.length > 0) {
       onChange(filePaths[0]);
     }
