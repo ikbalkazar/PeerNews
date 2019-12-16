@@ -44,7 +44,10 @@ export default class MediaUploader extends React.Component {
     this.props.onChange(event.target.value);
   };
 
-  handleClose = () => this.setState({ open: false });
+  handleClose = (event) => {
+    event.preventDefault();
+    this.setState({ open: false });
+  }
 
   onSubmit = (event) => {
     event.preventDefault();

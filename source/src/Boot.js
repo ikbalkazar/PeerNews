@@ -113,7 +113,7 @@ class Username extends React.Component {
           <div style={{fontSize:"120px", fontFamily:"Times New Roman", fontStyle:"italic", paddingTop: 50, textAlign:"center", color:"white"}}>PeerNews</div>
           <div style={{paddingTop: 50, width:"45%", float:"left", color:"transparent"}}> </div>
           <div style={{paddingTop: 50, width:"10%", float:"left", color:"white"}}>
-          <h2 style={{textAlign:"center", color:"white", cursor:"pointer", border: '1px solid white' }} onClick={this.handleOpen}>Join Now</h2>
+          <h2 style={{textAlign:"center", color:"white", cursor:"pointer", borderRadius: "15px", border: 'solid white' }} onClick={this.handleOpen}>Join Now</h2>
           </div>
           <div style={{paddingTop: 50,width:"45%", float:"right", color:"white"}}> </div>
           <Dialog open={open} onClose={this.handleClose} maxWidth="md" fullWidth="true" aria-labelledby="max-width-dialog-title">
@@ -155,15 +155,15 @@ class DisplayKeys extends React.Component {
           </div>
 
           <div style={{color:"white", fontFamily:"Times New Roman", fontStyle:"italic", paddingTop: 50, textAlign:"left", paddingLeft:"100px"}}>
-              <h4>Show and copy the keys</h4>
-              <h5>Private Key</h5>
+              <h4 style={{marginLeft:"13%"}}>Here is your identity informations</h4>
+              <h5 style={{marginLeft:"19%"}}>Private Key</h5>
               <p>{encodeBase64(privateKey)}</p>
-              <h5>Public Key</h5>
+              <h5 style={{marginLeft:"19%"}}>Public Key</h5>
               <p>{encodeBase64(publicKey)}</p>
           </div>
           <div style={{paddingTop: 50, width:"20%", float:"left", color:"transparent"}}> </div>
           <div style={{paddingTop: 50, width:"10%", float:"left", color:"white"}}>
-            <h2 style={{opacity: '0.6', textAlign:"center", color:"white", cursor:"pointer"}} onClick={onNext}>Continue</h2>
+            <h2 style={{opacity: '0.6', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={onNext}>Continue</h2>
           </div>
           <div style={{paddingTop: 50,width:"70%", float:"right", color:"transparent"}}> </div>
         </div>
