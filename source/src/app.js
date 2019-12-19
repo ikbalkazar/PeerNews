@@ -3,6 +3,7 @@ import NavigationBar from './NavigationBar';
 import Feed from './Feed';
 import Profile from './Profile';
 import Compose from './Compose';
+import Connect from './Connect';
 import Focus from './Focus';
 import { ROUTES, ROUTE_NAME } from './util';
 import PeerManager from './PeerManager';
@@ -158,6 +159,8 @@ export default class App extends React.Component {
     const { route, routeParams, searchedKeyword, theme } = this.state;
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
+      case ROUTES.connect:
+        return <Connect peerManager={this.peerManager}/>;
       case ROUTES.search:
         const searchedMessages = this.messageManager.getSearchedMessages(searchedKeyword);
         return (

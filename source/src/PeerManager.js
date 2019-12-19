@@ -15,11 +15,64 @@ export default class PeerManager {
     this.wsConnected = false;
     this.initiatorSignal = null;
     this.root = null;
+    this.manualRoot = null;
     this.onPeerConnected = onPeerConnected;
     this.onPeerDisconnected = onPeerDisconnected;
     this.onMessage = onMessage;
     this.connect();
   }
+
+  initiateManually = (onSignal) => {
+    const p = new Peer({ initiator: true, trickle: false });
+    this.manualRoot = p;
+
+    p.on('error', err => {
+      log(err);
+      if (this.wsConnected) {
+        p.destroy();
+        this.removePeer(p);
+      }
+    });
+
+    p.on('signal', data => {
+      log(`signal ${JSON.stringify(data)}`);
+      onSignal(JSON.stringify(data));
+    });
+
+    p.on('connect', () => {
+      this.addPeer(p);
+      log(`CONNECT manual initiator`);
+    });
+
+    p.on('data', data => {
+      this.onMessage(encodeUTF8(data));
+    });
+  };
+
+  applyResponseManually = (signal) => {
+    if (this.manualRoot) {
+      this.manualRoot.signal(JSON.parse(signal));
+    }
+  };
+
+  applyRequestManually = (signal, onSignal) => {
+    const p2 = new Peer({ trickle: false });
+    p2.signal(JSON.parse(signal));
+    p2.on('signal', signal => {
+      onSignal(JSON.stringify(signal));
+    });
+    p2.on('connect', () => {
+      this.addPeer(p2);
+      log(`CONNECT passive`);
+    });
+    p2.on('data', receivedData => {
+      this.onMessage(encodeUTF8(receivedData));
+    });
+    p2.on('error', err => {
+      log(err);
+      this.removePeer(p2);
+    });
+  };
 
   connect = () => {
     const ws = new WebSocket('ws://46.101.68.25:5000');
