@@ -12,6 +12,7 @@ export default class Connect extends React.Component {
   componentDidMount() {
     const { peerManager } = this.props;
     peerManager.initiateManually((signal) => {
+      console.log(`[Connect] Created initiator offer: ${signal}`);
       this.setState({initiatorSignal: signal});
     });
   }
@@ -30,6 +31,7 @@ export default class Connect extends React.Component {
     event.preventDefault();
     const { responseSignal } = this.state;
     const { peerManager } = this.props;
+    console.log(`[Connect] Applying response (answer): ${responseSignal}`);
     peerManager.applyResponseManually(responseSignal);
   };
 
@@ -37,7 +39,9 @@ export default class Connect extends React.Component {
     event.preventDefault();
     const { requestSignal } = this.state;
     const { peerManager } = this.props;
+    console.log(`[Connect] Applying request (offer): ${requestSignal}`);
     peerManager.applyRequestManually(requestSignal, (signal) => {
+      console.log(`[Connect] Created response (answer): ${signal}`);
       this.setState({ requestResponseSignal: signal });
     });
   };

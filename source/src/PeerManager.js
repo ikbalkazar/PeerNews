@@ -9,7 +9,7 @@ const log = (message) => {
 
 
 export default class PeerManager {
-  constructor({sender, onMessage, onPeerConnected, onPeerDisconnected}) {
+  constructor({sender, onMessage, onPeerConnected, onPeerDisconnected, useConnector}) {
     this.sender = sender;
     this.peers = [];
     this.wsConnected = false;
@@ -19,7 +19,9 @@ export default class PeerManager {
     this.onPeerConnected = onPeerConnected;
     this.onPeerDisconnected = onPeerDisconnected;
     this.onMessage = onMessage;
-    this.connect();
+    if (useConnector) {
+      this.connect();
+    }
   }
 
   initiateManually = (onSignal) => {
@@ -51,6 +53,7 @@ export default class PeerManager {
 
   applyResponseManually = (signal) => {
     if (this.manualRoot) {
+      log(`Applying manual response to ${this.manualRoot}`);
       this.manualRoot.signal(JSON.parse(signal));
     }
   };

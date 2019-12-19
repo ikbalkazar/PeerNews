@@ -36,7 +36,7 @@ const THEMES = [
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    const { sender, configStore } = props;
+    const { sender, configStore, useConnector } = props;
     const storedTopics = configStore.get('topics') || [];
     const storedUsers = configStore.get('users') || [];
     const storedTheme = configStore.get('theme') || null;
@@ -55,6 +55,7 @@ export default class App extends React.Component {
     this.torrentManager = new TorrentManager();
     this.peerManager = new PeerManager({
       sender,
+      useConnector,
       onMessage: this.messageReceived,
       onPeerConnected: (_) => {
         const { numPeers } = this.state;

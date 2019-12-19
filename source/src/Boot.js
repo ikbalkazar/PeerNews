@@ -163,7 +163,12 @@ class DisplayKeys extends React.Component {
           </div>
           <div style={{paddingTop: 50, width:"20%", float:"left", color:"transparent"}}> </div>
           <div style={{paddingTop: 50, width:"10%", float:"left", color:"white"}}>
-            <h2 style={{opacity: '0.6', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={onNext}>Continue</h2>
+            <h2 style={{opacity: '0.6', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={() => onNext(true)}>
+              Connect
+            </h2>
+            <h2 style={{opacity: '0.6', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={() => onNext(false)}>
+              Continue without connector
+            </h2>
           </div>
           <div style={{paddingTop: 50,width:"70%", float:"right", color:"transparent"}}> </div>
         </div>
@@ -180,6 +185,7 @@ export default class Boot extends React.Component {
       tempSender: null,
       username: null,
       storeLoading: true,
+      useConnector: true,
     };
     this.loadConfigStore();
   }
@@ -199,9 +205,9 @@ export default class Boot extends React.Component {
     this.setState({ tempSender: sender });
   };
 
-  onFinish = () => {
+  onFinish = (useConnector) => {
     const { tempSender } = this.state;
-    this.setState({ sender: tempSender });
+    this.setState({ sender: tempSender, useConnector });
   };
 
   onImportFile = async (path) => {
@@ -217,12 +223,12 @@ export default class Boot extends React.Component {
   };
 
   render() {
-    const { sender, tempSender, username, storeLoading } = this.state;
+    const { sender, tempSender, username, storeLoading, useConnector } = this.state;
     if (storeLoading) {
       return null;
     }
     if (sender !== null) {
-      return <App sender={sender} configStore={this.configStore} onLogout={this.onLogout}/>;
+      return <App sender={sender} configStore={this.configStore} onLogout={this.onLogout} useConnector={useConnector}/>;
     } else {
       if (!username) {
         return <Username onSubmit={this.onSubmitUsername} onImportFile={this.onImportFile}/>;
