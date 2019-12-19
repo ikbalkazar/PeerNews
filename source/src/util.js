@@ -80,25 +80,25 @@ export const ROUTES = {
   app: "1",
   feed: "3",
   focus: "5",
-  postMessage: "6",
-  topics: "7",
+  postMessage: "12",
+  topics: "11",
   TopicPage: "8",
   UserPostPage: "9",
-  Profile: "10",
-  trending: "11",
-  Fresh: "12",
+  Profile: "15",
+  trending: "6",
+  Fresh: "7",
   search: "13",
   connect: "14",
 };
 
 export const ROUTE_NAME = {
   "3": 'Feed',
-  "6": 'PostMessage',
-  "7": 'Topics',
-  "10": 'Profile',
-  "11": 'Trending',
-  "12": "Fresh",
+  "6": 'Trending',
+  "7": "Fresh",
+  "11": 'Topics',
+  "12": 'Share',
   "14": "Connect",
+  "15": 'Profile',
 };
 
 export const createLogger = (prefix) => (message) => console.log(`[${prefix}] ${message}`);

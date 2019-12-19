@@ -21,7 +21,7 @@ export default class NavigationBar extends React.Component {
   };
 
   render () {
-    const { pages, onClickPage, activePage, searchedKeyword, onSearchedKeywordChange } = this.props;
+    const { pages, onClickPage, activePage, searchedKeyword, onSearchedKeywordChange, numPeers } = this.props;
     const { keyword } = this.state;
     return (
       <div style={{height:'30px'}}>
@@ -39,6 +39,7 @@ export default class NavigationBar extends React.Component {
             ))}
           </Nav>
           <Form inline>
+            <Nav.Link>{numPeers}</Nav.Link>
             <FormControl
               type="text"
               placeholder="Search"

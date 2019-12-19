@@ -327,13 +327,13 @@ export default class App extends React.Component {
     const pages = pageIds.map(id => ({id, name: ROUTE_NAME[id]}));
     return (
       <div>
-        {`Peers #: ${numPeers}`}
         <NavigationBar
           pages={pages}
           activePage={route}
           onClickPage={this.handleClickPage}
           onLogout={this.props.onLogout}
           onSearchClick={this.handleSearchClick}
+          numPeers={numPeers}
         />
         {page}
       </div>
