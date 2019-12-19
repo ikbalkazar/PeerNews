@@ -12,7 +12,7 @@ export default ({theme, onBack, title, noRight, isRightOn, onRightOnClick, onRig
     height: 53,
   }}>
     <Button variant="light" size="md" style={{marginLeft: 13, marginTop: 8}} onClick={onBack}>{'Back'}</Button>
-    <h4 style={{textAlign:"center", marginTop: "-35px", fontWeight: 800}}>
+    <h4 style={{textAlign:"center", marginTop: "-35px", fontWeight: 800 }}>
       {capitalizeFirstLetter(title)}
     </h4>
     {!noRight && (

@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
+import { FaWifi } from "react-icons/fa";
 
 export default class NavigationBar extends React.Component {
   state = {
@@ -39,6 +40,7 @@ export default class NavigationBar extends React.Component {
             ))}
           </Nav>
           <Form inline>
+            <FaWifi color="white"/>
             <Nav.Link>{numPeers}</Nav.Link>
             <FormControl
               type="text"
