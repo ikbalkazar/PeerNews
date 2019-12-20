@@ -25,7 +25,7 @@ export default class NavigationBar extends React.Component {
     const { pages, onClickPage, activePage, searchedKeyword, onSearchedKeywordChange, numPeers } = this.props;
     const { keyword } = this.state;
     return (
-      <div style={{height:'30px'}}>
+      <div style={{height:'54px'}}>
         <Navbar bg="dark" variant="dark" fixed="top" >
           <Navbar.Brand href="#home">Peer News</Navbar.Brand>
           <Nav className="mr-auto">
