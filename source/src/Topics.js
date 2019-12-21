@@ -107,7 +107,7 @@ export default class Topics extends React.Component {
     }
 
     return (
-      <div style={{backgroundColor:this.props.theme.backgroundColor, marginTop:"2px"}}>
+      <div style={{overflowY:'auto',backgroundColor:this.props.theme.backgroundColor, marginTop:"2px"}}>
           {topicsList.map(topic => 
             <div style={root}>
               <div style={{opacity: '1.0', textAlign:"center",

@@ -161,7 +161,10 @@ export default class App extends React.Component {
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
       case ROUTES.connect:
-        return <Connect peerManager={this.peerManager}/>;
+        return <Connect
+          peerManager={this.peerManager}
+          theme={theme}
+        />;
       case ROUTES.search:
         const searchedMessages = this.messageManager.getSearchedMessages(searchedKeyword);
         return (
