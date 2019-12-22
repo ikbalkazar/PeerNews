@@ -29,11 +29,22 @@ export default class Connect extends React.Component {
 
   onEstablishConnection = () => {
     console.log('On submit response');
+    const { responseSignal } = this.state;
+    const { peerManager } = this.props;
+    console.log(`[Connect] Applying response (answer): ${responseSignal}`);
+    peerManager.applyResponseManually(responseSignal);
     this.setState({ pageState: 3 });
   }
 
   onSignalReceived = () => {
     console.log('On submit request');
+    const { requestSignal } = this.state;
+    const { peerManager } = this.props;
+    console.log(`[Connect] Applying request (offer): ${requestSignal}`);
+    peerManager.applyRequestManually(requestSignal, (signal) => {
+      console.log(`[Connect] Created response (answer): ${signal}`);
+      this.setState({ requestResponseSignal: signal });
+    });
     this.setState({ pageState: 12 });
   }
 
