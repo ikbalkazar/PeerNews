@@ -5,6 +5,7 @@ import Jumbotron from 'react-bootstrap/Jumbotron'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import ProgressBar from 'react-bootstrap/ProgressBar'
+import Toast from 'react-bootstrap/Toast'
 
 export default class Connect extends React.Component {
   state = {
@@ -13,6 +14,7 @@ export default class Connect extends React.Component {
     initiatorSignal: null,
     requestResponseSignal: null,
     pageState: 0,
+    show: false,
   };
 
   componentDidMount() {
@@ -32,8 +34,17 @@ export default class Connect extends React.Component {
     const { responseSignal } = this.state;
     const { peerManager } = this.props;
     console.log(`[Connect] Applying response (answer): ${responseSignal}`);
-    peerManager.applyResponseManually(responseSignal);
-    this.setState({ pageState: 3 });
+
+    let errorOccured = false;
+
+    try {
+      peerManager.applyResponseManually(responseSignal);
+    } catch (error) {
+      this.setShow(true);
+      errorOccured = true;
+    }
+    if ( !errorOccured )
+      this.setState({ pageState: 3 });
   }
 
   onSignalReceived = () => {
@@ -41,11 +52,20 @@ export default class Connect extends React.Component {
     const { requestSignal } = this.state;
     const { peerManager } = this.props;
     console.log(`[Connect] Applying request (offer): ${requestSignal}`);
-    peerManager.applyRequestManually(requestSignal, (signal) => {
-      console.log(`[Connect] Created response (answer): ${signal}`);
-      this.setState({ requestResponseSignal: signal });
-    });
-    this.setState({ pageState: 12 });
+
+    let errorOccured = false;
+
+    try {
+      peerManager.applyRequestManually(requestSignal, (signal) => {
+        console.log(`[Connect] Created response (answer): ${signal}`);
+        this.setState({ requestResponseSignal: signal });
+      });
+    } catch (error) {
+      this.setShow(true);
+      errorOccured = true;
+    }
+    if ( !errorOccured )
+      this.setState({ pageState: 12 });
   }
 
   handleRequest = (event) => {
@@ -78,10 +98,13 @@ export default class Connect extends React.Component {
     });
   };
 
-
+  setShow = ( showError ) => {
+    this.setState( {show: showError} );
+  }
 
   render() {
     const { initiatorSignal, requestSignal, responseSignal, requestResponseSignal, pageState } = this.state;
+
     return (
       /*
       <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -100,6 +123,17 @@ export default class Connect extends React.Component {
       */
 
       <div style={{position:'absolute', width:'100%', height:'100%', top:0, left:0, backgroundColor:this.props.theme.backgroundColor, color:this.props.theme.textColor, overflow:'auto'}}>
+
+        <div style={{position:'absolute', bottom:'5px', right:'5px', width:'300px'}} >
+          <Toast onClose={() => this.setShow(false)} show={this.state.show} delay={3000} autohide>
+            <Toast.Header>
+              <strong className="mr-auto">Connection Error</strong>
+              <small>just now</small>
+            </Toast.Header>
+            <Toast.Body>Invalid Signal!</Toast.Body>
+          </Toast>
+        </div>
+
         { pageState === 0 &&
           <div style={{minWidth:'100px', textAlign:'center', position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'50%', marginTop:'15%' }}>
             <div style={{position:'relative', width:'900px', height:'300px', borderColor:'black', borderSize:'5px', borderStyle:'solid', borderRadius:'15px', marginLeft:'auto', marginRight:'auto',backgroundColor:'gray'}}>
@@ -111,7 +145,7 @@ export default class Connect extends React.Component {
         }
         {
           pageState === 1 &&
-          <div style={{textAlign:'center', fontSize:'30px',borderColor:'black', borderSize:'5px', borderStyle:'solid', borderRadius:'15px' ,position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
+          <div style={{textAlign:'center', fontSize:'30px',position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
             <ProgressBar animated now={33} />
             <div style={{marginTop:'20%'}}>
               <h1> <Badge variant="primary">Step 1</Badge> Copy your signal and send it to your friend. </h1>
@@ -135,7 +169,7 @@ export default class Connect extends React.Component {
         }
 
         { pageState === 2 &&
-          <div style={{textAlign:'center', fontSize:'30px',borderColor:'black', borderSize:'5px', borderStyle:'solid', borderRadius:'15px' ,position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
+          <div style={{textAlign:'center', fontSize:'30px',position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
             <ProgressBar animated now={66} />
             <div style={{marginTop:'20%'}}>
               <h1> <Badge variant="primary">Step 2</Badge> Paste your friend's signal here </h1>
@@ -157,7 +191,7 @@ export default class Connect extends React.Component {
         }
 
         { pageState === 3 &&
-           <div style={{textAlign:'center', fontSize:'30px',borderColor:'black', borderSize:'5px', borderStyle:'solid', borderRadius:'15px' ,position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
+           <div style={{textAlign:'center', fontSize:'30px',position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
              <ProgressBar animated now={100} />
              <div style={{marginTop:'20%'}}>
                <h1> <Badge variant="primary">Step 3</Badge> Success ! </h1>
@@ -168,7 +202,7 @@ export default class Connect extends React.Component {
         }
 
          { pageState === 11 &&
-           <div style={{textAlign:'center', fontSize:'30px',borderColor:'black', borderSize:'5px', borderStyle:'solid', borderRadius:'15px' ,position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
+           <div style={{textAlign:'center', fontSize:'30px',position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
              <ProgressBar animated now={33} />
              <div style={{marginTop:'20%'}}>
                <h1> <Badge variant="primary">Step 1</Badge> Ask for your friend's signal and paste it below. </h1>
@@ -191,7 +225,7 @@ export default class Connect extends React.Component {
 
         {
           pageState === 12 &&
-          <div style={{textAlign:'center', fontSize:'30px',borderColor:'black', borderSize:'5px', borderStyle:'solid', borderRadius:'15px' ,position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
+          <div style={{textAlign:'center', fontSize:'30px',position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
             <ProgressBar animated now={66} />
             <div style={{marginTop:'20%'}}>
               <h1> <Badge variant="primary">Step 2</Badge> Copy your signal and send it to your friend. </h1>
@@ -217,7 +251,7 @@ export default class Connect extends React.Component {
         }
 
         { pageState === 13 &&
-          <div style={{textAlign:'center', fontSize:'30px',borderColor:'black', borderSize:'5px', borderStyle:'solid', borderRadius:'15px' ,position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
+          <div style={{textAlign:'center', fontSize:'30px',position:'absolute', left: '50%' , transform: 'translateX(-50%)', width:'80%' , height:'80%', minHeight:'600px', marginTop:'120px' }}>
             <ProgressBar animated now={100} />
             <div style={{marginTop:'20%'}}>
               <h1> <Badge variant="primary">Step 3</Badge> Success! </h1>
