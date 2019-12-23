@@ -124,15 +124,15 @@ export default class Profile extends React.Component {
 
       <div style={{ position: 'absolute', overflowY:'auto', top:0, left:0 ,width: '100%', height: '100%', backgroundColor:color, color:this.props.theme.textColor}}>
 
-      <div style={{position:'absolute', bottom:'0px', left:'0px', width:'300px'}} >
-        <Toast onClose={() => this.setShow(false)} show={this.state.show} delay={3000} autohide>
-          <Toast.Header>
-            <strong className="mr-auto">Warning</strong>
-            <small>just now</small>
-          </Toast.Header>
-          <Toast.Body>You need to restart your application to apply settings!</Toast.Body>
-        </Toast>
-      </div>
+        <div style={{position:'fixed', bottom:'5px', right:'5px', width:'300px', zIndex:1}} >
+          <Toast onClose={() => this.setShow(false)} show={this.state.show} delay={3000} autohide>
+            <Toast.Header>
+              <strong className="mr-auto">Warning</strong>
+              <small>just now</small>
+            </Toast.Header>
+            <Toast.Body>You need to restart your application to apply settings!</Toast.Body>
+          </Toast>
+        </div>
 
         <div style={{position: 'absolute',left: '20%' , transform: 'translateX(-50%)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '25%' , height: '500px', marginTop: '100px' }}>
           <h3 style={{textAlign: 'center',marginTop:'5%'}}> Customize Your Background Color</h3>
