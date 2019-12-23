@@ -185,7 +185,7 @@ export default class Boot extends React.Component {
       tempSender: null,
       username: null,
       storeLoading: true,
-      useConnector: true,
+      useConnector: null,
     };
     this.loadConfigStore();
   }

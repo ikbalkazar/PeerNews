@@ -9,7 +9,7 @@ const log = (message) => {
 
 
 export default class PeerManager {
-  constructor({sender, onMessage, onPeerConnected, onPeerDisconnected, useConnector}) {
+  constructor({sender, onMessage, onPeerConnected, onPeerDisconnected, connectorUsage}) {
     this.sender = sender;
     this.peers = [];
     this.wsConnected = false;
@@ -19,7 +19,8 @@ export default class PeerManager {
     this.onPeerConnected = onPeerConnected;
     this.onPeerDisconnected = onPeerDisconnected;
     this.onMessage = onMessage;
-    if (useConnector) {
+    console.log( "==== " + connectorUsage );
+    if (connectorUsage) {
       this.connect();
     }
   }

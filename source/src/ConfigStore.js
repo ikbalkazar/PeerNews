@@ -7,6 +7,7 @@ export default class ConfigStore {
       topics: [],
       users: [],
       theme: null,
+      connector: true,
     };
   }
 
@@ -26,6 +27,7 @@ export default class ConfigStore {
       topics: [],
       users: [],
       theme: null,
+      connector: true,
     };
     this.save();
   };

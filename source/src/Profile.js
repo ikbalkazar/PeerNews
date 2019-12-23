@@ -20,10 +20,12 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
 import { writeFile } from './fsutils';
+import Toast from 'react-bootstrap/Toast';
 
 export default class Profile extends React.Component {
   state = {
     exportPath: null,
+    show: false,
   };
 
   constructor(props) {
@@ -91,6 +93,13 @@ export default class Profile extends React.Component {
   changeTheme = ( theme ) => {
     this.props.changeTheme( theme );
   };
+  setShow = ( showError ) => {
+    this.setState( {show: showError} );
+  };
+  changeConnector = ( value ) => {
+    this.props.changeConnector( value );
+    this.setShow(true);
+  };
 
   render () {
     const color = this.props.theme.backgroundColor;
@@ -109,10 +118,21 @@ export default class Profile extends React.Component {
     const numberOfDownvotes = this.getTotalDownVotesOfUser(user);
 
     const { exportPath } = this.state;
+    const { connector } = this.props;
 
     return (
 
       <div style={{ position: 'absolute', overflowY:'auto', top:0, left:0 ,width: '100%', height: '100%', backgroundColor:color, color:this.props.theme.textColor}}>
+
+      <div style={{position:'absolute', bottom:'0px', left:'0px', width:'300px'}} >
+        <Toast onClose={() => this.setShow(false)} show={this.state.show} delay={3000} autohide>
+          <Toast.Header>
+            <strong className="mr-auto">Warning</strong>
+            <small>just now</small>
+          </Toast.Header>
+          <Toast.Body>You need to restart your application to apply settings!</Toast.Body>
+        </Toast>
+      </div>
 
         <div style={{position: 'absolute',left: '20%' , transform: 'translateX(-50%)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '25%' , height: '500px', marginTop: '100px' }}>
           <h3 style={{textAlign: 'center',marginTop:'5%'}}> Customize Your Background Color</h3>
@@ -157,41 +177,51 @@ export default class Profile extends React.Component {
 
         <div style={{ position: 'absolute', minWidth:'1000px' ,left: '50%' , transform: 'translateX(-50%)', borderRadius: '15px', borderStyle: 'solid' , borderWidth: '0px' , borderColor:'black' , width: '85%' , height:'300px' , marginLeft:'auto' , marginRight:'auto' , marginTop:'650px'}}>
 
-                            <div style={{ position:'absolute', minWidth:'500px' ,left: '10%' , top:'25%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '0px', borderColor: 'lightgray',  width: '40%' ,height: '50%'}}>
-                              <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.publicKey)}>
-                                <Button style={{position:'absolute', left:'0px'}} variant="success" size="lg">What is my Public Key?</Button>
-                              </OverlayTrigger>
+          <div style={{ position:'absolute', minWidth:'500px' ,left: '10%' , top:'25%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '0px', borderColor: 'lightgray',  width: '40%' ,height: '50%'}}>
 
-                              <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.privateKey)}>
-                                <Button style={{position:'absolute', right:'0px'}} variant="success" size="lg">What is my Private Key?</Button>
-                              </OverlayTrigger>
+            <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.publicKey)}>
+              <Button style={{position:'absolute', left:'0px'}} variant="success" size="lg">What is my Public Key?</Button>
+            </OverlayTrigger>
 
-                              <div style={{position:'absolute',bottom:'0px', width:'100%'}}>
-                                <OverlayTrigger placement="right" delay={{ show: 250, hide: 500 }} overlay={this.renderTooltip}>
-                                  <MediaUploader
-                                    buttonTitle='Export Your Profile'
-                                    media={exportPath}
-                                    onChange={this.handleExportPathChange}
-                                    header='Choose a directory to export your configurations'
-                                    onSubmit={this.onExport}
-                                    isDirectory
-                                  />
-                                </OverlayTrigger>
-                              </div>
-                            </div>
+            <OverlayTrigger trigger="click" placement="top" overlay={this.onClickDisplayKey(user.keyPair.privateKey)}>
+              <Button style={{position:'absolute', right:'0px'}} variant="success" size="lg">What is my Private Key?</Button>
+            </OverlayTrigger>
 
-                            <div style={{ position: 'absolute', left: '60%' , top:'10%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '30%' ,height: '80%'}}>
-                               <h2 style={{textAlign:'center'}}>Your Statistics</h2>
-                               <Alert variant='dark'>
-                                 Post Entries: {numberOfPosts}
-                               </Alert>
-                               <Alert variant='success'>
-                                 Upvotes: {numberOfUpvotes}
-                               </Alert>
-                               <Alert variant='danger'>
-                                 Downvotes: {numberOfDownvotes}
-                               </Alert>
-                            </div>
+            <div style={{position:'absolute',bottom:'0px', width:'100%'}}>
+            <div style={{position:'relative', left:'45px'}}>
+              <OverlayTrigger placement="right" delay={{ show: 250, hide: 500 }} overlay={this.renderTooltip}>
+                <MediaUploader
+                  buttonTitle='Export Your Profile'
+                  media={exportPath}
+                  onChange={this.handleExportPathChange}
+                  header='Choose a directory to export your configurations'
+                  onSubmit={this.onExport}
+                  isDirectory
+                />
+              </OverlayTrigger>
+            </div>
+              {
+                connector === true
+                ?
+                  <Button style={{position:'absolute', right:'49px', bottom:0}}variant="outline-success"  onClick={() => this.changeConnector( false )}>Disable Connector</Button>
+                :
+                  <Button style={{position:'absolute', right:'49px', bottom:0}}variant="outline-danger"  onClick={() => this.changeConnector( true )}>Enable Connector</Button>
+              }
+            </div>
+          </div>
+
+          <div style={{ position: 'absolute', left: '60%' , top:'10%', transform: 'translateX(-50,-50)', borderRadius: '15px' ,borderStyle: 'solid', borderWidth: '3px', borderColor: 'lightgray',  width: '30%' ,height: '80%'}}>
+             <h2 style={{textAlign:'center'}}>Your Statistics</h2>
+             <Alert variant='dark'>
+               Post Entries: {numberOfPosts}
+             </Alert>
+             <Alert variant='success'>
+               Upvotes: {numberOfUpvotes}
+             </Alert>
+             <Alert variant='danger'>
+               Downvotes: {numberOfDownvotes}
+             </Alert>
+          </div>
         </div>
 
 

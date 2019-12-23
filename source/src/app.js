@@ -37,9 +37,13 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     const { sender, configStore, useConnector } = props;
+    if( useConnector !== null ){
+      configStore.set('connector', useConnector);
+    }
     const storedTopics = configStore.get('topics') || [];
     const storedUsers = configStore.get('users') || [];
     const storedTheme = configStore.get('theme') || null;
+    const connectorUsage = configStore.get('connector');
     this.state = {
       numPeers: 0,
       messages: new Map(),
@@ -51,11 +55,12 @@ export default class App extends React.Component {
       ],
       theme: storedTheme !== null ? storedTheme : THEMES[0],
       themesList: THEMES,
+      connector: configStore.get('connector'),
     };
     this.torrentManager = new TorrentManager();
     this.peerManager = new PeerManager({
       sender,
-      useConnector,
+      connectorUsage,
       onMessage: this.messageReceived,
       onPeerConnected: (_) => {
         const { numPeers } = this.state;
@@ -88,6 +93,10 @@ export default class App extends React.Component {
     const newTheme = this.state.themesList.filter( x => x.name === theme )[0];
     this.props.configStore.set('theme', newTheme);
     this.setState( {theme:newTheme} );
+  }
+  changeConnector = (value) => {
+    this.props.configStore.set('connector', value);
+    this.setState( {connector:value} );
   }
 
   handleStackPop = () => {
@@ -157,7 +166,7 @@ export default class App extends React.Component {
   };
 
   renderPage = () => {
-    const { route, routeParams, searchedKeyword, theme } = this.state;
+    const { route, routeParams, searchedKeyword, theme, connector } = this.state;
     const feedMessages = this.messageManager.getFeedMessages(this.state.topics, this.state.users);
     switch (route) {
       case ROUTES.connect:
@@ -235,7 +244,9 @@ export default class App extends React.Component {
             getTotalDownVotesOfUser={this.messageManager.getTotalDownVotesOfUser}
             changeBackgroundColor={this.changeBackgroundColor}
             theme={theme}
+            connector={connector}
             changeTheme={this.changeTheme}
+            changeConnector={this.changeConnector}
             configStore={this.props.configStore}
           />
         );
