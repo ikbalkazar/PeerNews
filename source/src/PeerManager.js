@@ -31,10 +31,8 @@ export default class PeerManager {
 
     p.on('error', err => {
       log(err);
-      if (this.wsConnected) {
-        p.destroy();
-        this.removePeer(p);
-      }
+      p.destroy();
+      this.removePeer(p);
     });
 
     p.on('signal', data => {
@@ -74,6 +72,7 @@ export default class PeerManager {
     });
     p2.on('error', err => {
       log(err);
+      p2.destroy();
       this.removePeer(p2);
     });
   };
@@ -122,6 +121,7 @@ export default class PeerManager {
         });
         p2.on('error', err => {
           log(err);
+          p2.destroy();
           this.removePeer(p2);
         });
       } else if (message.type === 'response') {

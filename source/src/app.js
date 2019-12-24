@@ -67,13 +67,16 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     const { sender, configStore, useConnector } = props;
-    if( useConnector !== null ){
+    if( useConnector !== null && useConnector !== undefined ){
       configStore.set('connector', useConnector);
     }
     const storedTopics = configStore.get('topics') || [];
     const storedUsers = configStore.get('users') || [];
     const storedTheme = configStore.get('theme') || null;
-    const connectorUsage = configStore.get('connector');
+    let connectorUsage = configStore.get('connector');
+    if (connectorUsage === undefined) {
+      connectorUsage = true;
+    }
     this.state = {
       numPeers: 0,
       messages: new Map(),
