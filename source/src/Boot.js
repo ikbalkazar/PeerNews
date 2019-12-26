@@ -162,11 +162,11 @@ class DisplayKeys extends React.Component {
               <p>{encodeBase64(publicKey)}</p>
           </div>
           <div style={{paddingTop: 50, width:"20%", float:"left", color:"transparent"}}> </div>
-          <div style={{paddingTop: 50, width:"10%", float:"left", color:"white"}}>
-            <h2 style={{opacity: '0.6', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={() => onNext(true)}>
+          <div style={{paddingTop: 50, width:"30%", float:"left", color:"white"}}>
+            <h2 style={{opacity: '0.9', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={() => onNext(true)}>
               Connect
             </h2>
-            <h2 style={{opacity: '0.6', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={() => onNext(false)}>
+            <h2 style={{opacity: '0.9', textAlign:"center", borderRadius: "15px", border: 'solid white', color:"white", cursor:"pointer"}} onClick={() => onNext(false)}>
               Continue without connector
             </h2>
           </div>
