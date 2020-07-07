@@ -18,7 +18,7 @@
     "@babel/preset-react": "^7.0.0",
     "@fortawesome/fontawesome-free": "^5.11.2",
     "babel-jest": "^24.8.0",
-    "electron": "^7.1.2",
+    "electron": "^7.2.4",
     "electron-builder": "^20.39.0",
     "electron-packager": "^14.1.1",
     "electron-react-devtools": "^0.5.3",
