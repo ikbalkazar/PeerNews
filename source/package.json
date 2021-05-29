@@ -65,7 +65,7 @@
     "tweetnacl-util": "^0.15.0",
     "video-react": "^0.14.1",
     "webtorrent": "^0.107.17",
-    "ws": "^7.2.0"
+    "ws": "^7.4.6"
   },
   "build": {
     "appId": "com.peernews.app",
